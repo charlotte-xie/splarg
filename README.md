@@ -22,10 +22,25 @@ pnpm install
 
 ## Development
 
-Start the development server:
+Start the Next.js development server:
 ```bash
 pnpm dev
 ```
+
+Build and export the static site:
+```bash
+pnpm build
+pnpm export
+```
+
+## Deploy to GitHub Pages
+
+1. Make sure your changes are committed and pushed to GitHub.
+2. Deploy with:
+```bash
+pnpm deploy
+```
+This will build, export, and publish the `out/` directory to the `gh-pages` branch.
 
 ## Scripts
 
