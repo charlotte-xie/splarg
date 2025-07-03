@@ -145,9 +145,6 @@ export default function GameScreen() {
           <span className="play-time">
             Play Time: {Math.floor(gameState.progress.totalPlayTime / 1000)}s
           </span>
-          <span className="keyboard-indicator">
-            ⌨️ Global Controls Active
-          </span>
           <span className="debug-info">
             Player: ({gameState.player.position.x}, {gameState.player.position.y}) {isClient && `| Updates: ${gameState.lastUpdate || 0}`}
           </span>
@@ -200,6 +197,16 @@ export default function GameScreen() {
           <div>Load Game: Ctrl+L</div>
         </div>
       </div>
+
+      {hoveredTile && hoveredTile.tile && (
+        <div className="tile-info">
+          <h4>Tile Info</h4>
+          <p>Position: ({hoveredTile.x}, {hoveredTile.y})</p>
+          <p>Type: {hoveredTile.tile.name}</p>
+          <p>Walkable: {hoveredTile.tile.walkable ? 'Yes' : 'No'}</p>
+          <p>Description: {hoveredTile.tile.description}</p>
+        </div>
+      )}
     </div>
   );
 } 

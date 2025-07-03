@@ -1,5 +1,6 @@
 import { TILE_TYPES } from './Tile';
 import Area, { AREA_TYPES } from './Area';
+import Tile from './Tile';
 
 interface GameMap {
   areas: { [key: string]: Area };
@@ -35,8 +36,8 @@ export default class World {
     this.gameMap.areas[areaId] = new Area(areaId, areaType, tiles);
   }
 
-  generateAreaTiles(areaType: any): any[][] {
-    const tiles = [];
+  generateAreaTiles(areaType: any): Tile[][] {
+    const tiles: Tile[][] = [];
     const { width, height } = areaType;
     for (let y = 0; y < height; y++) {
       tiles[y] = [];

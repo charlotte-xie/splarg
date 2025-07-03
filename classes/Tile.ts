@@ -1,54 +1,21 @@
-// TileType and TILE_TYPES
-export const TILE_TYPES = {
-  GRASS: {
-    id: 'grass',
-    name: 'Grass',
-    color: '#2d5a27',
-    symbol: '🌱',
-    textColor: '#ffffff',
-    walkable: true,
-    description: 'Lush green grass covering the ground'
-  },
-  WATER: {
-    id: 'water',
-    name: 'Water',
-    color: '#1e3a8a',
-    symbol: '💧',
-    textColor: '#ffffff',
-    walkable: false,
-    description: 'Deep blue water - cannot walk here'
-  },
-  STONE: {
-    id: 'stone',
-    name: 'Stone',
-    color: '#6b7280',
-    symbol: '🪨',
-    textColor: '#ffffff',
-    walkable: true,
-    description: 'Solid stone walls and floors'
-  },
-  SAND: {
-    id: 'sand',
-    name: 'Sand',
-    color: '#d97706',
-    symbol: '🏖️',
-    textColor: '#000000',
-    walkable: true,
-    description: 'Warm golden sand'
-  },
-  FOREST: {
-    id: 'forest',
-    name: 'Forest',
-    color: '#166534',
-    symbol: '🌲',
-    textColor: '#ffffff',
-    walkable: true,
-    description: 'Dense forest with tall trees'
-  }
-};
-
 export class TileType {
-  constructor({ id, name, color, symbol, textColor, walkable, description }) {
+  public id: string;
+  public name: string;
+  public color: string;
+  public symbol: string;
+  public textColor: string;
+  public walkable: boolean;
+  public description: string;
+
+  constructor({ id, name, color, symbol, textColor, walkable, description }: {
+    id: string;
+    name: string;
+    color: string;
+    symbol: string;
+    textColor: string;
+    walkable: boolean;
+    description: string;
+  }) {
     this.id = id;
     this.name = name;
     this.color = color;
@@ -59,30 +26,82 @@ export class TileType {
   }
 }
 
+export const TILE_TYPES: Record<string, TileType> = {
+  grass: new TileType({
+    id: 'grass',
+    name: 'Grass',
+    color: '#2d5a27',
+    symbol: '🌱',
+    textColor: '#ffffff',
+    walkable: true,
+    description: 'Lush green grass covering the ground'
+  }),
+  water: new TileType({
+    id: 'water',
+    name: 'Water',
+    color: '#1e3a8a',
+    symbol: '💧',
+    textColor: '#ffffff',
+    walkable: false,
+    description: 'Deep blue water - cannot walk here'
+  }),
+  stone: new TileType({
+    id: 'stone',
+    name: 'Stone',
+    color: '#6b7280',
+    symbol: '🪨',
+    textColor: '#ffffff',
+    walkable: true,
+    description: 'Solid stone walls and floors'
+  }),
+  sand: new TileType({
+    id: 'sand',
+    name: 'Sand',
+    color: '#d97706',
+    symbol: '🏖️',
+    textColor: '#000000',
+    walkable: true,
+    description: 'Warm golden sand'
+  }),
+  forest: new TileType({
+    id: 'forest',
+    name: 'Forest',
+    color: '#166534',
+    symbol: '🌲',
+    textColor: '#ffffff',
+    walkable: true,
+    description: 'Dense forest with tall trees'
+  })
+};
+
 export default class Tile {
-  constructor(x, y, type) {
+  public x: number;
+  public y: number;
+  public type: TileType;
+
+  constructor(x: number, y: number, type: TileType) {
     this.x = x;
     this.y = y;
-    this.type = type; // Should be a TileType
+    this.type = type;
   }
 
-  isWalkable() {
+  isWalkable(): boolean {
     return this.type.walkable;
   }
 
-  getColor() {
+  getColor(): string {
     return this.type.color;
   }
 
-  getSymbol() {
+  getSymbol(): string {
     return this.type.symbol;
   }
 
-  getTextColor() {
+  getTextColor(): string {
     return this.type.textColor;
   }
 
-  getDescription() {
+  getDescription(): string {
     return this.type.description;
   }
 } 
