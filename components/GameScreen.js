@@ -15,6 +15,11 @@ export default function GameScreen() {
   const gameRef = useRef(game);
   const gameContainerRef = useRef(null);
 
+  // Utility to update game state from the model
+  const updateGameState = () => {
+    setGameState(gameRef.current.getState());
+  };
+
   useEffect(() => {
     // Mark as client-side rendered
     setIsClient(true);
@@ -22,14 +27,6 @@ export default function GameScreen() {
     const currentGame = gameRef.current;
 
     // Set up event listeners to update state
-    const updateState = () => {
-      console.log('Updating game state from event');
-      const newState = currentGame.getState();
-      console.log('New state:', newState);
-      setGameState(newState);
-    };
-
-    // Listen to all game events
     const eventTypes = [
       'gameStarted', 'gameReset',
       'playerMoved', 'areaChanged', 'playerStatsUpdated', 
@@ -37,7 +34,7 @@ export default function GameScreen() {
     ];
 
     eventTypes.forEach(eventType => {
-      currentGame.addEventListener(eventType, updateState);
+      currentGame.addEventListener(eventType, updateGameState);
     });
 
     // Start the game
@@ -46,7 +43,7 @@ export default function GameScreen() {
     // Cleanup
     return () => {
       eventTypes.forEach(eventType => {
-        currentGame.removeEventListener(eventType, updateState);
+        currentGame.removeEventListener(eventType, updateGameState);
       });
       currentGame.destroy();
     };
@@ -55,89 +52,44 @@ export default function GameScreen() {
   // Global keyboard handler
   useEffect(() => {
     const handleGlobalKeyDown = (event) => {
-      console.log('Key pressed:', event.key, 'Game status:', gameState.status);
-      
       const currentGame = gameRef.current;
-      if (!currentGame) {
-        console.log('No game instance found');
-        return;
-      }
-      
+      if (!currentGame) return;
       // Prevent default behavior for movement keys
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', '1', '2', '3', '4', '6', '7', '8', '9'].includes(event.key)) {
+      if ([
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+        '1', '2', '3', '4', '6', '7', '8', '9'
+      ].includes(event.key)) {
         event.preventDefault();
       }
-      
       switch (event.key) {
         case '8':
         case 'ArrowUp':
-          console.log('Moving up');
-          if (currentGame.movePlayer(0, -1)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(0, -1);
           break;
         case '2':
         case 'ArrowDown':
-          console.log('Moving down');
-          if (currentGame.movePlayer(0, 1)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(0, 1);
           break;
         case '4':
         case 'ArrowLeft':
-          console.log('Moving left');
-          if (currentGame.movePlayer(-1, 0)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(-1, 0);
           break;
         case '6':
         case 'ArrowRight':
-          console.log('Moving right');
-          if (currentGame.movePlayer(1, 0)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(1, 0);
           break;
         case '7':
-          console.log('Moving up-left');
-          if (currentGame.movePlayer(-1, -1)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(-1, -1);
           break;
         case '9':
-          console.log('Moving up-right');
-          if (currentGame.movePlayer(1, -1)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(1, -1);
           break;
         case '1':
-          console.log('Moving down-left');
-          if (currentGame.movePlayer(-1, 1)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(-1, 1);
           break;
         case '3':
-          console.log('Moving down-right');
-          if (currentGame.movePlayer(1, 1)) {
-            const newState = currentGame.getState();
-            console.log('Manual state update after movement:', newState);
-            setGameState(newState);
-          }
+          currentGame.movePlayer(1, 1);
           break;
-
         case 'r':
         case 'R':
           if (event.ctrlKey) {
@@ -162,20 +114,14 @@ export default function GameScreen() {
         default:
           break;
       }
+      updateGameState();
     };
 
-    // Add global keyboard listener
     document.addEventListener('keydown', handleGlobalKeyDown);
-    console.log('Global keyboard listener added');
-
-    // Cleanup
     return () => {
       document.removeEventListener('keydown', handleGlobalKeyDown);
-      console.log('Global keyboard listener removed');
     };
-  }, [gameState.status]);
-
-
+  }, []);
 
   const handleTileHover = (tile, x, y) => {
     if (tile && x >= 0 && y >= 0) {

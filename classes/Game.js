@@ -1,32 +1,46 @@
 import Player from './Player';
 import World from './World';
 
+/**
+ * Game model class
+ *
+ * Properties:
+ * - status: 'ready' | 'playing' | 'gameOver' | 'menu'
+ * - player: Player instance
+ * - world: World instance
+ * - settings: { soundEnabled, musicEnabled, difficulty, autoSave }
+ * - progress: { totalPlayTime, areasDiscovered, enemiesDefeated, itemsCollected, questsCompleted }
+ * - score: number
+ * - currentTime: number
+ * - lastSaveTime: number
+ * - lastUpdate: number
+ *
+ * Methods: startGame, resetGame, saveGame, loadGame, movePlayer, changeArea, updatePlayerStats, addScore, triggerEvent, etc.
+ */
 export default class Game {
   constructor() {
-    this.state = {
-      status: 'ready',
-      player: new Player(),
-      settings: {
-        soundEnabled: true,
-        musicEnabled: true,
-        difficulty: 'normal',
-        autoSave: true
-      },
-      progress: {
-        totalPlayTime: 0,
-        areasDiscovered: 1,
-        enemiesDefeated: 0,
-        itemsCollected: 0,
-        questsCompleted: 0
-      },
-      score: 0,
-      currentTime: Date.now(),
-      lastSaveTime: Date.now(),
-      lastUpdate: 0
-    };
+    this.status = 'ready';
+    this.player = new Player();
     this.world = new World();
+    this.settings = {
+      soundEnabled: true,
+      musicEnabled: true,
+      difficulty: 'normal',
+      autoSave: true
+    };
+    this.progress = {
+      totalPlayTime: 0,
+      areasDiscovered: 1,
+      enemiesDefeated: 0,
+      itemsCollected: 0,
+      questsCompleted: 0
+    };
+    this.score = 0;
+    this.currentTime = Date.now();
+    this.lastSaveTime = Date.now();
+    this.lastUpdate = 0;
     // Ensure player starts on a walkable tile
-    this.state.player.position = this.world.ensurePlayerOnWalkableTile(this.state.player.position);
+    this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
     this.events = [];
     this.listeners = new Map();
     this.initializeGame();
@@ -54,12 +68,22 @@ export default class Game {
 
   // Game State Management
   getState() {
-    // Include world state in the returned state
-    return JSON.parse(JSON.stringify({ ...this.state, gameMap: this.world.gameMap }));
+    // Return a snapshot of the game state for React or serialization
+    return JSON.parse(JSON.stringify({
+      status: this.status,
+      player: this.player,
+      gameMap: this.world.gameMap,
+      settings: this.settings,
+      progress: this.progress,
+      score: this.score,
+      currentTime: this.currentTime,
+      lastSaveTime: this.lastSaveTime,
+      lastUpdate: this.lastUpdate
+    }));
   }
 
   getPlayer() {
-    return { ...this.state.player };
+    return { ...this.player };
   }
 
   getCurrentArea() {
@@ -71,38 +95,35 @@ export default class Game {
   }
 
   startGame() {
-    this.state.status = 'playing';
-    this.state.currentTime = Date.now();
+    this.status = 'playing';
+    this.currentTime = Date.now();
     this.triggerEvent({ type: 'gameStarted', timestamp: Date.now() });
   }
 
   resetGame() {
-    this.state = {
-      ...this.state,
-      status: 'ready',
-      player: new Player(),
-      score: 0,
-      progress: {
-        totalPlayTime: 0,
-        areasDiscovered: 1,
-        enemiesDefeated: 0,
-        itemsCollected: 0,
-        questsCompleted: 0
-      },
-      lastUpdate: 0
+    this.status = 'ready';
+    this.player = new Player();
+    this.score = 0;
+    this.progress = {
+      totalPlayTime: 0,
+      areasDiscovered: 1,
+      enemiesDefeated: 0,
+      itemsCollected: 0,
+      questsCompleted: 0
     };
+    this.lastUpdate = 0;
     this.world = new World();
-    this.state.player.position = this.world.ensurePlayerOnWalkableTile(this.state.player.position);
+    this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
     this.triggerEvent({ type: 'gameReset', timestamp: Date.now() });
   }
 
   movePlayer(dx, dy) {
-    if (this.state.status !== 'playing') {
+    if (this.status !== 'playing') {
       return false;
     }
     const currentArea = this.world.getCurrentArea();
-    const newX = this.state.player.position.x + dx;
-    const newY = this.state.player.position.y + dy;
+    const newX = this.player.position.x + dx;
+    const newY = this.player.position.y + dy;
     if (newX < 0 || newX >= currentArea.type.width || newY < 0 || newY >= currentArea.type.height) {
       return false;
     }
@@ -110,10 +131,10 @@ export default class Game {
     if (!targetTile.walkable) {
       return false;
     }
-    this.state.player.position.x = newX;
-    this.state.player.position.y = newY;
+    this.player.position.x = newX;
+    this.player.position.y = newY;
     currentArea.visited = true;
-    this.state.lastUpdate = Date.now();
+    this.lastUpdate = Date.now();
     this.triggerEvent({ 
       type: 'playerMoved', 
       timestamp: Date.now(),
@@ -125,7 +146,7 @@ export default class Game {
   changeArea(areaId) {
     try {
       const { from, to } = this.world.changeArea(areaId);
-      this.state.lastUpdate = Date.now();
+      this.lastUpdate = Date.now();
       this.triggerEvent({ 
         type: 'areaChanged', 
         timestamp: Date.now(),
@@ -139,8 +160,8 @@ export default class Game {
   }
 
   updatePlayerStats(stats) {
-    this.state.player.stats = { ...this.state.player.stats, ...stats };
-    this.state.lastUpdate = Date.now();
+    this.player.stats = { ...this.player.stats, ...stats };
+    this.lastUpdate = Date.now();
     this.triggerEvent({ 
       type: 'playerStatsUpdated', 
       timestamp: Date.now(),
@@ -149,12 +170,12 @@ export default class Game {
   }
 
   addScore(points) {
-    this.state.score += points;
-    this.state.lastUpdate = Date.now();
+    this.score += points;
+    this.lastUpdate = Date.now();
     this.triggerEvent({ 
       type: 'scoreAdded', 
       timestamp: Date.now(),
-      data: { points, totalScore: this.state.score }
+      data: { points, totalScore: this.score }
     });
   }
 
@@ -192,12 +213,12 @@ export default class Game {
   }
 
   update() {
-    if (this.state.status === 'playing') {
+    if (this.status === 'playing') {
       const now = Date.now();
-      this.state.progress.totalPlayTime += now - this.state.currentTime;
-      this.state.currentTime = now;
-      if (this.state.settings.autoSave && 
-          now - this.state.lastSaveTime > 30000) {
+      this.progress.totalPlayTime += now - this.currentTime;
+      this.currentTime = now;
+      if (this.settings.autoSave && 
+          now - this.lastSaveTime > 30000) {
         this.saveGame();
       }
     }
@@ -207,12 +228,18 @@ export default class Game {
   saveGame() {
     try {
       const saveData = {
-        state: this.state,
+        status: this.status,
+        player: this.player,
         world: this.world.gameMap,
-        timestamp: Date.now()
+        settings: this.settings,
+        progress: this.progress,
+        score: this.score,
+        currentTime: this.currentTime,
+        lastSaveTime: this.lastSaveTime,
+        lastUpdate: this.lastUpdate
       };
       localStorage.setItem('splarg_save', JSON.stringify(saveData));
-      this.state.lastSaveTime = Date.now();
+      this.lastSaveTime = Date.now();
       this.triggerEvent({ type: 'gameSaved', timestamp: Date.now() });
       return true;
     } catch (error) {
@@ -226,8 +253,15 @@ export default class Game {
       const saveData = localStorage.getItem('splarg_save');
       if (saveData) {
         const parsed = JSON.parse(saveData);
-        this.state = parsed.state;
+        this.status = parsed.status;
+        this.player = parsed.player;
         this.world.gameMap = parsed.world;
+        this.settings = parsed.settings;
+        this.progress = parsed.progress;
+        this.score = parsed.score;
+        this.currentTime = parsed.currentTime;
+        this.lastSaveTime = parsed.lastSaveTime;
+        this.lastUpdate = parsed.lastUpdate;
         this.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
         return true;
       }

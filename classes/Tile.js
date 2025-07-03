@@ -1,25 +1,5 @@
-export interface TileType {
-  id: string;
-  name: string;
-  color: string;
-  symbol: string;
-  textColor: string;
-  walkable: boolean;
-  description?: string;
-}
-
-export interface Tile {
-  x: number;
-  y: number;
-  type: TileType;
-}
-
-export interface TilePosition {
-  x: number;
-  y: number;
-}
-
-export const TILE_TYPES: Record<string, TileType> = {
+// TileType and TILE_TYPES
+export const TILE_TYPES = {
   GRASS: {
     id: 'grass',
     name: 'Grass',
@@ -65,6 +45,44 @@ export const TILE_TYPES: Record<string, TileType> = {
     walkable: true,
     description: 'Dense forest with tall trees'
   }
-} as const;
+};
 
-export type TileTypeId = keyof typeof TILE_TYPES; 
+export class TileType {
+  constructor({ id, name, color, symbol, textColor, walkable, description }) {
+    this.id = id;
+    this.name = name;
+    this.color = color;
+    this.symbol = symbol;
+    this.textColor = textColor;
+    this.walkable = walkable;
+    this.description = description;
+  }
+}
+
+export default class Tile {
+  constructor(x, y, type) {
+    this.x = x;
+    this.y = y;
+    this.type = type; // Should be a TileType
+  }
+
+  isWalkable() {
+    return this.type.walkable;
+  }
+
+  getColor() {
+    return this.type.color;
+  }
+
+  getSymbol() {
+    return this.type.symbol;
+  }
+
+  getTextColor() {
+    return this.type.textColor;
+  }
+
+  getDescription() {
+    return this.type.description;
+  }
+} 

@@ -1,4 +1,4 @@
-import { TILE_TYPES } from '../types/Tile';
+import { TILE_TYPES } from './Tile';
 import Area, { AREA_TYPES } from './Area';
 
 export default class World {

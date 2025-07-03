@@ -1,4 +1,4 @@
-import { TILE_TYPES } from '../types/Tile';
+import { TILE_TYPES } from './Tile';
 
 // AreaType definition and AREA_TYPES constant
 export const AREA_TYPES = {
