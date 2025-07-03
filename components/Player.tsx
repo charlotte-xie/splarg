@@ -1,6 +1,12 @@
+import React from 'react';
 import Player from '../classes/Player';
 
-export default function PlayerPanel({ player, onStatsUpdate }) {
+interface PlayerProps {
+  player: any;
+  onStatsUpdate: (stats: any) => void;
+}
+
+export default function PlayerPanel({ player, onStatsUpdate }: PlayerProps) {
   const { position, stats } = player;
 
   const handleStatChange = (statName, value) => {

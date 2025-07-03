@@ -1,3 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Special+Elite&display=swap');
+
+:root {
+  --brass: #b08d57;
+  --copper: #b87333;
+  --bronze: #cd7f32;
+  --iron: #444444;
+  --leather: #6e4b28;
+  --parchment: #f5ecd7;
+  --accent: #e2c275;
+  --shadow: #2d1f0b;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,9 +18,11 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  color: #e0e0e0;
+  font-family: 'Special Elite', 'Courier New', Courier, monospace;
+  background-color: #3b2412;
+  background-image: url('data:image/svg+xml;utf8,<svg width="40" height="120" viewBox="0 0 40 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="120" fill="%233b2412"/><path d="M10 0 Q15 20 10 40 Q5 60 10 80 Q15 100 10 120" stroke="%23543a1a" stroke-width="2" fill="none"/><path d="M30 0 Q25 20 30 40 Q35 60 30 80 Q25 100 30 120" stroke="%23543a1a" stroke-width="2" fill="none"/><ellipse cx="20" cy="60" rx="8" ry="40" fill="none" stroke="%23543a1a" stroke-width="1.5"/></svg>');
+  background-repeat: repeat;
+  color: var(--parchment);
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -18,6 +33,7 @@ body {
   min-height: 100vh;
   padding: 20px;
   gap: 20px;
+  background: repeating-linear-gradient(135deg, rgba(176,141,87,0.05) 0 10px, transparent 10px 20px);
 }
 
 .game-header {
@@ -25,16 +41,19 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.3);
+  background: linear-gradient(120deg, var(--brass) 60%, var(--copper) 100%);
   border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px 0 rgba(68, 44, 15, 0.25);
+  border: 2px solid var(--iron);
+  font-family: 'UnifrakturCook', serif;
 }
 
 .game-header h1 {
   font-size: 2.5rem;
-  color: #c299fc;
-  text-shadow: 0 0 20px rgba(194, 153, 252, 0.5);
+  color: var(--accent);
+  text-shadow: 2px 2px 0 var(--shadow), 0 0 20px var(--brass);
+  letter-spacing: 2px;
+  font-family: 'UnifrakturCook', serif;
 }
 
 .game-status {
@@ -49,42 +68,47 @@ body {
   font-weight: bold;
   text-transform: uppercase;
   font-size: 0.9rem;
+  border: 2px solid var(--iron);
+  background: linear-gradient(90deg, var(--brass) 60%, var(--copper) 100%);
+  color: var(--iron);
+  box-shadow: 0 2px 6px 0 rgba(68, 44, 15, 0.15);
 }
 
 .status-indicator.ready {
-  background: #4ade80;
-  color: #064e3b;
+  background: linear-gradient(90deg, var(--accent) 60%, var(--brass) 100%);
+  color: var(--iron);
 }
 
 .status-indicator.playing {
-  background: #60a5fa;
-  color: #1e3a8a;
+  background: linear-gradient(90deg, var(--bronze) 60%, var(--copper) 100%);
+  color: var(--parchment);
 }
 
 .status-indicator.gameOver {
-  background: #f87171;
-  color: #7f1d1d;
+  background: linear-gradient(90deg, #7c2f1b 60%, var(--iron) 100%);
+  color: var(--accent);
 }
 
 .score, .play-time, .keyboard-indicator {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #c299fc;
+  color: var(--accent);
+  font-family: 'Special Elite', 'Courier New', Courier, monospace;
 }
 
 .keyboard-indicator {
   padding: 4px 8px;
-  background: rgba(194, 153, 252, 0.1);
+  background: rgba(176, 141, 87, 0.15);
   border-radius: 6px;
-  border: 1px solid rgba(194, 153, 252, 0.3);
+  border: 1.5px dashed var(--brass);
 }
 
 .debug-info {
   padding: 4px 8px;
-  background: rgba(255, 255, 0, 0.1);
+  background: rgba(205, 127, 50, 0.1);
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 0, 0.3);
-  color: #ffff00;
+  border: 1px solid var(--bronze);
+  color: var(--bronze);
   font-size: 0.9rem;
 }
 
@@ -97,11 +121,11 @@ body {
 
 .player-panel {
   width: 300px;
-  background: rgba(0, 0, 0, 0.4);
+  background: linear-gradient(120deg, var(--leather) 60%, var(--iron) 100%);
   border-radius: 12px;
   padding: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px 0 rgba(68, 44, 15, 0.25);
+  border: 2px solid var(--brass);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -111,19 +135,20 @@ body {
 
 .player-header {
   text-align: center;
-  border-bottom: 2px solid #c299fc;
+  border-bottom: 2px solid var(--brass);
   padding-bottom: 15px;
 }
 
 .player-header h3 {
-  color: #c299fc;
+  color: var(--accent);
   font-size: 1.5rem;
   margin-bottom: 10px;
+  font-family: 'UnifrakturCook', serif;
 }
 
 .player-position {
   font-size: 0.9rem;
-  color: #a0a0a0;
+  color: var(--parchment);
 }
 
 .stats-section, .attributes-section, .resources-section {
@@ -133,9 +158,10 @@ body {
 }
 
 .stats-section h4, .attributes-section h4 {
-  color: #c299fc;
+  color: var(--accent);
   font-size: 1.2rem;
   margin-bottom: 10px;
+  font-family: 'UnifrakturCook', serif;
 }
 
 .stat-row {
@@ -143,35 +169,39 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(176, 141, 87, 0.08);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1.5px solid var(--brass);
+  box-shadow: 0 1px 2px 0 rgba(68, 44, 15, 0.08);
 }
 
 .stat-label {
   font-weight: 500;
-  color: #e0e0e0;
+  color: var(--parchment);
 }
 
 .stat-value {
   font-weight: bold;
-  color: #c299fc;
+  color: var(--accent);
 }
 
 .stat-button {
-  background: #c299fc;
-  color: #1a1a2e;
-  border: none;
+  background: var(--brass);
+  color: var(--iron);
+  border: 1.5px solid var(--iron);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Special Elite', 'Courier New', Courier, monospace;
+  box-shadow: 0 1px 2px 0 rgba(68, 44, 15, 0.12);
 }
 
 .stat-button:hover:not(:disabled) {
-  background: #d4b4ff;
-  transform: translateY(-1px);
+  background: var(--accent);
+  color: var(--shadow);
+  transform: translateY(-1px) scale(1.05);
 }
 
 .stat-button:disabled {
@@ -183,15 +213,16 @@ body {
 .experience-bar {
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(176, 141, 87, 0.15);
   border-radius: 4px;
   overflow: hidden;
   margin: 5px 0;
+  border: 1px solid var(--brass);
 }
 
 .experience-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4ecdc4, #44a08d);
+  background: linear-gradient(90deg, var(--copper), var(--brass));
   transition: width 0.3s ease;
 }
 

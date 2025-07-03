@@ -1,7 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, MutableRefObject } from 'react';
 import Player from './Player';
 import TileMap from './TileMap';
+import GameWindow from './GameWindow';
 import Game from '../classes/Game';
+
+interface HoveredTile {
+  tile: any;
+  x: number;
+  y: number;
+}
 
 export default function GameScreen() {
   const [game] = useState(() => {
@@ -9,11 +16,11 @@ export default function GameScreen() {
     console.log('Game created, initial state:', newGame.getState());
     return newGame;
   });
-  const [gameState, setGameState] = useState(game.getState());
-  const [hoveredTile, setHoveredTile] = useState(null);
+  const [gameState, setGameState] = useState<any>(game.getState());
+  const [hoveredTile, setHoveredTile] = useState<HoveredTile | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const gameRef = useRef(game);
-  const gameContainerRef = useRef(null);
+  const gameRef = useRef<Game>(game);
+  const gameContainerRef = useRef<HTMLDivElement>(null);
 
   // Utility to update game state from the model
   const updateGameState = () => {
@@ -51,7 +58,7 @@ export default function GameScreen() {
 
   // Global keyboard handler
   useEffect(() => {
-    const handleGlobalKeyDown = (event) => {
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
       const currentGame = gameRef.current;
       if (!currentGame) return;
       // Prevent default behavior for movement keys
@@ -123,7 +130,7 @@ export default function GameScreen() {
     };
   }, []);
 
-  const handleTileHover = (tile, x, y) => {
+  const handleTileHover = (tile: any, x: number, y: number) => {
     if (tile && x >= 0 && y >= 0) {
       setHoveredTile({ tile, x, y });
     } else {
@@ -131,21 +138,20 @@ export default function GameScreen() {
     }
   };
 
-  const handleAreaChange = (areaId) => {
+  const handleAreaChange = (areaId: string) => {
     gameRef.current.changeArea(areaId);
   };
 
   // Use the Area model instance directly from the Game class
   const currentArea = gameRef.current.world.getCurrentArea();
   const availableAreas = Object.values(gameState.gameMap.areas)
-    .filter(area => area.discovered)
-    .map(area => area.id);
+    .filter((area: any) => area.discovered)
+    .map((area: any) => area.id);
 
   return (
     <div 
       ref={gameContainerRef}
       className="game-screen"
-      style={{ background: currentArea?.type.background || '#1a1a2e' }}
     >
       <div className="game-header">
         <h1>Splarg - {currentArea?.type.name || 'Unknown Area'}</h1>
@@ -169,21 +175,22 @@ export default function GameScreen() {
       <div className="game-content">
         <Player 
           player={gameState.player}
-          onStatsUpdate={(stats) => gameRef.current.updatePlayerStats(stats)}
+          onStatsUpdate={(stats: any) => gameRef.current.updatePlayerStats(stats)}
         />
         
         <div className="game-main">
-          <TileMap
-            area={currentArea}
-            playerPosition={gameState.player.position}
-            onTileHover={handleTileHover}
-            hoveredTile={hoveredTile}
-          />
-          
+          <GameWindow>
+            <TileMap
+              area={currentArea}
+              playerPosition={gameState.player.position}
+              onTileHover={handleTileHover}
+              hoveredTile={hoveredTile}
+            />
+          </GameWindow>
           <div className="area-selector">
             <h3>Available Areas</h3>
             <div className="area-list">
-              {availableAreas.map(areaId => {
+              {availableAreas.map((areaId: string) => {
                 const area = gameState.gameMap.areas[areaId];
                 const isCurrent = areaId === gameState.gameMap.currentAreaId;
                 return (

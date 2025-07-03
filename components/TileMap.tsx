@@ -1,7 +1,14 @@
 import { useRef, useEffect } from 'react';
 
-export default function TileMap({ area, playerPosition, onTileHover, hoveredTile }) {
-  const canvasRef = useRef(null);
+interface TileMapProps {
+  area: any;
+  playerPosition: any;
+  onTileHover: (tile: any, x: number, y: number) => void;
+  hoveredTile: any;
+}
+
+export default function TileMap({ area, playerPosition, onTileHover, hoveredTile }: TileMapProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const TILE_SIZE = 20;
 
   useEffect(() => {
@@ -13,6 +20,7 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
     if (width === 0 || height === 0) return;
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     canvas.width = width * TILE_SIZE;
     canvas.height = height * TILE_SIZE;
 
@@ -79,7 +87,7 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
 
   }, [area, playerPosition, hoveredTile]);
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas || !area) return;
 

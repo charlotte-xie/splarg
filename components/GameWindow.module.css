@@ -1,0 +1,17 @@
+.gameWindow {
+  background: rgba(59, 36, 18, 0.92);
+  border: 2.5px solid var(--brass, #b08d57);
+  border-radius: 18px;
+  box-shadow: 0 6px 32px 0 rgba(44, 28, 8, 0.25), 0 0 0 4px rgba(176, 141, 87, 0.08);
+  padding: 24px;
+  max-width: 100%;
+  max-height: 70vh;
+  overflow: auto;
+  margin: 0 auto;
+  position: relative;
+  /* Optional: subtle wood grain overlay */
+  background-image:
+    repeating-linear-gradient(135deg, rgba(176,141,87,0.08) 0 10px, transparent 10px 20px),
+    url('data:image/svg+xml;utf8,<svg width="40" height="120" viewBox="0 0 40 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="120" fill="%233b2412"/><path d="M10 0 Q15 20 10 40 Q5 60 10 80 Q15 100 10 120" stroke="%23543a1a" stroke-width="2" fill="none"/><path d="M30 0 Q25 20 30 40 Q35 60 30 80 Q25 100 30 120" stroke="%23543a1a" stroke-width="2" fill="none"/><ellipse cx="20" cy="60" rx="8" ry="40" fill="none" stroke="%23543a1a" stroke-width="1.5"/></svg>');
+  background-blend-mode: multiply;
+} 
