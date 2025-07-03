@@ -166,8 +166,8 @@ export default class Game {
     if (newX < 0 || newX >= currentArea.type.width || newY < 0 || newY >= currentArea.type.height) {
       return false;
     }
-    const targetTile = this.world.getTileAt(newX, newY);
-    if (!targetTile.walkable) {
+    const targetTile = currentArea.getTile(newX, newY);
+    if (!targetTile || !targetTile.isWalkable()) {
       return false;
     }
     this.player.position.x = newX;

@@ -89,7 +89,7 @@ export default class Tile {
     return this.type.walkable;
   }
 
-  getColor(): string {
+  getColour(): string {
     return this.type.color;
   }
 
@@ -97,7 +97,7 @@ export default class Tile {
     return this.type.symbol;
   }
 
-  getTextColor(): string {
+  getTextColour(): string {
     return this.type.textColor;
   }
 

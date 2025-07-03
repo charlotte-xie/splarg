@@ -31,11 +31,12 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const tile = area.getTile(x, y);
+        if (!tile) continue; // <-- Add this line
         const tileX = x * TILE_SIZE;
         const tileY = y * TILE_SIZE;
 
         // Draw tile background
-        ctx.fillStyle = tile.color;
+        ctx.fillStyle = tile.getColour();
         ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
 
         // Draw tile border
@@ -44,11 +45,11 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
         ctx.strokeRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
 
         // Draw tile symbol
-        ctx.fillStyle = tile.textColor;
+        ctx.fillStyle = tile.getTextColour();
         ctx.font = '14px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(tile.symbol, tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2);
+        ctx.fillText(tile.getSymbol(), tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2);
       }
     }
 

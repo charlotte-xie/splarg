@@ -1,4 +1,4 @@
-import { TILE_TYPES } from './Tile';
+import Tile from './Tile';
 
 // AreaType definition and AREA_TYPES constant
 export const AREA_TYPES = {
@@ -98,7 +98,7 @@ export default class Area {
     this.discovered = false;
   }
 
-  getTile(x: number, y: number): any {
+  getTile(x: number, y: number): Tile | null {
     if (
       x < 0 ||
       y < 0 ||
@@ -112,7 +112,8 @@ export default class Area {
 
   isWalkable(x: number, y: number): boolean {
     const tile = this.getTile(x, y);
-    return tile && tile.walkable;
+    if (!tile) return false;
+    return tile.type.walkable;
   }
 
   getWidth(): number {
