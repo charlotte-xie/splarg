@@ -1,5 +1,31 @@
 import Player from './Player';
 import World from './World';
+import Area from './Area';
+
+interface GameSettings {
+  soundEnabled: boolean;
+  musicEnabled: boolean;
+  difficulty: string;
+  autoSave: boolean;
+}
+
+interface GameProgress {
+  totalPlayTime: number;
+  areasDiscovered: number;
+  enemiesDefeated: number;
+  itemsCollected: number;
+  questsCompleted: number;
+}
+
+type GameStatus = 'ready' | 'playing' | 'gameOver' | 'menu';
+
+type GameEvent = {
+  type: string;
+  timestamp: number;
+  data?: any;
+};
+
+type GameEventCallback = (event: GameEvent) => void;
 
 /**
  * Game model class
@@ -18,6 +44,19 @@ import World from './World';
  * Methods: startGame, resetGame, saveGame, loadGame, movePlayer, changeArea, updatePlayerStats, addScore, triggerEvent, etc.
  */
 export default class Game {
+  public status: GameStatus;
+  public player: Player;
+  public world: World;
+  public settings: GameSettings;
+  public progress: GameProgress;
+  public score: number;
+  public currentTime: number;
+  public lastSaveTime: number;
+  public lastUpdate: number;
+  public events: GameEvent[];
+  public listeners: Map<string, GameEventCallback[]>;
+  private gameLoop?: NodeJS.Timeout;
+
   constructor() {
     this.status = 'ready';
     this.player = new Player();
@@ -46,12 +85,12 @@ export default class Game {
     this.initializeGame();
   }
 
-  initializeGame() {
+  initializeGame(): void {
     this.setupEventListeners();
     this.startGameLoop();
   }
 
-  setupEventListeners() {
+  setupEventListeners(): void {
     this.addEventListener('playerMoved', (event) => {
       this.addScore(1);
     });
@@ -67,7 +106,7 @@ export default class Game {
   }
 
   // Game State Management
-  getState() {
+  getState(): any {
     // Return a snapshot of the game state for React or serialization
     return JSON.parse(JSON.stringify({
       status: this.status,
@@ -82,25 +121,25 @@ export default class Game {
     }));
   }
 
-  getPlayer() {
-    return { ...this.player };
+  getPlayer(): Player {
+    return this.player;
   }
 
-  getCurrentArea() {
+  getCurrentArea(): Area {
     return this.world.getCurrentArea();
   }
 
-  getPlayerArea() {
+  getPlayerArea(): Area {
     return this.world.getPlayerArea();
   }
 
-  startGame() {
+  startGame(): void {
     this.status = 'playing';
     this.currentTime = Date.now();
     this.triggerEvent({ type: 'gameStarted', timestamp: Date.now() });
   }
 
-  resetGame() {
+  resetGame(): void {
     this.status = 'ready';
     this.player = new Player();
     this.score = 0;
@@ -117,7 +156,7 @@ export default class Game {
     this.triggerEvent({ type: 'gameReset', timestamp: Date.now() });
   }
 
-  movePlayer(dx, dy) {
+  movePlayer(dx: number, dy: number): boolean {
     if (this.status !== 'playing') {
       return false;
     }
@@ -143,7 +182,7 @@ export default class Game {
     return true;
   }
 
-  changeArea(areaId) {
+  changeArea(areaId: string): boolean {
     try {
       const { from, to } = this.world.changeArea(areaId);
       this.lastUpdate = Date.now();
@@ -159,7 +198,7 @@ export default class Game {
     }
   }
 
-  updatePlayerStats(stats) {
+  updatePlayerStats(stats: any): void {
     this.player.stats = { ...this.player.stats, ...stats };
     this.lastUpdate = Date.now();
     this.triggerEvent({ 
@@ -169,7 +208,7 @@ export default class Game {
     });
   }
 
-  addScore(points) {
+  addScore(points: number): void {
     this.score += points;
     this.lastUpdate = Date.now();
     this.triggerEvent({ 
@@ -180,39 +219,36 @@ export default class Game {
   }
 
   // Event System
-  triggerEvent(event) {
+  triggerEvent(event: GameEvent): void {
     this.events.push(event);
     if (this.listeners.has(event.type)) {
-      const callbacks = this.listeners.get(event.type);
+      const callbacks = this.listeners.get(event.type)!;
       callbacks.forEach(callback => callback(event));
     }
   }
 
-  addEventListener(eventType, callback) {
+  addEventListener(eventType: string, callback: GameEventCallback): void {
     if (!this.listeners.has(eventType)) {
       this.listeners.set(eventType, []);
     }
-    this.listeners.get(eventType).push(callback);
+    this.listeners.get(eventType)!.push(callback);
   }
 
-  removeEventListener(eventType, callback) {
+  removeEventListener(eventType: string, callback: GameEventCallback): void {
     if (this.listeners.has(eventType)) {
-      const callbacks = this.listeners.get(eventType);
-      const index = callbacks.indexOf(callback);
-      if (index > -1) {
-        callbacks.splice(index, 1);
-      }
+      const callbacks = this.listeners.get(eventType)!;
+      this.listeners.set(eventType, callbacks.filter(cb => cb !== callback));
     }
   }
 
   // Game Loop
-  startGameLoop() {
+  startGameLoop(): void {
     this.gameLoop = setInterval(() => {
       this.update();
     }, 1000 / 60);
   }
 
-  update() {
+  update(): void {
     if (this.status === 'playing') {
       const now = Date.now();
       this.progress.totalPlayTime += now - this.currentTime;
@@ -225,9 +261,9 @@ export default class Game {
   }
 
   // Save/Load System
-  saveGame() {
+  saveGame(): void {
     try {
-      const saveData = {
+      const saveData = JSON.stringify({
         status: this.status,
         player: this.player,
         world: this.world.gameMap,
@@ -237,56 +273,50 @@ export default class Game {
         currentTime: this.currentTime,
         lastSaveTime: this.lastSaveTime,
         lastUpdate: this.lastUpdate
-      };
-      localStorage.setItem('splarg_save', JSON.stringify(saveData));
+      });
+      localStorage.setItem('splarg_save', saveData);
       this.lastSaveTime = Date.now();
       this.triggerEvent({ type: 'gameSaved', timestamp: Date.now() });
-      return true;
-    } catch (error) {
-      console.error('Failed to save game:', error);
-      return false;
+    } catch (e) {
+      console.error('Failed to save game:', e);
     }
   }
 
-  loadGame() {
+  loadGame(): void {
     try {
       const saveData = localStorage.getItem('splarg_save');
-      if (saveData) {
-        const parsed = JSON.parse(saveData);
-        this.status = parsed.status;
-        this.player = parsed.player;
-        this.world.gameMap = parsed.world;
-        this.settings = parsed.settings;
-        this.progress = parsed.progress;
-        this.score = parsed.score;
-        this.currentTime = parsed.currentTime;
-        this.lastSaveTime = parsed.lastSaveTime;
-        this.lastUpdate = parsed.lastUpdate;
-        this.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Failed to load game:', error);
-      return false;
+      if (!saveData) return;
+      const parsed = JSON.parse(saveData);
+      this.status = parsed.status;
+      this.player = parsed.player;
+      this.world.gameMap = parsed.world;
+      this.settings = parsed.settings;
+      this.progress = parsed.progress;
+      this.score = parsed.score;
+      this.currentTime = parsed.currentTime;
+      this.lastSaveTime = parsed.lastSaveTime;
+      this.lastUpdate = parsed.lastUpdate;
+      this.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
+    } catch (e) {
+      console.error('Failed to load game:', e);
     }
   }
 
   // Utility Methods
-  getTileAt(x, y) {
+  getTileAt(x: number, y: number): any {
     return this.world.getTileAt(x, y);
   }
 
-  isPositionWalkable(x, y) {
+  isPositionWalkable(x: number, y: number): boolean {
     return this.world.isPositionWalkable(x, y);
   }
 
-  getAvailableAreas() {
+  getAvailableAreas(): any[] {
     return this.world.getAvailableAreas();
   }
 
   // Cleanup
-  destroy() {
+  destroy(): void {
     if (this.gameLoop) {
       clearInterval(this.gameLoop);
     }

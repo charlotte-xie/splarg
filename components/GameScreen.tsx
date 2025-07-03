@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Player from './Player';
 import TileMap from './TileMap';
 import GameWindow from './GameWindow';
@@ -11,57 +11,38 @@ interface HoveredTile {
 }
 
 export default function GameScreen() {
-  const [game] = useState(() => {
-    const newGame = new Game();
-    console.log('Game created, initial state:', newGame.getState());
-    return newGame;
-  });
-  const [gameState, setGameState] = useState<any>(game.getState());
+  const gameRef = useRef<Game>(new Game());
+  const [version, setVersion] = useState(0);
   const [hoveredTile, setHoveredTile] = useState<HoveredTile | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const gameRef = useRef<Game>(game);
   const gameContainerRef = useRef<HTMLDivElement>(null);
 
-  // Utility to update game state from the model
-  const updateGameState = () => {
-    setGameState(gameRef.current.getState());
-  };
+  // Utility to trigger a re-render after mutating the game
+  const updateGame = () => setVersion(v => v + 1);
 
   useEffect(() => {
-    // Mark as client-side rendered
     setIsClient(true);
-    
-    const currentGame = gameRef.current;
-
-    // Set up event listeners to update state
+    const game = gameRef.current;
     const eventTypes = [
       'gameStarted', 'gameReset',
       'playerMoved', 'areaChanged', 'playerStatsUpdated', 
       'scoreAdded', 'gameSaved', 'gameLoaded'
     ];
-
     eventTypes.forEach(eventType => {
-      currentGame.addEventListener(eventType, updateGameState);
+      game.addEventListener(eventType, updateGame);
     });
-
-    // Start the game
-    currentGame.startGame();
-
-    // Cleanup
+    game.startGame();
     return () => {
       eventTypes.forEach(eventType => {
-        currentGame.removeEventListener(eventType, updateGameState);
+        game.removeEventListener(eventType, updateGame);
       });
-      currentGame.destroy();
+      game.destroy();
     };
   }, []);
 
-  // Global keyboard handler
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      const currentGame = gameRef.current;
-      if (!currentGame) return;
-      // Prevent default behavior for movement keys
+      const game = gameRef.current;
       if ([
         'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
         '1', '2', '3', '4', '6', '7', '8', '9'
@@ -71,59 +52,58 @@ export default function GameScreen() {
       switch (event.key) {
         case '8':
         case 'ArrowUp':
-          currentGame.movePlayer(0, -1);
+          game.movePlayer(0, -1);
           break;
         case '2':
         case 'ArrowDown':
-          currentGame.movePlayer(0, 1);
+          game.movePlayer(0, 1);
           break;
         case '4':
         case 'ArrowLeft':
-          currentGame.movePlayer(-1, 0);
+          game.movePlayer(-1, 0);
           break;
         case '6':
         case 'ArrowRight':
-          currentGame.movePlayer(1, 0);
+          game.movePlayer(1, 0);
           break;
         case '7':
-          currentGame.movePlayer(-1, -1);
+          game.movePlayer(-1, -1);
           break;
         case '9':
-          currentGame.movePlayer(1, -1);
+          game.movePlayer(1, -1);
           break;
         case '1':
-          currentGame.movePlayer(-1, 1);
+          game.movePlayer(-1, 1);
           break;
         case '3':
-          currentGame.movePlayer(1, 1);
+          game.movePlayer(1, 1);
           break;
         case 'r':
         case 'R':
           if (event.ctrlKey) {
             event.preventDefault();
-            currentGame.resetGame();
+            game.resetGame();
           }
           break;
         case 's':
         case 'S':
           if (event.ctrlKey) {
             event.preventDefault();
-            currentGame.saveGame();
+            game.saveGame();
           }
           break;
         case 'l':
         case 'L':
           if (event.ctrlKey) {
             event.preventDefault();
-            currentGame.loadGame();
+            game.loadGame();
           }
           break;
         default:
           break;
       }
-      updateGameState();
+      updateGame();
     };
-
     document.addEventListener('keydown', handleGlobalKeyDown);
     return () => {
       document.removeEventListener('keydown', handleGlobalKeyDown);
@@ -140,13 +120,15 @@ export default function GameScreen() {
 
   const handleAreaChange = (areaId: string) => {
     gameRef.current.changeArea(areaId);
+    updateGame();
   };
 
-  // Use the Area model instance directly from the Game class
-  const currentArea = gameRef.current.world.getCurrentArea();
-  const availableAreas = Object.values(gameState.gameMap.areas)
+  const game = gameRef.current;
+  const currentArea = game.world.getCurrentArea();
+  const availableAreas = Object.values(game.getState().gameMap.areas)
     .filter((area: any) => area.discovered)
     .map((area: any) => area.id);
+  const gameState = game.getState();
 
   return (
     <div 
@@ -171,13 +153,11 @@ export default function GameScreen() {
           </span>
         </div>
       </div>
-
       <div className="game-content">
         <Player 
           player={gameState.player}
-          onStatsUpdate={(stats: any) => gameRef.current.updatePlayerStats(stats)}
+          onStatsUpdate={(stats: any) => { game.updatePlayerStats(stats); updateGame(); }}
         />
-        
         <div className="game-main">
           <GameWindow>
             <TileMap
@@ -211,26 +191,15 @@ export default function GameScreen() {
           </div>
         </div>
       </div>
-
       <div className="game-controls">
         <h3>Controls</h3>
-                  <div className="controls-grid">
-            <div>Movement: Numpad (1-9) or Arrow Keys</div>
-            <div>Reset Game: Ctrl+R</div>
-            <div>Save Game: Ctrl+S</div>
-            <div>Load Game: Ctrl+L</div>
-          </div>
-      </div>
-
-      {hoveredTile && hoveredTile.tile && (
-        <div className="tile-info">
-          <h4>Tile Info</h4>
-          <p>Position: ({hoveredTile.x}, {hoveredTile.y})</p>
-          <p>Type: {hoveredTile.tile.name}</p>
-          <p>Walkable: {hoveredTile.tile.walkable ? 'Yes' : 'No'}</p>
-          <p>Description: {hoveredTile.tile.description}</p>
+        <div className="controls-grid">
+          <div>Movement: Numpad (1-9) or Arrow Keys</div>
+          <div>Reset Game: Ctrl+R</div>
+          <div>Save Game: Ctrl+S</div>
+          <div>Load Game: Ctrl+L</div>
         </div>
-      )}
+      </div>
     </div>
   );
 } 

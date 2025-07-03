@@ -1,7 +1,15 @@
 import { TILE_TYPES } from './Tile';
 import Area, { AREA_TYPES } from './Area';
 
+interface GameMap {
+  areas: { [key: string]: Area };
+  currentAreaId: string;
+  playerAreaId: string;
+}
+
 export default class World {
+  public gameMap: GameMap;
+
   constructor() {
     this.gameMap = {
       areas: {},
@@ -11,7 +19,7 @@ export default class World {
     this.initializeAreas();
   }
 
-  initializeAreas() {
+  initializeAreas(): void {
     this.createArea('grasslands', AREA_TYPES.GRASSLANDS);
     this.createArea('forest', AREA_TYPES.FOREST);
     this.createArea('desert', AREA_TYPES.DESERT);
@@ -22,12 +30,12 @@ export default class World {
     this.gameMap.areas['grasslands'].discovered = true;
   }
 
-  createArea(areaId, areaType) {
+  createArea(areaId: string, areaType: any): void {
     const tiles = this.generateAreaTiles(areaType);
     this.gameMap.areas[areaId] = new Area(areaId, areaType, tiles);
   }
 
-  generateAreaTiles(areaType) {
+  generateAreaTiles(areaType: any): any[][] {
     const tiles = [];
     const { width, height } = areaType;
     for (let y = 0; y < height; y++) {
@@ -39,7 +47,7 @@ export default class World {
     return tiles;
   }
 
-  getTileForArea(areaType, x, y, width, height) {
+  getTileForArea(areaType: any, x: number, y: number, width: number, height: number): any {
     if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
       return TILE_TYPES.STONE;
     }
@@ -59,7 +67,7 @@ export default class World {
     }
   }
 
-  generateGrasslandsTile(x, y) {
+  generateGrasslandsTile(x: number, y: number): any {
     if (x > 5 && x < 20 && y > 5 && y < 15) {
       return TILE_TYPES.WATER;
     } else if (x > 15 && x < 23 && y > 2 && y < 8) {
@@ -70,43 +78,43 @@ export default class World {
     return TILE_TYPES.GRASS;
   }
 
-  generateForestTile(x, y) {
+  generateForestTile(x: number, y: number): any {
     if (Math.random() < 0.8) {
       return TILE_TYPES.FOREST;
     }
     return TILE_TYPES.GRASS;
   }
 
-  generateDesertTile(x, y) {
+  generateDesertTile(x: number, y: number): any {
     if (Math.random() < 0.9) {
       return TILE_TYPES.SAND;
     }
     return TILE_TYPES.STONE;
   }
 
-  generateWaterTile(x, y) {
+  generateWaterTile(x: number, y: number): any {
     if (Math.random() < 0.7) {
       return TILE_TYPES.WATER;
     }
     return TILE_TYPES.SAND;
   }
 
-  generateCaveTile(x, y) {
+  generateCaveTile(x: number, y: number): any {
     if (Math.random() < 0.8) {
       return TILE_TYPES.STONE;
     }
     return TILE_TYPES.GRASS;
   }
 
-  getCurrentArea() {
+  getCurrentArea(): Area {
     return this.gameMap.areas[this.gameMap.currentAreaId];
   }
 
-  getPlayerArea() {
+  getPlayerArea(): Area {
     return this.gameMap.areas[this.gameMap.playerAreaId];
   }
 
-  changeArea(areaId) {
+  changeArea(areaId: string): { from: string; to: string } {
     if (!this.gameMap.areas[areaId]) {
       throw new Error(`Area ${areaId} does not exist`);
     }
@@ -118,23 +126,23 @@ export default class World {
     return { from: oldAreaId, to: areaId };
   }
 
-  getTileAt(x, y) {
+  getTileAt(x: number, y: number): any {
     const currentArea = this.getCurrentArea();
     return currentArea.getTile(x, y);
   }
 
-  isPositionWalkable(x, y) {
+  isPositionWalkable(x: number, y: number): boolean {
     const currentArea = this.getCurrentArea();
     return currentArea.isWalkable(x, y);
   }
 
-  getAvailableAreas() {
+  getAvailableAreas(): string[] {
     return Object.values(this.gameMap.areas)
-      .filter(area => area.discovered)
-      .map(area => area.id);
+      .filter((area: any) => area.discovered)
+      .map((area: any) => area.id);
   }
 
-  ensurePlayerOnWalkableTile(playerPosition) {
+  ensurePlayerOnWalkableTile(playerPosition: { x: number; y: number }): { x: number; y: number } {
     const currentArea = this.getCurrentArea();
     if (!currentArea) return playerPosition;
     const currentTile = currentArea.getTile(playerPosition.x, playerPosition.y);

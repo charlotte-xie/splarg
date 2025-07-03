@@ -60,7 +60,17 @@ export const AREA_TYPES = {
 };
 
 export class AreaType {
-  constructor({ id, name, description, width, height, background, music, enemies, items }) {
+  public id: string;
+  public name: string;
+  public description: string;
+  public width: number;
+  public height: number;
+  public background: string;
+  public music: string;
+  public enemies: string[];
+  public items: string[];
+
+  constructor({ id, name, description, width, height, background, music, enemies, items }: any) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -74,7 +84,13 @@ export class AreaType {
 }
 
 export default class Area {
-  constructor(id, type, tiles) {
+  public id: string;
+  public type: AreaType;
+  public tiles: any[][];
+  public visited: boolean;
+  public discovered: boolean;
+
+  constructor(id: string, type: AreaType, tiles: any[][]) {
     this.id = id;
     this.type = type;
     this.tiles = tiles; // 2D array of TileType
@@ -82,7 +98,7 @@ export default class Area {
     this.discovered = false;
   }
 
-  getTile(x, y) {
+  getTile(x: number, y: number): any {
     if (
       x < 0 ||
       y < 0 ||
@@ -94,16 +110,24 @@ export default class Area {
     return this.tiles[y][x];
   }
 
-  isWalkable(x, y) {
+  isWalkable(x: number, y: number): boolean {
     const tile = this.getTile(x, y);
     return tile && tile.walkable;
   }
 
-  getWidth() {
+  getWidth(): number {
     return this.tiles[0]?.length || 0;
   }
 
-  getHeight() {
+  getHeight(): number {
     return this.tiles.length;
+  }
+
+  get width(): number {
+    return this.type.width;
+  }
+
+  get height(): number {
+    return this.type.height;
   }
 } 
