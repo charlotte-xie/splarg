@@ -1,3 +1,5 @@
+import Item from './Item';
+
 export class TileType {
   public id: string;
   public name: string;
@@ -78,11 +80,13 @@ export default class Tile {
   public x: number;
   public y: number;
   public type: TileType;
+  public items: Item[];
 
   constructor(x: number, y: number, type: TileType) {
     this.x = x;
     this.y = y;
     this.type = type;
+    this.items = [];
   }
 
   isWalkable(): boolean {
@@ -103,5 +107,18 @@ export default class Tile {
 
   getDescription(): string {
     return this.type.description;
+  }
+
+  addItem(item: Item): void {
+    if (item.canStack()) {
+      const existing = this.items.find(
+        (i) => i !== item && i.type.id === item.type.id
+      );
+      if (existing) {
+        existing.number += item.number;
+        return;
+      }
+    }
+    this.items.push(item);
   }
 } 
