@@ -7,6 +7,7 @@ interface InventorySlotProps {
   className?: string;
   onClick?: () => void;
   selected?: boolean;
+  style?: React.CSSProperties;
 }
 
 export default function InventorySlot({ 
@@ -14,7 +15,8 @@ export default function InventorySlot({
   size = 48, 
   className = "",
   onClick,
-  selected = false
+  selected = false,
+  style = {}
 }: InventorySlotProps) {
   const handleClick = () => {
     if (onClick) {
@@ -39,7 +41,8 @@ export default function InventorySlot({
         cursor: onClick ? 'pointer' : 'default',
         transition: 'all 0.2s ease',
         fontSize: size * 0.4,
-        color: '#e2e8f0'
+        color: '#e2e8f0',
+        ...style
       }}
     >
       {item ? (

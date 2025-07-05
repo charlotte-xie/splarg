@@ -13,7 +13,20 @@ export const WEAR_TYPES = {
   feet: 'feet'
 } as const;
 
+// Wear layers
+export const WEAR_LAYERS = {
+  outer: 'outer',
+  inner: 'inner',
+  under: 'under'
+} as const;
+
 export type WearType = typeof WEAR_TYPES[keyof typeof WEAR_TYPES];
+export type WearLayer = typeof WEAR_LAYERS[keyof typeof WEAR_LAYERS];
+
+// Helper function to create compound wear locations
+export function createWearLocation(area: WearType, layer: WearLayer): string {
+  return `${area}-${layer}`;
+}
 
 export class ItemType {
   public id: string;
@@ -22,7 +35,7 @@ export class ItemType {
   public symbol: string;
   public stackable?: boolean;
   public wearable?: boolean;
-  public wearLocation?: WearType;
+  public wearLocation?: string;
 
   constructor({ id, name, description, symbol, stackable = false, wearable = false, wearLocation }: {
     id: string;
@@ -31,7 +44,7 @@ export class ItemType {
     symbol: string;
     stackable?: boolean;
     wearable?: boolean;
-    wearLocation?: WearType;
+    wearLocation?: string;
   }) {
     this.id = id;
     this.name = name;
@@ -65,7 +78,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     description: 'A sturdy iron sword that deals 15-20 damage. Basic but reliable.',
     symbol: '⚔️',
     wearable: true,
-    wearLocation: WEAR_TYPES.hand
+    wearLocation: createWearLocation(WEAR_TYPES.hand, WEAR_LAYERS.outer)
   }),
   leatherArmor: new ItemType({
     id: 'leatherArmor',
@@ -73,7 +86,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     description: 'Light leather armor that provides 5 defense points.',
     symbol: '🛡️',
     wearable: true,
-    wearLocation: WEAR_TYPES.chest
+    wearLocation: createWearLocation(WEAR_TYPES.chest, WEAR_LAYERS.outer)
   }),
   goldCoin: new ItemType({
     id: 'goldCoin',
@@ -144,7 +157,7 @@ export default class Item {
     return !!this.type.wearable;
   }
 
-  getWearLocation(): WearType | undefined {
+  getWearLocation(): string | undefined {
     return this.type.wearLocation;
   }
 

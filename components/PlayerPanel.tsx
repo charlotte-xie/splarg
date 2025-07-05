@@ -129,15 +129,14 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
       id: 'outfit',
       icon: 'apparel',
       label: 'Outfit',
-      content: <Outfit wornItems={player.getWornItems()} onRemoveItem={(wearLocation) => {
-        if (onPlayerUpdate) {
-          const removedItem = player.removeWornItem(wearLocation);
-          if (removedItem) {
-            player.addItem(removedItem);
-            onPlayerUpdate(player);
-          }
-        }
-      }} />
+      content: <Outfit 
+        wornItems={player.getWornItems()} 
+        onSlotClick={(wearLocation, item) => {
+          console.log(`Selected equipment slot: ${wearLocation}`, item);
+          // TODO: Handle equipment slot selection
+        }}
+        selectedSlot={undefined}
+      />
     },
     {
       id: 'controls',
