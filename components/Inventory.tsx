@@ -157,6 +157,13 @@ export default function Inventory({
               {selectedItem.hasMultiple() && (
                 <div>Quantity: {selectedItem.getQuantity()}</div>
               )}
+              {selectedItem.isWearable() && (
+                <div style={{ marginTop: '4px' }}>
+                  <div style={{ color: '#d69e2e', fontWeight: '500' }}>Equipment:</div>
+                  <div>Layer: {selectedItem.getLayer()}</div>
+                  <div>Locations: {selectedItem.getLocations()?.join(', ') || 'None'}</div>
+                </div>
+              )}
             </div>
             
             {/* Action Buttons */}

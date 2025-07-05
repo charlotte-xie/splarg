@@ -28,6 +28,11 @@ export function createWearLocation(area: WearType, layer: WearLayer): string {
   return `${area}-${layer}`;
 }
 
+// Helper function to create wear locations for items that span multiple areas
+export function createWearLocations(locations: WearType[], layer: WearLayer): string[] {
+  return locations.map(location => createWearLocation(location, layer));
+}
+
 export class ItemType {
   public id: string;
   public name: string;
@@ -35,16 +40,18 @@ export class ItemType {
   public symbol: string;
   public stackable?: boolean;
   public wearable?: boolean;
-  public wearLocation?: string;
+  public layer?: WearLayer;
+  public locations?: WearType[];
 
-  constructor({ id, name, description, symbol, stackable = false, wearable = false, wearLocation }: {
+  constructor({ id, name, description, symbol, stackable = false, wearable = false, layer, locations }: {
     id: string;
     name: string;
     description: string;
     symbol: string;
     stackable?: boolean;
     wearable?: boolean;
-    wearLocation?: string;
+    layer?: WearLayer;
+    locations?: WearType[];
   }) {
     this.id = id;
     this.name = name;
@@ -52,7 +59,8 @@ export class ItemType {
     this.symbol = symbol;
     this.stackable = stackable;
     this.wearable = wearable;
-    this.wearLocation = wearLocation;
+    this.layer = layer;
+    this.locations = locations;
   }
 }
 
@@ -78,7 +86,8 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     description: 'A sturdy iron sword that deals 15-20 damage. Basic but reliable.',
     symbol: '⚔️',
     wearable: true,
-    wearLocation: createWearLocation(WEAR_TYPES.hand, WEAR_LAYERS.outer)
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.hand]
   }),
   leatherArmor: new ItemType({
     id: 'leatherArmor',
@@ -86,7 +95,53 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     description: 'Light leather armor that provides 5 defense points.',
     symbol: '🛡️',
     wearable: true,
-    wearLocation: createWearLocation(WEAR_TYPES.chest, WEAR_LAYERS.outer)
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
+  }),
+  longCoat: new ItemType({
+    id: 'longCoat',
+    name: 'Steampunk Long Coat',
+    description: 'A stylish long coat with brass buttons and leather trim.',
+    symbol: '🧥',
+    wearable: true,
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.chest, WEAR_TYPES.belly, WEAR_TYPES.arm]
+  }),
+  boots: new ItemType({
+    id: 'boots',
+    name: 'Leather Boots',
+    description: 'Sturdy leather boots with steel toe caps.',
+    symbol: '👢',
+    wearable: true,
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.feet]
+  }),
+  vest: new ItemType({
+    id: 'vest',
+    name: 'Steampunk Vest',
+    description: 'A fitted vest with brass buttons and leather trim.',
+    symbol: '🎽',
+    wearable: true,
+    layer: WEAR_LAYERS.inner,
+    locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
+  }),
+  gloves: new ItemType({
+    id: 'gloves',
+    name: 'Leather Gloves',
+    description: 'Fine leather gloves with brass knuckle reinforcements.',
+    symbol: '🧤',
+    wearable: true,
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.hand]
+  }),
+  scarf: new ItemType({
+    id: 'scarf',
+    name: 'Wool Scarf',
+    description: 'A warm wool scarf with steampunk patterns.',
+    symbol: '🧣',
+    wearable: true,
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.neck]
   }),
   goldCoin: new ItemType({
     id: 'goldCoin',
@@ -157,8 +212,25 @@ export default class Item {
     return !!this.type.wearable;
   }
 
+  getLayer(): WearLayer | undefined {
+    return this.type.layer;
+  }
+
+  getLocations(): WearType[] | undefined {
+    return this.type.locations;
+  }
+
+  getWearLocations(): string[] | undefined {
+    if (!this.type.layer || !this.type.locations) {
+      return undefined;
+    }
+    return createWearLocations(this.type.locations, this.type.layer);
+  }
+
+  // Legacy method for backward compatibility
   getWearLocation(): string | undefined {
-    return this.type.wearLocation;
+    const wearLocations = this.getWearLocations();
+    return wearLocations ? wearLocations[0] : undefined;
   }
 
   getQuantity(): number {
@@ -187,6 +259,11 @@ export function createExampleItems(): Item[] {
     new Item(ITEM_TYPES.manaPotion, 2),
     new Item(ITEM_TYPES.ironSword, 1),
     new Item(ITEM_TYPES.leatherArmor, 1),
+    new Item(ITEM_TYPES.longCoat, 1),
+    new Item(ITEM_TYPES.vest, 1),
+    new Item(ITEM_TYPES.boots, 1),
+    new Item(ITEM_TYPES.gloves, 1),
+    new Item(ITEM_TYPES.scarf, 1),
     new Item(ITEM_TYPES.goldCoin, 25),
     new Item(ITEM_TYPES.bread, 5)
   ];

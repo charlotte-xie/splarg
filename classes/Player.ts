@@ -117,21 +117,36 @@ export default class Player {
       return false;
     }
     
-    const wearLocation = item.getWearLocation();
-    if (!wearLocation) {
+    const wearLocations = item.getWearLocations();
+    if (!wearLocations || wearLocations.length === 0) {
       return false;
     }
     
-    // Remove any existing item in that slot
-    this.wornItems.delete(wearLocation);
+    // Remove any existing items in those slots
+    wearLocations.forEach(location => {
+      this.wornItems.delete(location);
+    });
     
-    // Add the new item
-    this.wornItems.set(wearLocation, item);
+    // Add the new item to all its wear locations
+    wearLocations.forEach(location => {
+      this.wornItems.set(location, item);
+    });
+    
     return true;
   }
 
   removeWornItem(wearLocation: string): Item | undefined {
-    return this.wornItems.get(wearLocation);
+    const item = this.wornItems.get(wearLocation);
+    if (item) {
+      // Remove the item from all its wear locations
+      const wearLocations = item.getWearLocations();
+      if (wearLocations) {
+        wearLocations.forEach(location => {
+          this.wornItems.delete(location);
+        });
+      }
+    }
+    return item;
   }
 
   getWornItems(): Map<string, Item> {
@@ -140,5 +155,16 @@ export default class Player {
 
   isWearingItem(wearLocation: string): boolean {
     return this.wornItems.has(wearLocation);
+  }
+
+  // New method to get all items worn by a specific item
+  getItemsWornByItem(item: Item): string[] {
+    const wearLocations = item.getWearLocations();
+    if (!wearLocations) return [];
+    
+    return wearLocations.filter(location => {
+      const wornItem = this.wornItems.get(location);
+      return wornItem && wornItem.getId() === item.getId();
+    });
   }
 } 
