@@ -135,27 +135,28 @@ export default function GameScreen() {
       ref={gameContainerRef}
       className="game-screen"
     >
-      <div className="game-header">
-        <h1>Splarg - {currentArea?.type.name || 'Unknown Area'}</h1>
-        <div className="game-status">
-          <span className={`status-indicator ${gameState.status}`}>
-            {gameState.status.toUpperCase()}
-          </span>
-          <span className="score">Score: {gameState.score}</span>
-          <span className="play-time">
-            Play Time: {Math.floor(gameState.progress.totalPlayTime / 1000)}s
-          </span>
-          <span className="debug-info">
-            Player: ({gameState.player.position.x}, {gameState.player.position.y}) {isClient && `| Updates: ${gameState.lastUpdate || 0}`}
-          </span>
-        </div>
-      </div>
       <div className="game-content">
         <Player 
           player={gameState.player}
           onStatsUpdate={(stats: any) => { game.updatePlayerStats(stats); updateGame(); }}
         />
         <div className="game-main">
+          <div className="game-header">
+            <h1>Splarg - {currentArea?.type.name || 'Unknown Area'}</h1>
+            <div className="game-status">
+              <span className={`status-indicator ${gameState.status}`}>
+                {gameState.status.toUpperCase()}
+              </span>
+              <span className="score">Score: {gameState.score}</span>
+              <span className="play-time">
+                Play Time: {Math.floor(gameState.progress.totalPlayTime / 1000)}s
+              </span>
+              <span className="debug-info">
+                Player: ({gameState.player.position.x}, {gameState.player.position.y}) {isClient && `| Updates: ${gameState.lastUpdate || 0}`}
+              </span>
+            </div>
+          </div>
+          
           <GameWindow>
             <TileMap
               area={currentArea}
@@ -186,15 +187,6 @@ export default function GameScreen() {
               })}
             </div>
           </div>
-        </div>
-      </div>
-      <div className="game-controls">
-        <h3>Controls</h3>
-        <div className="controls-grid">
-          <div>Movement: Numpad (1-9) or Arrow Keys</div>
-          <div>Reset Game: Ctrl+R</div>
-          <div>Save Game: Ctrl+S</div>
-          <div>Load Game: Ctrl+L</div>
         </div>
       </div>
 

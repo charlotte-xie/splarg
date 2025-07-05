@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Special+Elite&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Special+Elite&family=Smythe&display=swap');
 
 :root {
   --brass: #b08d57;
@@ -9,6 +9,11 @@
   --parchment: #f5ecd7;
   --accent: #e2c275;
   --shadow: #2d1f0b;
+  --font-primary: 'Smythe', cursive;
+  --font-secondary: 'Special Elite', 'Courier New', Courier, monospace;
+  --font-display: 'Smythe', serif;
+  --font-icons: 'Material Symbols Outlined';
+  --leather-dark: #2d0a0a;
 }
 
 * {
@@ -18,7 +23,7 @@
 }
 
 body {
-  font-family: 'Special Elite', 'Courier New', Courier, monospace;
+  font-family: var(--font-primary);
   background-color: #3b2412;
   background-image: url('data:image/svg+xml;utf8,<svg width="40" height="120" viewBox="0 0 40 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="120" fill="%233b2412"/><path d="M10 0 Q15 20 10 40 Q5 60 10 80 Q15 100 10 120" stroke="%23543a1a" stroke-width="2" fill="none"/><path d="M30 0 Q25 20 30 40 Q35 60 30 80 Q25 100 30 120" stroke="%23543a1a" stroke-width="2" fill="none"/><ellipse cx="20" cy="60" rx="8" ry="40" fill="none" stroke="%23543a1a" stroke-width="1.5"/></svg>');
   background-repeat: repeat;
@@ -45,7 +50,7 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 16px 0 rgba(68, 44, 15, 0.25);
   border: 2px solid var(--iron);
-  font-family: 'UnifrakturCook', serif;
+  font-family: var(--font-display);
 }
 
 .game-header h1 {
@@ -53,7 +58,7 @@ body {
   color: var(--accent);
   text-shadow: 2px 2px 0 var(--shadow), 0 0 20px var(--brass);
   letter-spacing: 2px;
-  font-family: 'UnifrakturCook', serif;
+  font-family: var(--font-display);
 }
 
 .game-status {
@@ -93,7 +98,7 @@ body {
   font-size: 1.1rem;
   font-weight: bold;
   color: var(--accent);
-  font-family: 'Special Elite', 'Courier New', Courier, monospace;
+  font-family: var(--font-secondary);
 }
 
 .keyboard-indicator {
@@ -142,7 +147,7 @@ body {
   color: var(--accent);
   font-size: 1.1rem;
   margin-bottom: 10px;
-  font-family: 'UnifrakturCook', serif;
+  font-family: var(--font-display);
 }
 
 .player-position {
@@ -160,7 +165,7 @@ body {
   color: var(--accent);
   font-size: 1rem;
   margin-bottom: 10px;
-  font-family: 'UnifrakturCook', serif;
+  font-family: var(--font-display);
 }
 
 .stat-row {
@@ -194,7 +199,7 @@ body {
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: 'Special Elite', 'Courier New', Courier, monospace;
+  font-family: var(--font-secondary);
   box-shadow: 0 1px 2px 0 rgba(68, 44, 15, 0.12);
 }
 

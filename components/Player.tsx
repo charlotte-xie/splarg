@@ -19,25 +19,25 @@ export default function PlayerPanel({ player, onStatsUpdate }: PlayerProps) {
   const tabs = [
     {
       id: 'stats',
-      icon: '📊',
+      icon: 'analytics',
       label: 'Character Stats',
       content: <PlayerStats stats={stats} onStatsUpdate={onStatsUpdate} />
     },
     {
       id: 'inventory',
-      icon: '🎒',
+      icon: 'inventory',
       label: 'Inventory',
       content: <Inventory />
     },
     {
       id: 'outfit',
-      icon: '👕',
+      icon: 'style',
       label: 'Outfit',
       content: <Outfit />
     },
     {
       id: 'controls',
-      icon: '⌨️',
+      icon: 'keyboard',
       label: 'Controls',
       content: <Controls />
     }
