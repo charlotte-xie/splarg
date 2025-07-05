@@ -59,17 +59,11 @@ export default function InventorySlot({
                 position: 'absolute',
                 bottom: '2px',
                 right: '2px',
-                backgroundColor: '#d69e2e',
-                color: '#1a202c',
-                borderRadius: '50%',
-                width: size * 0.3,
-                height: size * 0.3,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: size * 0.2,
+                color: '#ffffff',
+                fontSize: size * 0.35,
                 fontWeight: 'bold',
-                border: '1px solid #1a202c'
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                lineHeight: 1
               }}
             >
               {item.getQuantity() > 99 ? '99+' : item.getQuantity()}
