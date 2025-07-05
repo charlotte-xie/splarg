@@ -1,5 +1,5 @@
-import Player from './Player';
-import Item, { ITEM_TYPES } from './Item';
+import Player from '../classes/Player';
+import Item, { ITEM_TYPES } from '../classes/Item';
 
 // Test helper to create a Player without default items
 function createTestPlayer(): Player {

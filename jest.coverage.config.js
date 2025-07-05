@@ -13,7 +13,7 @@ module.exports = {
   setupFilesAfterEnv: [],
   verbose: true,
   clearMocks: true,
-  collectCoverage: false,
+  collectCoverage: true, // Enable coverage for coverage runs
   watchPathIgnorePatterns: [
     'node_modules',
     'coverage',
