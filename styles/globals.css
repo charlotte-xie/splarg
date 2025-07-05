@@ -122,10 +122,12 @@ body {
   gap: 20px;
   flex: 1;
   min-height: 0;
+  height: 100%;
 }
 
 .player-panel {
   width: 300px;
+  height: 100%;
   background: linear-gradient(120deg, var(--leather) 60%, var(--iron) 100%);
   border-radius: 12px;
   padding: 20px;
@@ -135,18 +137,18 @@ body {
   flex-direction: column;
   gap: 20px;
   font-size: 0.85rem;
+  min-height: 0;
 }
 
 .player-header {
   text-align: center;
   border-bottom: 2px solid var(--brass);
-  padding-bottom: 15px;
 }
 
 .player-header h3 {
   color: var(--accent);
   font-size: 1.1rem;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   font-family: var(--font-display);
 }
 

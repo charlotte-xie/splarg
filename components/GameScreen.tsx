@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import Player from './Player';
+import PlayerPanel from './PlayerPanel';
 import TileMap from './TileMap';
 import GameWindow from './GameWindow';
 import Game from '../classes/Game';
@@ -136,7 +136,7 @@ export default function GameScreen() {
       className="game-screen"
     >
       <div className="game-content">
-        <Player 
+        <PlayerPanel 
           player={gameState.player}
           onStatsUpdate={(stats: any) => { game.updatePlayerStats(stats); updateGame(); }}
         />

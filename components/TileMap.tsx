@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import Tile from '../classes/Tile';
 
 interface TileMapProps {
   area: any;
@@ -10,6 +11,62 @@ interface TileMapProps {
 export default function TileMap({ area, playerPosition, onTileHover, hoveredTile }: TileMapProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const TILE_SIZE = 32;
+
+  const drawTile = (ctx: CanvasRenderingContext2D, tile: Tile, x: number, y: number) => {
+    const tileX = x * TILE_SIZE;
+    const tileY = y * TILE_SIZE;
+
+    // Draw tile background
+    ctx.fillStyle = tile.getColour();
+    ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+
+    // Draw tile border
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+
+    // Draw tile symbol
+    ctx.fillStyle = tile.getTextColour();
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(tile.getSymbol(), tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2);
+  };
+
+  const drawPlayer = (ctx: CanvasRenderingContext2D, playerPosition: any) => {
+    if (!playerPosition) return;
+
+    const playerX = playerPosition.x * TILE_SIZE + TILE_SIZE / 2;
+    const playerY = playerPosition.y * TILE_SIZE + TILE_SIZE / 2;
+
+    // Player glow effect
+    ctx.shadowColor = '#ffd700';
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = '#ffd700';
+    ctx.beginPath();
+    ctx.arc(playerX, playerY, TILE_SIZE / 2 - 2, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Player center
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ff6b6b';
+    ctx.beginPath();
+    ctx.arc(playerX, playerY, TILE_SIZE / 3, 0, 2 * Math.PI);
+    ctx.fill();
+  };
+
+  const drawHoveredTile = (ctx: CanvasRenderingContext2D, hoveredTile: any) => {
+    if (!hoveredTile) return;
+
+    const hoverX = hoveredTile.x * TILE_SIZE;
+    const hoverY = hoveredTile.y * TILE_SIZE;
+
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.strokeRect(hoverX, hoverY, TILE_SIZE, TILE_SIZE);
+    ctx.setLineDash([]);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -31,60 +88,17 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const tile = area.getTile(x, y);
-        if (!tile) continue; // <-- Add this line
-        const tileX = x * TILE_SIZE;
-        const tileY = y * TILE_SIZE;
-
-        // Draw tile background
-        ctx.fillStyle = tile.getColour();
-        ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
-
-        // Draw tile border
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(tileX, tileY, TILE_SIZE, TILE_SIZE);66
-
-        // Draw tile symbol
-        ctx.fillStyle = tile.getTextColour();
-        ctx.font = '14px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(tile.getSymbol(), tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2);
+        if (!tile) continue;
+        
+        drawTile(ctx, tile, x, y);
       }
     }
 
     // Draw player
-    if (playerPosition) {
-      const playerX = playerPosition.x * TILE_SIZE + TILE_SIZE / 2;
-      const playerY = playerPosition.y * TILE_SIZE + TILE_SIZE / 2;
-
-      // Player glow effect
-      ctx.shadowColor = '#ffd700';
-      ctx.shadowBlur = 10;
-      ctx.fillStyle = '#ffd700';
-      ctx.beginPath();
-      ctx.arc(playerX, playerY, TILE_SIZE / 2 - 2, 0, 2 * Math.PI);
-      ctx.fill();
-
-      // Player center
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = '#ff6b6b';
-      ctx.beginPath();
-      ctx.arc(playerX, playerY, TILE_SIZE / 3, 0, 2 * Math.PI);
-      ctx.fill();
-    }
+    drawPlayer(ctx, playerPosition);
 
     // Draw hovered tile highlight
-    if (hoveredTile) {
-      const hoverX = hoveredTile.x * TILE_SIZE;
-      const hoverY = hoveredTile.y * TILE_SIZE;
-
-      ctx.strokeStyle = '#ffd700';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
-      ctx.strokeRect(hoverX, hoverY, TILE_SIZE, TILE_SIZE);
-      ctx.setLineDash([]);
-    }
+    drawHoveredTile(ctx, hoveredTile);
 
   }, [area, playerPosition, hoveredTile]);
 
@@ -128,32 +142,6 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
           cursor: 'crosshair'
         }}
       />
-      
-      <div className="tile-legend">
-        <h4>Tile Legend</h4>
-        <div className="legend-grid">
-          <div className="legend-item">
-            <div className="legend-color" style={{ backgroundColor: '#2d5a27' }}></div>
-            <span>🌱 Grass</span>
-          </div>
-          <div className="legend-item">
-            <div className="legend-color" style={{ backgroundColor: '#1e3a8a' }}></div>
-            <span>💧 Water</span>
-          </div>
-          <div className="legend-item">
-            <div className="legend-color" style={{ backgroundColor: '#6b7280' }}></div>
-            <span>🪨 Stone</span>
-          </div>
-          <div className="legend-item">
-            <div className="legend-color" style={{ backgroundColor: '#d97706' }}></div>
-            <span>🏖️ Sand</span>
-          </div>
-          <div className="legend-item">
-            <div className="legend-color" style={{ backgroundColor: '#166534' }}></div>
-            <span>🌲 Forest</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 } 
