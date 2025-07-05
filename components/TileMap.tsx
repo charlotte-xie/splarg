@@ -9,7 +9,7 @@ interface TileMapProps {
 
 export default function TileMap({ area, playerPosition, onTileHover, hoveredTile }: TileMapProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const TILE_SIZE = 20;
+  const TILE_SIZE = 32;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,7 +42,7 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
         // Draw tile border
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 1;
-        ctx.strokeRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+        ctx.strokeRect(tileX, tileY, TILE_SIZE, TILE_SIZE);66
 
         // Draw tile symbol
         ctx.fillStyle = tile.getTextColour();
