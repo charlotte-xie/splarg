@@ -147,16 +147,17 @@ export default class Player {
       });
     });
     
+
+    
     // Remove all existing items from their wear locations and add them back to inventory
     itemsToRemove.forEach(existingItem => {
       const existingWearLocations = existingItem.getWearLocations();
       if (existingWearLocations) {
         existingWearLocations.forEach(location => {
-          this.wornItems.delete(location);
+          // Use removeWornItem to trigger locked item checks
+          this.removeWornItem(location);
         });
       }
-      // Add the removed item back to inventory
-      this.addItem(existingItem);
     });
     
     // Remove the item from inventory before wearing

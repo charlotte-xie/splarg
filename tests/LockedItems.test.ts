@@ -34,6 +34,37 @@ describe('Locked Items', () => {
       expect(result).toBe(true);
       expect(player.isWearingItem('eyes-outer')).toBe(true);
     });
+
+    test('should prevent wearing other items when locked item is worn', () => {
+      const lockedItem = new Item('steampunkGlasses', 1, true);
+      const otherItem = new Item('blindfold', 1, false);
+      
+      // Add both items to inventory
+      player.addItem(lockedItem);
+      player.addItem(otherItem);
+      
+      // Wear the locked item first
+      const wearLockedResult = player.wearItem(lockedItem);
+      expect(wearLockedResult).toBe(true);
+      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      
+      // Try to wear the other item in the same slot
+      // This should throw an exception because the locked item cannot be removed
+      expect(() => {
+        player.wearItem(otherItem);
+      }).toThrow('Cannot remove locked item: Steampunk Glasses');
+      
+      // The locked item should still be worn
+      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      const wornItem = player.getWornItems().get('eyes-outer');
+      expect(wornItem?.getId()).toBe('steampunkGlasses');
+      expect(wornItem?.isLocked()).toBe(true);
+      
+      // The other item should still be in inventory
+      const inventory = player.getInventory();
+      const otherItemInInventory = inventory.find(item => item.getId() === 'blindfold');
+      expect(otherItemInInventory).toBeDefined();
+    });
   });
 
   describe('Removing locked items', () => {
