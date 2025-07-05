@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Game from '../classes/Game';
+import DebugPanel from './DebugPanel';
+import GameWindow from './GameWindow';
 import PlayerPanel from './PlayerPanel';
 import TileMap from './TileMap';
-import GameWindow from './GameWindow';
-import Game from '../classes/Game';
 
 interface HoveredTile {
   tile: any;
@@ -165,6 +166,7 @@ export default function GameScreen() {
             <TileMap
               area={currentArea}
               playerPosition={gameState.player.position}
+              player={game.getPlayer()}
               onTileHover={handleTileHover}
               hoveredTile={hoveredTile}
             />
@@ -192,6 +194,10 @@ export default function GameScreen() {
             </div>
           </div>
         </div>
+        <DebugPanel
+          game={game}
+          onGameUpdate={updateGame}
+        />
       </div>
 
       {hoveredTile && hoveredTile.tile && (

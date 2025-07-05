@@ -1,14 +1,16 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import Player from '../classes/Player';
 import Tile from '../classes/Tile';
 
 interface TileMapProps {
   area: any;
   playerPosition: any;
+  player: Player;
   onTileHover: (tile: any, x: number, y: number) => void;
   hoveredTile: any;
 }
 
-export default function TileMap({ area, playerPosition, onTileHover, hoveredTile }: TileMapProps) {
+export default function TileMap({ area, playerPosition, player, onTileHover, hoveredTile }: TileMapProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const TILE_SIZE = 32;
 
@@ -31,6 +33,13 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(tile.getSymbol(), tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2);
+  };
+
+  const drawBlackTile = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    const tileX = x * TILE_SIZE;
+    const tileY = y * TILE_SIZE;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
   };
 
   const drawPlayer = (ctx: CanvasRenderingContext2D, playerPosition: any) => {
@@ -84,13 +93,24 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Check if eyes are restricted
+    const eyesRestricted = player && player.isRestricted && player.isRestricted('eyes');
+
     // Draw tiles
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const tile = area.getTile(x, y);
-        if (!tile) continue;
-        
-        drawTile(ctx, tile, x, y);
+        if (eyesRestricted) {
+          // Only render the player's tile, everything else is black
+          if (x === playerPosition.x && y === playerPosition.y) {
+            const tile = area.getTile(x, y);
+            if (tile) drawTile(ctx, tile, x, y);
+          } else {
+            drawBlackTile(ctx, x, y);
+          }
+        } else {
+          const tile = area.getTile(x, y);
+          if (tile) drawTile(ctx, tile, x, y);
+        }
       }
     }
 
@@ -98,9 +118,11 @@ export default function TileMap({ area, playerPosition, onTileHover, hoveredTile
     drawPlayer(ctx, playerPosition);
 
     // Draw hovered tile highlight
-    drawHoveredTile(ctx, hoveredTile);
+    if (!eyesRestricted) {
+      drawHoveredTile(ctx, hoveredTile);
+    }
 
-  }, [area, playerPosition, hoveredTile]);
+  }, [area, playerPosition, hoveredTile, player]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;

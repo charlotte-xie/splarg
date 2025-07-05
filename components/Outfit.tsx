@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import Item from '../classes/Item';
+import Item, { WEAR_LAYERS, WEAR_TYPES, WearLayer, WearType, createWearLocation } from '../classes/Item';
 import Player from '../classes/Player';
-import { WEAR_TYPES, WEAR_LAYERS, WearType, WearLayer, createWearLocation } from '../classes/Item';
-import InventorySlot from './InventorySlot';
 import Button from './Button';
+import InventorySlot from './InventorySlot';
 import ItemDetails from './ItemDetails';
 
 interface OutfitProps {
@@ -24,20 +23,8 @@ export default function Outfit({
 
   const wornItems = player.getWornItems();
 
-  // Define the wear areas we want to display in order
-  const allWearAreas: WearType[] = [
-    WEAR_TYPES.head,
-    WEAR_TYPES.face,
-    WEAR_TYPES.neck,
-    WEAR_TYPES.chest,
-    WEAR_TYPES.belly,
-    WEAR_TYPES.arm,
-    WEAR_TYPES.hand,
-    WEAR_TYPES.waist,
-    WEAR_TYPES.hips,
-    WEAR_TYPES.legs,
-    WEAR_TYPES.feet
-  ];
+  // Use all wear types from the Item class
+  const allWearAreas: WearType[] = Object.values(WEAR_TYPES);
 
   // Always show these essential areas
   const essentialAreas: WearType[] = [

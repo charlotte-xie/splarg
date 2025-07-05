@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import Item from '../classes/Item';
 import Player from '../classes/Player';
-import PlayerStats from './PlayerStats';
 import Avatar from './Avatar';
-import TabbedPanel from './TabbedPanel';
+import Box from './Box';
+import Controls from './Controls';
 import Inventory from './Inventory';
 import Outfit from './Outfit';
-import Controls from './Controls';
-import Box from './Box';
-import DebugPanel from './DebugPanel';
-import { createRandomItem, ITEM_TYPES } from '../classes/Item';
-import Item from '../classes/Item';
+import PlayerStats from './PlayerStats';
+import TabbedPanel from './TabbedPanel';
 
 interface PlayerProps {
   player: Player;
@@ -20,39 +18,6 @@ interface PlayerProps {
 export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: PlayerProps) {
   const { position, stats, inventory } = player;
   const [selectedOutfitSlot, setSelectedOutfitSlot] = useState<string | undefined>(undefined);
-
-  const handleAddRandomItem = () => {
-    if (onPlayerUpdate) {
-      const randomItem = createRandomItem();
-      player.addItem(randomItem);
-      onPlayerUpdate(player);
-    }
-  };
-
-  const handleAddGold = () => {
-    if (onPlayerUpdate) {
-      // Create a gold coin item with quantity 100
-      const goldItem = new Item(ITEM_TYPES.goldCoin, 100);
-      player.addItem(goldItem);
-      onPlayerUpdate(player);
-    }
-  };
-
-  const handleHealPlayer = () => {
-    if (onPlayerUpdate) {
-      player.heal(50);
-      onPlayerUpdate(player);
-    }
-  };
-
-  const handleResetPlayer = () => {
-    if (onPlayerUpdate) {
-      // Create a new player instance with default values
-      const newPlayer = new Player();
-      onPlayerUpdate(newPlayer);
-      setSelectedOutfitSlot(undefined); // Reset selection when player is reset
-    }
-  };
 
   const handleDropItem = (index: number, item: Item) => {
     if (onPlayerUpdate) {
@@ -126,8 +91,6 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
     }
   };
 
-
-
   const tabs = [
     {
       id: 'stats',
@@ -173,13 +136,6 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
       </div>
 
       <TabbedPanel tabs={tabs} defaultTab="stats" />
-      
-      <DebugPanel
-        onAddRandomItem={handleAddRandomItem}
-        onAddGold={handleAddGold}
-        onHealPlayer={handleHealPlayer}
-        onResetPlayer={handleResetPlayer}
-      />
     </div>
   );
 } 

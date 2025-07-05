@@ -1,19 +1,41 @@
-import React from 'react';
+import Game from '../classes/Game';
+import Item, { createExampleItems, createRandomItem, ITEM_TYPES } from '../classes/Item';
+import Player from '../classes/Player';
 import Button from './Button';
 
 interface DebugPanelProps {
-  onAddRandomItem?: () => void;
-  onResetPlayer?: () => void;
-  onAddGold?: () => void;
-  onHealPlayer?: () => void;
+  game: Game;
+  onGameUpdate: () => void;
 }
 
-export default function DebugPanel({ 
-  onAddRandomItem,
-  onResetPlayer,
-  onAddGold,
-  onHealPlayer
-}: DebugPanelProps) {
+export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
+  const handleAddRandomItem = () => {
+    const player = game.getPlayer();
+    const randomItem = createRandomItem();
+    player.addItem(randomItem);
+    onGameUpdate();
+  };
+
+  const handleAddGold = () => {
+    const player = game.getPlayer();
+    const goldItem = new Item(ITEM_TYPES.goldCoin, 100);
+    player.addItem(goldItem);
+    onGameUpdate();
+  };
+
+  const handleHealPlayer = () => {
+    const player = game.getPlayer();
+    player.heal(50);
+    onGameUpdate();
+  };
+
+  const handleResetPlayer = () => {
+    const newPlayer = new Player();
+    createExampleItems().forEach(item => newPlayer.addItem(item));
+    game.updatePlayer(newPlayer);
+    onGameUpdate();
+  };
+
   return (
     <div className="debug-panel" style={{
       marginTop: '16px',
@@ -40,7 +62,7 @@ export default function DebugPanel({
         <Button
           variant="primary"
           size="small"
-          onClick={onAddRandomItem}
+          onClick={handleAddRandomItem}
         >
           Add Random Item
         </Button>
@@ -48,7 +70,7 @@ export default function DebugPanel({
         <Button
           variant="primary"
           size="small"
-          onClick={onAddGold}
+          onClick={handleAddGold}
         >
           Add 100 Gold
         </Button>
@@ -56,7 +78,7 @@ export default function DebugPanel({
         <Button
           variant="success"
           size="small"
-          onClick={onHealPlayer}
+          onClick={handleHealPlayer}
         >
           Heal Player
         </Button>
@@ -64,7 +86,7 @@ export default function DebugPanel({
         <Button
           variant="danger"
           size="small"
-          onClick={onResetPlayer}
+          onClick={handleResetPlayer}
         >
           Reset Player
         </Button>

@@ -2,6 +2,7 @@
 export const WEAR_TYPES = {
   head: 'head',
   face: 'face',
+  eyes: 'eyes',
   neck: 'neck',
   chest: 'chest',
   belly: 'belly',
@@ -42,8 +43,9 @@ export class ItemType {
   public wearable?: boolean;
   public layer?: WearLayer;
   public locations?: WearType[];
+  public restricted?: boolean;
 
-  constructor({ id, name, description, symbol, stackable = false, wearable = false, layer, locations }: {
+  constructor({ id, name, description, symbol, stackable = false, wearable = false, layer, locations, restricted = false }: {
     id: string;
     name: string;
     description: string;
@@ -52,6 +54,7 @@ export class ItemType {
     wearable?: boolean;
     layer?: WearLayer;
     locations?: WearType[];
+    restricted?: boolean;
   }) {
     this.id = id;
     this.name = name;
@@ -61,6 +64,7 @@ export class ItemType {
     this.wearable = wearable;
     this.layer = layer;
     this.locations = locations;
+    this.restricted = restricted;
   }
 }
 
@@ -143,6 +147,25 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.neck]
   }),
+  steampunkGlasses: new ItemType({
+    id: 'steampunkGlasses',
+    name: 'Steampunk Glasses',
+    description: 'Brass-framed glasses with intricate gears and lenses. Provides a stylish view of the world.',
+    symbol: '👓',
+    wearable: true,
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.eyes]
+  }),
+  blindfold: new ItemType({
+    id: 'blindfold',
+    name: 'Blindfold',
+    description: 'A dark cloth blindfold that completely blocks vision.',
+    symbol: '🕶️',
+    wearable: true,
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.eyes],
+    restricted: true
+  }),
   goldCoin: new ItemType({
     id: 'goldCoin',
     name: 'Gold Coin',
@@ -212,6 +235,10 @@ export default class Item {
     return !!this.type.wearable;
   }
 
+  isRestricted(): boolean {
+    return !!this.type.restricted;
+  }
+
   getLayer(): WearLayer | undefined {
     return this.type.layer;
   }
@@ -264,6 +291,8 @@ export function createExampleItems(): Item[] {
     new Item(ITEM_TYPES.boots, 1),
     new Item(ITEM_TYPES.gloves, 1),
     new Item(ITEM_TYPES.scarf, 1),
+    new Item(ITEM_TYPES.steampunkGlasses, 1),
+    new Item(ITEM_TYPES.blindfold, 1),
     new Item(ITEM_TYPES.goldCoin, 25),
     new Item(ITEM_TYPES.bread, 5)
   ];

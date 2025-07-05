@@ -1,4 +1,4 @@
-import Item, { createExampleItems } from './Item';
+import Item from './Item';
 
 interface PlayerPosition {
   x: number;
@@ -194,6 +194,21 @@ export default class Player {
 
   isWearingItem(wearLocation: string): boolean {
     return this.wornItems.has(wearLocation);
+  }
+
+  isRestricted(location: string): boolean {
+    // Check if there's a worn item in the specified location (any layer) that is restricted
+    const bodyPart = location.split('-')[0]; // Extract body part (e.g., "eyes" from "eyes-outer")
+    
+    // Check all worn items to see if any are in the same body part and are restricted
+    for (const [wearLocation, item] of this.wornItems) {
+      const wornBodyPart = wearLocation.split('-')[0];
+      if (wornBodyPart === bodyPart && item.isRestricted()) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   // New method to get all items worn by a specific item
