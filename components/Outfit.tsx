@@ -110,6 +110,8 @@ export default function Outfit({
               } else {
                 game.addMessage('Failed to remove item', 'error');
               }
+              // Always call onPlayerUpdate to trigger re-render even when removal fails
+              onPlayerUpdate(player);
             }
           }
         }

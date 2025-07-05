@@ -478,4 +478,12 @@ body {
     position: static;
     margin-top: 20px;
   }
+}
+
+.message-panel-header {
+  color: var(--accent);
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 } 

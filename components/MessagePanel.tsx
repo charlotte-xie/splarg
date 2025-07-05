@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import Game from '../classes/Game';
 
 interface MessagePanelProps {
@@ -6,13 +7,20 @@ interface MessagePanelProps {
 
 export default function MessagePanel({ game }: MessagePanelProps) {
   const messages = game.getMessages();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const getMessageStyle = (type: string) => {
     const baseStyle = {
-      padding: '8px 12px',
-      marginBottom: '4px',
       borderRadius: '4px',
-      fontSize: '12px',
+      fontSize: '14px',
       lineHeight: '1.4',
       border: '1px solid',
       wordBreak: 'break-word' as const
@@ -59,57 +67,59 @@ export default function MessagePanel({ game }: MessagePanelProps) {
   return (
     <div style={{
       marginTop: '16px',
-      padding: '12px',
       backgroundColor: '#1a202c',
       borderRadius: '6px',
       border: '1px solid #4a5568',
-      maxHeight: '200px',
-      overflowY: 'auto'
+      display: 'flex',
+      flexDirection: 'column',
+      height: '200px'
     }}>
-      <h5 style={{ 
-        color: '#d69e2e', 
-        marginBottom: '8px', 
-        fontSize: '12px',
-        textTransform: 'uppercase',
-        letterSpacing: '1px'
+      {/* Fixed Header */}
+      <div style={{
+        padding: '12px 12px 8px 12px',
+        flexShrink: 0
       }}>
-        Message Log
-      </h5>
+        <h5 className="message-panel-header">
+          Message Log
+        </h5>
+      </div>
       
-      {messages.length === 0 ? (
-        <div style={{
-          color: '#718096',
-          fontSize: '12px',
-          fontStyle: 'italic',
-          textAlign: 'center',
-          padding: '20px'
-        }}>
-          No messages yet
-        </div>
-      ) : (
-        <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
-          {messages.map((message) => (
-            <div key={message.id} style={getMessageStyle(message.type)}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span style={{ flex: 1 }}>{message.text}</span>
-                <span style={{ 
-                  fontSize: '10px', 
-                  opacity: 0.7, 
-                  marginLeft: '8px',
-                  whiteSpace: 'nowrap'
-                }}>
-                  {formatTimestamp(message.timestamp)}
-                </span>
+      {/* Scrollable Messages Section */}
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '8px 12px'
+      }}>
+        {messages.length === 0 ? (
+          <div style={{
+            color: '#718096',
+            fontSize: '12px',
+            fontStyle: 'italic',
+            textAlign: 'center',
+            padding: '20px'
+          }}>
+            No messages yet
+          </div>
+        ) : (
+          <>
+            {messages.map((message) => (
+              <div key={message.id} style={getMessageStyle(message.type)}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <span style={{ flex: 1 }}>{message.text}</span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+            <div ref={messagesEndRef} />
+          </>
+        )}
+      </div>
       
+      {/* Fixed Footer */}
       {messages.length > 0 && (
         <div style={{
-          marginTop: '8px',
-          textAlign: 'right'
+          padding: '8px 12px 12px 12px',
+          textAlign: 'right',
+          flexShrink: 0
         }}>
           <button
             onClick={() => game.clearMessages()}
