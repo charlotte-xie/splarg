@@ -129,8 +129,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-height: 80vh;
-  overflow-y: auto;
   font-size: 0.85rem;
 }
 

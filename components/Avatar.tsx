@@ -28,8 +28,7 @@ export default function Avatar({
         borderRadius: '10%',
         backgroundColor: '#2d3748',
         border: '2px solid #d69e2e',
-        overflow: 'hidden',
-        marginBottom: '16px'
+        overflow: 'hidden'
       }}
     >
       {src && !imageError ? (
