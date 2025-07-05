@@ -8,13 +8,13 @@ import Outfit from './Outfit';
 import Controls from './Controls';
 import Box from './Box';
 import DebugPanel from './DebugPanel';
-import { createRandomItem } from '../classes/Item';
+import { createRandomItem, ITEM_TYPES } from '../classes/Item';
 import Item from '../classes/Item';
 
 interface PlayerProps {
-  player: any;
-  onStatsUpdate: (stats: any) => void;
-  onPlayerUpdate?: (player: any) => void;
+  player: Player;
+  onStatsUpdate: (stats: Partial<Player['stats']>) => void;
+  onPlayerUpdate?: (player: Player) => void;
 }
 
 export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: PlayerProps) {
@@ -30,7 +30,9 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
 
   const handleAddGold = () => {
     if (onPlayerUpdate) {
-      player.addGold(100);
+      // Create a gold coin item with quantity 100
+      const goldItem = new Item(ITEM_TYPES.goldCoin, 100);
+      player.addItem(goldItem);
       onPlayerUpdate(player);
     }
   };
@@ -97,28 +99,48 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
     }
   };
 
+  const handleWearItem = (index: number, item: Item) => {
+    if (onPlayerUpdate) {
+      // Handle wearing different item types
+      switch (item.getId()) {
+        case 'ironSword':
+          console.log('Equipped iron sword');
+          // Add equipment logic here when implemented
+          break;
+        case 'leatherArmor':
+          console.log('Equipped leather armor');
+          // Add equipment logic here when implemented
+          break;
+        default:
+          console.log(`Wore ${item.getName()}`);
+          break;
+      }
+      onPlayerUpdate(player);
+    }
+  };
+
   const tabs = [
     {
       id: 'stats',
-      icon: 'analytics',
+      icon: 'article_person',
       label: 'Character Stats',
       content: <PlayerStats stats={stats} onStatsUpdate={onStatsUpdate} />
     },
     {
       id: 'inventory',
-      icon: 'inventory',
+      icon: 'money_bag',
       label: 'Inventory',
-      content: <Inventory items={inventory} onDropItem={handleDropItem} onUseItem={handleUseItem} />
+      content: <Inventory items={inventory} onDropItem={handleDropItem} onUseItem={handleUseItem} onWearItem={handleWearItem} />
     },
     {
       id: 'outfit',
-      icon: 'style',
+      icon: 'apparel',
       label: 'Outfit',
       content: <Outfit />
     },
     {
       id: 'controls',
-      icon: '⌨️',
+      icon: 'keyboard',
       label: 'Controls',
       content: <Controls />
     }

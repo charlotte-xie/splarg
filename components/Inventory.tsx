@@ -9,6 +9,7 @@ interface InventoryProps {
   selectedSlot?: number;
   onDropItem?: (index: number, item: Item) => void;
   onUseItem?: (index: number, item: Item) => void;
+  onWearItem?: (index: number, item: Item) => void;
 }
 
 export default function Inventory({ 
@@ -16,7 +17,8 @@ export default function Inventory({
   onSlotClick,
   selectedSlot = -1,
   onDropItem,
-  onUseItem
+  onUseItem,
+  onWearItem
 }: InventoryProps) {
   const MIN_SLOTS = 20;
   const SLOTS_PER_ROW = 5;
@@ -52,6 +54,12 @@ export default function Inventory({
   const handleUseItem = () => {
     if (selectedItemIndex >= 0 && selectedItemIndex < items.length && onUseItem) {
       onUseItem(selectedItemIndex, items[selectedItemIndex]);
+    }
+  };
+
+  const handleWearItem = () => {
+    if (selectedItemIndex >= 0 && selectedItemIndex < items.length && onWearItem) {
+      onWearItem(selectedItemIndex, items[selectedItemIndex]);
     }
   };
 
@@ -164,6 +172,15 @@ export default function Inventory({
               >
                 Use
               </Button>
+              {selectedItem.isWearable() && (
+                <Button
+                  variant="success"
+                  size="small"
+                  onClick={handleWearItem}
+                >
+                  Wear
+                </Button>
+              )}
               <Button
                 variant="danger"
                 size="small"
