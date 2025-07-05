@@ -52,14 +52,26 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
     return wornItems.get(wearLocation) || null;
   };
 
-  // Helper function to check if an item spans multiple locations
-  const isItemSpanned = (item: Item | null, wearArea: WearType, layer: WearLayer): boolean => {
-    if (!item) return false;
-    const wearLocations = item.getWearLocations();
-    if (!wearLocations || wearLocations.length <= 1) return false;
+  // Helper function to check if a slot should be selected
+  const isSlotSelected = (wearArea: WearType, layer: WearLayer, item: Item | null): boolean => {
+    if (!selectedSlot || !item) return false;
     
     const currentLocation = createWearLocation(wearArea, layer);
-    return wearLocations.includes(currentLocation);
+    
+    // If this exact slot is selected, show as selected
+    if (selectedSlot === currentLocation) return true;
+    
+    // If the selected slot contains the same item, check if this is the primary location
+    const selectedItem = wornItems.get(selectedSlot);
+    if (selectedItem && selectedItem.getId() === item.getId()) {
+      const wearLocations = item.getWearLocations();
+      if (wearLocations && wearLocations.length > 0) {
+        // Only show as selected if this is the first/primary location for the item
+        return currentLocation === wearLocations[0];
+      }
+    }
+    
+    return false;
   };
 
   return (
@@ -94,10 +106,6 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
             const innerItem = getItemForLocation(wearArea, WEAR_LAYERS.inner);
             const underItem = getItemForLocation(wearArea, WEAR_LAYERS.under);
             
-            const outerSpanned = isItemSpanned(outerItem, wearArea, WEAR_LAYERS.outer);
-            const innerSpanned = isItemSpanned(innerItem, wearArea, WEAR_LAYERS.inner);
-            const underSpanned = isItemSpanned(underItem, wearArea, WEAR_LAYERS.under);
-            
             return (
               <React.Fragment key={wearArea}>
                 <div style={{ 
@@ -112,32 +120,20 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
                 <InventorySlot
                   item={outerItem || null}
                   size={32}
-                  selected={selectedSlot === createWearLocation(wearArea, WEAR_LAYERS.outer)}
+                  selected={isSlotSelected(wearArea, WEAR_LAYERS.outer, outerItem)}
                   onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.outer), outerItem || null)}
-                  style={outerSpanned ? { 
-                    border: '2px solid #d69e2e',
-                    boxShadow: '0 0 4px rgba(214, 158, 46, 0.5)'
-                  } : undefined}
                 />
                 <InventorySlot
                   item={innerItem || null}
                   size={32}
-                  selected={selectedSlot === createWearLocation(wearArea, WEAR_LAYERS.inner)}
+                  selected={isSlotSelected(wearArea, WEAR_LAYERS.inner, innerItem)}
                   onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.inner), innerItem || null)}
-                  style={innerSpanned ? { 
-                    border: '2px solid #d69e2e',
-                    boxShadow: '0 0 4px rgba(214, 158, 46, 0.5)'
-                  } : undefined}
                 />
                 <InventorySlot
                   item={underItem || null}
                   size={32}
-                  selected={selectedSlot === createWearLocation(wearArea, WEAR_LAYERS.under)}
+                  selected={isSlotSelected(wearArea, WEAR_LAYERS.under, underItem)}
                   onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.under), underItem || null)}
-                  style={underSpanned ? { 
-                    border: '2px solid #d69e2e',
-                    boxShadow: '0 0 4px rgba(214, 158, 46, 0.5)'
-                  } : undefined}
                 />
               </React.Fragment>
             );
@@ -154,9 +150,6 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
         }}>
           <div>Equipped Items: {wornItems.size}</div>
           <div>Available Slots: {wearAreas.length * 3}</div>
-          <div style={{ marginTop: '4px', fontSize: '11px', color: '#d69e2e' }}>
-            💡 Items with golden borders span multiple locations
-          </div>
         </div>
       </div>
     </div>

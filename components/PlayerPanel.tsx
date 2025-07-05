@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Player from '../classes/Player';
 import PlayerStats from './PlayerStats';
 import Avatar from './Avatar';
@@ -19,6 +19,7 @@ interface PlayerProps {
 
 export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: PlayerProps) {
   const { position, stats, inventory } = player;
+  const [selectedOutfitSlot, setSelectedOutfitSlot] = useState<string | undefined>(undefined);
 
   const handleAddRandomItem = () => {
     if (onPlayerUpdate) {
@@ -49,6 +50,7 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
       // Create a new player instance with default values
       const newPlayer = new Player();
       onPlayerUpdate(newPlayer);
+      setSelectedOutfitSlot(undefined); // Reset selection when player is reset
     }
   };
 
@@ -112,6 +114,18 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
     }
   };
 
+  const handleOutfitSlotClick = (wearLocation: string, item: Item | null) => {
+    console.log(`Selected equipment slot: ${wearLocation}`, item);
+    
+    // If clicking the same slot, deselect it
+    if (selectedOutfitSlot === wearLocation) {
+      setSelectedOutfitSlot(undefined);
+    } else {
+      // Select the new slot
+      setSelectedOutfitSlot(wearLocation);
+    }
+  };
+
   const tabs = [
     {
       id: 'stats',
@@ -131,11 +145,8 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
       label: 'Outfit',
       content: <Outfit 
         wornItems={player.getWornItems()} 
-        onSlotClick={(wearLocation, item) => {
-          console.log(`Selected equipment slot: ${wearLocation}`, item);
-          // TODO: Handle equipment slot selection
-        }}
-        selectedSlot={undefined}
+        onSlotClick={handleOutfitSlotClick}
+        selectedSlot={selectedOutfitSlot}
       />
     },
     {
