@@ -23,12 +23,14 @@ export default class Player {
   public stats: PlayerStats;
   public inventory: Item[];
   public wornItems: Map<string, Item>;
+  public outfits: Map<string, string[]>; // "OutfitName" -> [list of item ids]
 
   constructor(position: PlayerPosition = Player.defaultPosition(), stats: PlayerStats = Player.defaultStats()) {
     this.position = { ...position };
     this.stats = { ...stats };
     this.inventory = createExampleItems();
     this.wornItems = new Map();
+    this.outfits = new Map();
   }
 
   static defaultStats(): PlayerStats {
@@ -122,9 +124,27 @@ export default class Player {
       return false;
     }
     
-    // Remove any existing items in those slots
+    // Collect all existing items that need to be removed
+    const itemsToRemove = new Set<Item>();
+    
+    // Check each wear location for existing items
     wearLocations.forEach(location => {
-      this.wornItems.delete(location);
+      const existingItem = this.wornItems.get(location);
+      if (existingItem) {
+        itemsToRemove.add(existingItem);
+      }
+    });
+    
+    // Remove all existing items from their wear locations and add them back to inventory
+    itemsToRemove.forEach(existingItem => {
+      const existingWearLocations = existingItem.getWearLocations();
+      if (existingWearLocations) {
+        existingWearLocations.forEach(location => {
+          this.wornItems.delete(location);
+        });
+      }
+      // Add the removed item back to inventory
+      this.addItem(existingItem);
     });
     
     // Add the new item to all its wear locations
@@ -166,5 +186,63 @@ export default class Player {
       const wornItem = this.wornItems.get(location);
       return wornItem && wornItem.getId() === item.getId();
     });
+  }
+
+  // Save current outfit with a given name
+  saveOutfit(outfitName: string): boolean {
+    if (!outfitName.trim()) {
+      return false;
+    }
+
+    // Get all unique worn items (since items can span multiple locations)
+    const uniqueWornItems = new Set<string>();
+    this.wornItems.forEach((item) => {
+      uniqueWornItems.add(item.getId());
+    });
+
+    const itemIds = Array.from(uniqueWornItems);
+    this.outfits.set(outfitName, itemIds);
+    return true;
+  }
+
+  // Wear a saved outfit
+  wearOutfit(outfitName: string): boolean {
+    const itemIds = this.outfits.get(outfitName);
+    if (!itemIds || itemIds.length === 0) {
+      return false;
+    }
+
+    // Remove all currently worn items
+    this.wornItems.clear();
+
+    // Try to wear each item in the outfit
+    let successCount = 0;
+    itemIds.forEach(itemId => {
+      // Find the item in inventory
+      const itemIndex = this.inventory.findIndex(item => item.getId() === itemId);
+      if (itemIndex !== -1) {
+        const item = this.inventory[itemIndex];
+        if (this.wearItem(item)) {
+          successCount++;
+        }
+      }
+    });
+
+    return successCount > 0;
+  }
+
+  // Get all saved outfit names
+  getOutfitNames(): string[] {
+    return Array.from(this.outfits.keys());
+  }
+
+  // Delete a saved outfit
+  deleteOutfit(outfitName: string): boolean {
+    return this.outfits.delete(outfitName);
+  }
+
+  // Check if an outfit exists
+  hasOutfit(outfitName: string): boolean {
+    return this.outfits.has(outfitName);
   }
 } 

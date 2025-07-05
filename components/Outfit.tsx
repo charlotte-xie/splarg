@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Item from '../classes/Item';
+import Player from '../classes/Player';
 import { WEAR_TYPES, WEAR_LAYERS, WearType, WearLayer, createWearLocation } from '../classes/Item';
 import InventorySlot from './InventorySlot';
 import Button from './Button';
+import ItemDetails from './ItemDetails';
 
 interface OutfitProps {
-  wornItems: Map<string, Item>;
-  onSlotClick?: (wearLocation: string, item: Item | null) => void;
+  player: Player;
+  onPlayerUpdate: (player: Player) => void;
   selectedSlot?: string;
+  onSlotClick?: (wearLocation: string, item: Item | null) => void;
 }
 
-export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitProps) {
+export default function Outfit({ 
+  player, 
+  onPlayerUpdate,
+  selectedSlot,
+  onSlotClick
+}: OutfitProps) {
+  const [outfitName, setOutfitName] = useState('');
+  const [selectedOutfit, setSelectedOutfit] = useState('');
+
+  const wornItems = player.getWornItems();
+
   // Define the wear areas we want to display in order
   const allWearAreas: WearType[] = [
     WEAR_TYPES.head,
@@ -85,6 +98,53 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
     return false;
   };
 
+  // Get the selected item
+  const selectedItem = selectedSlot ? wornItems.get(selectedSlot) : null;
+
+  // Create action buttons for the selected worn item
+  const getActionButtons = (item: Item) => {
+    return [
+      {
+        label: 'Remove',
+        variant: 'danger' as const,
+        onClick: () => {
+          if (selectedSlot) {
+            // Remove the item from worn items
+            const removedItem = player.removeWornItem(selectedSlot);
+            if (removedItem) {
+              // Add the item back to inventory
+              player.addItem(removedItem);
+              onPlayerUpdate(player);
+            }
+          }
+        }
+      }
+    ];
+  };
+
+  const handleSaveOutfit = () => {
+    if (outfitName.trim()) {
+      if (player.saveOutfit(outfitName.trim())) {
+        setOutfitName('');
+        onPlayerUpdate(player);
+        console.log(`Saved outfit: ${outfitName.trim()}`);
+      } else {
+        console.log('Failed to save outfit');
+      }
+    }
+  };
+
+  const handleWearOutfit = () => {
+    if (selectedOutfit) {
+      if (player.wearOutfit(selectedOutfit)) {
+        onPlayerUpdate(player);
+        console.log(`Wearing outfit: ${selectedOutfit}`);
+      } else {
+        console.log('Failed to wear outfit');
+      }
+    }
+  };
+
   return (
     <div className="outfit">
       <h4>Equipment</h4>
@@ -151,6 +211,106 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
           })}
         </div>
         
+        {/* Selected Item Details */}
+        {selectedItem && (
+          <ItemDetails 
+            item={selectedItem}
+            actionButtons={getActionButtons(selectedItem)}
+          />
+        )}
+        
+        {/* Outfit Management */}
+        <div style={{
+          marginTop: '16px',
+          padding: '12px',
+          backgroundColor: '#1a202c',
+          borderRadius: '6px',
+          border: '1px solid #4a5568'
+        }}>
+          <h5 style={{ 
+            margin: '0 0 12px 0', 
+            color: '#d69e2e',
+            fontSize: '13px'
+          }}>
+            Outfit Management
+          </h5>
+          
+          {/* Save Outfit */}
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            alignItems: 'center',
+            marginBottom: '12px'
+          }}>
+            <input
+              type="text"
+              placeholder="Outfit name..."
+              value={outfitName}
+              onChange={(e) => setOutfitName(e.target.value)}
+              style={{
+                flex: 1,
+                padding: '6px 8px',
+                backgroundColor: '#2d3748',
+                border: '1px solid #4a5568',
+                borderRadius: '4px',
+                color: '#e2e8f0',
+                fontSize: '12px'
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleSaveOutfit();
+                }
+              }}
+            />
+            <Button
+              variant="primary"
+              size="small"
+              onClick={handleSaveOutfit}
+              disabled={!outfitName.trim()}
+            >
+              Save
+            </Button>
+          </div>
+          
+          {/* Wear Outfit */}
+          {player.getOutfitNames().length > 0 && (
+            <div style={{
+              display: 'flex',
+              gap: '8px',
+              alignItems: 'center'
+            }}>
+              <select
+                value={selectedOutfit}
+                onChange={(e) => setSelectedOutfit(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: '6px 8px',
+                  backgroundColor: '#2d3748',
+                  border: '1px solid #4a5568',
+                  borderRadius: '4px',
+                  color: '#e2e8f0',
+                  fontSize: '12px'
+                }}
+              >
+                <option value="">Select outfit...</option>
+                {player.getOutfitNames().map(outfitName => (
+                  <option key={outfitName} value={outfitName}>
+                    {outfitName}
+                  </option>
+                ))}
+              </select>
+              <Button
+                variant="success"
+                size="small"
+                onClick={handleWearOutfit}
+                disabled={!selectedOutfit}
+              >
+                Wear
+              </Button>
+            </div>
+          )}
+        </div>
+        
         <div style={{
           marginTop: '16px',
           padding: '8px',
@@ -161,6 +321,7 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
         }}>
           <div>Equipped Items: {wornItems.size}</div>
           <div>Available Slots: {wearAreas.length * 3}</div>
+          <div>Saved Outfits: {player.getOutfitNames().length}</div>
         </div>
       </div>
     </div>

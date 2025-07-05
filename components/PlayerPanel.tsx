@@ -126,6 +126,8 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
     }
   };
 
+
+
   const tabs = [
     {
       id: 'stats',
@@ -134,20 +136,21 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
       content: <PlayerStats stats={stats} onStatsUpdate={onStatsUpdate} />
     },
     {
-      id: 'outfit',
-      icon: 'apparel',
-      label: 'Outfit',
-      content: <Outfit 
-        wornItems={player.getWornItems()} 
-        onSlotClick={handleOutfitSlotClick}
-        selectedSlot={selectedOutfitSlot}
-      />
-    },
-    {
       id: 'inventory',
       icon: 'money_bag',
       label: 'Inventory',
       content: <Inventory items={inventory} onDropItem={handleDropItem} onUseItem={handleUseItem} onWearItem={handleWearItem} />
+    },
+    {
+      id: 'outfit',
+      icon: 'apparel',
+      label: 'Outfit',
+      content: <Outfit 
+        player={player}
+        onPlayerUpdate={onPlayerUpdate || (() => {})}
+        onSlotClick={handleOutfitSlotClick}
+        selectedSlot={selectedOutfitSlot}
+      />
     },
     {
       id: 'controls',
