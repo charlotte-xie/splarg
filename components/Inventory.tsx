@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import InventorySlot from './InventorySlot';
+import { useState } from 'react';
 import Item from '../classes/Item';
-import Button from './Button';
+import InventorySlot from './InventorySlot';
 import ItemDetails from './ItemDetails';
 
 interface InventoryProps {
@@ -24,6 +23,9 @@ export default function Inventory({
   const MIN_SLOTS = 20;
   const SLOTS_PER_ROW = 5;
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
+  
+  // Use fixed 5-column grid with proper sizing
+  const gridTemplateColumns = `repeat(${SLOTS_PER_ROW}, 36px)`;
   
   // Calculate how many slots we need (at least MIN_SLOTS, or more if we have more items)
   const totalSlots = Math.max(MIN_SLOTS, items.length);
@@ -109,25 +111,27 @@ export default function Inventory({
         borderRadius: '8px',
         border: '1px solid #4a5568',
         width: '100%',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        minWidth: 0,
+        overflow: 'hidden'
       }}>
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: `repeat(${SLOTS_PER_ROW}, 1fr)`, 
+          gridTemplateColumns: gridTemplateColumns, 
           gap: '5px',
+          justifyContent: 'center',
           width: '100%'
         }}>
           {Array.from({ length: totalSlots }, (_, index) => {
             const item = index < items.length ? items[index] : null;
             return (
-              <div key={index} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                <InventorySlot
-                  item={item}
-                  size={36}
-                  selected={index === selectedItemIndex}
-                  onClick={() => handleSlotClick(index)}
-                />
-              </div>
+              <InventorySlot
+                key={index}
+                item={item}
+                size={36}
+                selected={index === selectedItemIndex}
+                onClick={() => handleSlotClick(index)}
+              />
             );
           })}
         </div>
@@ -150,21 +154,6 @@ export default function Inventory({
             actionButtons={getActionButtons(selectedItem)}
           />
         )}
-        
-        <div style={{
-          marginTop: '16px',
-          padding: '8px',
-          backgroundColor: '#1a202c',
-          borderRadius: '4px',
-          fontSize: '12px',
-          color: '#a0aec0'
-        }}>
-          <div>Total Items: {items.length}</div>
-          <div>Total Slots: {totalSlots}</div>
-          {selectedItem && (
-            <div>Selected: {selectedItem.getName()}</div>
-          )}
-        </div>
       </div>
     </div>
   );

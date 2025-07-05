@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import Game from '../classes/Game';
 import Item from '../classes/Item';
-import Player from '../classes/Player';
 import Avatar from './Avatar';
 import Box from './Box';
 import Controls from './Controls';
@@ -9,86 +9,112 @@ import Outfit from './Outfit';
 import PlayerStats from './PlayerStats';
 import TabbedPanel from './TabbedPanel';
 
-interface PlayerProps {
-  player: Player;
-  onStatsUpdate: (stats: Partial<Player['stats']>) => void;
-  onPlayerUpdate?: (player: Player) => void;
+interface PlayerPanelProps {
+  game: Game;
+  onUpdate: () => void;
 }
 
-export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: PlayerProps) {
-  const { position, stats, inventory } = player;
+export default function PlayerPanel({ 
+  game,
+  onUpdate
+}: PlayerPanelProps) {
+  const player = game.getPlayer();
+  const [selectedInventorySlot, setSelectedInventorySlot] = useState<number | undefined>(undefined);
   const [selectedOutfitSlot, setSelectedOutfitSlot] = useState<string | undefined>(undefined);
 
-  const handleDropItem = (index: number, item: Item) => {
-    if (onPlayerUpdate) {
+  const handleInventorySlotClick = (index: number, item: Item | null) => {
+    if (selectedInventorySlot === index) {
+      setSelectedInventorySlot(undefined);
+    } else {
+      setSelectedInventorySlot(index);
+    }
+    // Clear outfit selection when inventory is selected
+    setSelectedOutfitSlot(undefined);
+  };
+
+  const handleOutfitSlotClick = (wearLocation: string, item: Item | null) => {
+    if (selectedOutfitSlot === wearLocation) {
+      setSelectedOutfitSlot(undefined);
+    } else {
+      setSelectedOutfitSlot(wearLocation);
+    }
+    // Clear inventory selection when outfit is selected
+    setSelectedInventorySlot(undefined);
+  };
+
+  const handleWearItem = (index: number, item: Item) => {
+    if (player.wearItem(item)) {
+      // Remove the item from inventory
       player.removeItem(index);
-      onPlayerUpdate(player);
+      onUpdate();
+      game.addMessage(`Wore ${item.getName()}`, 'success');
+    } else {
+      game.addMessage(`Cannot wear ${item.getName()}`, 'error');
+    }
+  };
+
+  const handleDropItem = (index: number, item: Item) => {
+    try {
+      const removedItem = player.removeItem(index);
+      if (removedItem) {
+        onUpdate();
+        game.addMessage(`Dropped ${removedItem.getName()}`, 'success');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        game.addMessage(error.message, 'error');
+      } else {
+        game.addMessage('Failed to drop item', 'error');
+      }
     }
   };
 
   const handleUseItem = (index: number, item: Item) => {
-    if (onPlayerUpdate) {
-      // Handle different item types
-      switch (item.getId()) {
-        case 'healthPotion':
-          player.heal(50);
-          // Remove one potion from stack
-          if (item.getQuantity() > 1) {
-            item.setQuantity(item.getQuantity() - 1);
-          } else {
-            player.removeItem(index);
-          }
-          break;
-        case 'manaPotion':
-          // Add mana restoration logic here when implemented
-          console.log('Used mana potion');
-          // Remove one potion from stack
-          if (item.getQuantity() > 1) {
-            item.setQuantity(item.getQuantity() - 1);
-          } else {
-            player.removeItem(index);
-          }
-          break;
-        case 'bread':
-          player.heal(10);
-          // Remove one bread from stack
-          if (item.getQuantity() > 1) {
-            item.setQuantity(item.getQuantity() - 1);
-          } else {
-            player.removeItem(index);
-          }
-          break;
-        default:
-          console.log(`Used ${item.getName()}`);
-          break;
-      }
-      onPlayerUpdate(player);
+    // Handle different item types
+    switch (item.getId()) {
+      case 'healthPotion':
+        player.heal(50);
+        // Remove one potion from stack
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          player.removeItem(index);
+        }
+        break;
+      case 'manaPotion':
+        // Add mana restoration logic here when implemented
+        console.log('Used mana potion');
+        // Remove one potion from stack
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          player.removeItem(index);
+        }
+        break;
+      case 'bread':
+        player.heal(10);
+        // Remove one bread from stack
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          player.removeItem(index);
+        }
+        break;
+      default:
+        console.log(`Used ${item.getName()}`);
+        break;
     }
+    onUpdate();
   };
 
-  const handleWearItem = (index: number, item: Item) => {
-    if (onPlayerUpdate) {
-      // Try to wear the item
-      if (player.wearItem(item)) {
-        // Remove the item from inventory
-        player.removeItem(index);
-        onPlayerUpdate(player);
-      } else {
-        console.log(`Cannot wear ${item.getName()}`);
-      }
-    }
+  const handleStatsUpdate = (stats: any) => {
+    player.updateStats(stats);
+    onUpdate();
   };
 
-  const handleOutfitSlotClick = (wearLocation: string, item: Item | null) => {
-    console.log(`Selected equipment slot: ${wearLocation}`, item);
-    
-    // If clicking the same slot, deselect it
-    if (selectedOutfitSlot === wearLocation) {
-      setSelectedOutfitSlot(undefined);
-    } else {
-      // Select the new slot
-      setSelectedOutfitSlot(wearLocation);
-    }
+  const handlePlayerUpdate = (updatedPlayer: any) => {
+    game.updatePlayer(updatedPlayer);
+    onUpdate();
   };
 
   const tabs = [
@@ -96,21 +122,28 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
       id: 'stats',
       icon: 'article_person',
       label: 'Character Stats',
-      content: <PlayerStats stats={stats} onStatsUpdate={onStatsUpdate} />
+      content: <PlayerStats stats={player.stats} onStatsUpdate={handleStatsUpdate} />
     },
     {
       id: 'inventory',
       icon: 'money_bag',
       label: 'Inventory',
-      content: <Inventory items={inventory} onDropItem={handleDropItem} onUseItem={handleUseItem} onWearItem={handleWearItem} />
+      content: <Inventory
+        items={player.getInventory()}
+        selectedSlot={selectedInventorySlot}
+        onSlotClick={handleInventorySlotClick}
+        onWearItem={handleWearItem}
+        onDropItem={handleDropItem}
+        onUseItem={handleUseItem}
+      />
     },
     {
       id: 'outfit',
       icon: 'apparel',
       label: 'Outfit',
-      content: <Outfit 
-        player={player}
-        onPlayerUpdate={onPlayerUpdate || (() => {})}
+      content: <Outfit
+        game={game}
+        onPlayerUpdate={handlePlayerUpdate}
         onSlotClick={handleOutfitSlotClick}
         selectedSlot={selectedOutfitSlot}
       />
@@ -125,17 +158,20 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
 
   return (
     <div className="player-panel">
-      <div className="avatar-section">
-        <Box variant="brass" style={{ padding: '3px', aspectRatio: '1 / 1' }}>
-          <Avatar 
-            src="/images/avatar.png" 
-            alt="Player Character"
-            className="player-avatar"
-          />
-        </Box>
+      {/* Avatar Section */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+      }}>
+        <div style={{ width: '100%' }}>
+          <Box>
+            <Avatar size={64} />
+          </Box>
+        </div>
       </div>
 
-      <TabbedPanel tabs={tabs} defaultTab="stats" />
+      <TabbedPanel tabs={tabs} />
     </div>
   );
 } 

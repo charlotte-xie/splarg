@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Game from '../classes/Game';
 import DebugPanel from './DebugPanel';
 import GameWindow from './GameWindow';
+import MessagePanel from './MessagePanel';
 import PlayerPanel from './PlayerPanel';
 import TileMap from './TileMap';
 
@@ -138,12 +139,8 @@ export default function GameScreen() {
     >
       <div className="game-content">
         <PlayerPanel 
-          player={game.getPlayer()}
-          onStatsUpdate={(stats) => { game.updatePlayerStats(stats); updateGame(); }}
-          onPlayerUpdate={(updatedPlayer) => { 
-            game.updatePlayer(updatedPlayer); 
-            updateGame(); 
-          }}
+          game={game}
+          onUpdate={updateGame}
         />
         <div className="game-main">
           <div className="game-header">
@@ -171,6 +168,7 @@ export default function GameScreen() {
               hoveredTile={hoveredTile}
             />
           </GameWindow>
+          <MessagePanel game={game} />
           <div className="area-selector">
             <h3>Available Areas</h3>
             <div className="area-list">
@@ -198,6 +196,7 @@ export default function GameScreen() {
           game={game}
           onGameUpdate={updateGame}
         />
+
       </div>
 
       {hoveredTile && hoveredTile.tile && (

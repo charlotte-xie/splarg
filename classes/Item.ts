@@ -45,7 +45,7 @@ export class ItemType {
   public locations?: WearType[];
   public restricted?: boolean;
 
-  constructor({ id, name, description, symbol, stackable = false, wearable = false, layer, locations, restricted = false }: {
+  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false }: {
     id: string;
     name: string;
     description: string;
@@ -60,8 +60,13 @@ export class ItemType {
     this.name = name;
     this.description = description;
     this.symbol = symbol;
-    this.stackable = stackable;
-    this.wearable = wearable;
+    
+    // An item is wearable if it has layer/locations or explicitly set to wearable
+    this.wearable = wearable ?? (!!(layer || locations));
+    
+    // An item is stackable by default unless it's wearable or explicitly set to false
+    this.stackable = stackable ?? !this.wearable;
+    
     this.layer = layer;
     this.locations = locations;
     this.restricted = restricted;
@@ -74,22 +79,19 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     id: 'healthPotion',
     name: 'Health Potion',
     description: 'A red potion that restores 50 health points when consumed.',
-    symbol: '🧪',
-    stackable: true
+    symbol: '🧪'
   }),
   manaPotion: new ItemType({
     id: 'manaPotion',
     name: 'Mana Potion',
     description: 'A blue potion that restores 30 mana points when consumed.',
-    symbol: '🔮',
-    stackable: true
+    symbol: '🔮'
   }),
   ironSword: new ItemType({
     id: 'ironSword',
     name: 'Iron Sword',
     description: 'A sturdy iron sword that deals 15-20 damage. Basic but reliable.',
     symbol: '⚔️',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.hand]
   }),
@@ -98,7 +100,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Leather Armor',
     description: 'Light leather armor that provides 5 defense points.',
     symbol: '🛡️',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
   }),
@@ -107,7 +108,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Steampunk Long Coat',
     description: 'A stylish long coat with brass buttons and leather trim.',
     symbol: '🧥',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.chest, WEAR_TYPES.belly, WEAR_TYPES.arm]
   }),
@@ -116,7 +116,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Leather Boots',
     description: 'Sturdy leather boots with steel toe caps.',
     symbol: '👢',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.feet]
   }),
@@ -125,7 +124,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Steampunk Vest',
     description: 'A fitted vest with brass buttons and leather trim.',
     symbol: '🎽',
-    wearable: true,
     layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
   }),
@@ -134,7 +132,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Leather Gloves',
     description: 'Fine leather gloves with brass knuckle reinforcements.',
     symbol: '🧤',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.hand]
   }),
@@ -143,7 +140,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Wool Scarf',
     description: 'A warm wool scarf with steampunk patterns.',
     symbol: '🧣',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.neck]
   }),
@@ -152,7 +148,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Steampunk Glasses',
     description: 'Brass-framed glasses with intricate gears and lenses. Provides a stylish view of the world.',
     symbol: '👓',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.eyes]
   }),
@@ -161,7 +156,6 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Blindfold',
     description: 'A dark cloth blindfold that completely blocks vision.',
     symbol: '🕶️',
-    wearable: true,
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.eyes],
     restricted: true
@@ -170,23 +164,22 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     id: 'goldCoin',
     name: 'Gold Coin',
     description: 'A shiny gold coin.',
-    symbol: '🪙',
-    stackable: true
+    symbol: '🪙'
   }),
   bread: new ItemType({
     id: 'bread',
     name: 'Bread',
     description: 'Fresh baked bread that restores 10 health points.',
-    symbol: '🍞',
-    stackable: true
+    symbol: '🍞'
   })
 };
 
 export default class Item {
   public number: number;
   public type: ItemType;
+  public locked: boolean;
 
-  constructor(typeOrId: ItemType | string, quantity: number = 1) {
+  constructor(typeOrId: ItemType | string, quantity: number = 1, locked: boolean = false) {
     // If first parameter is a string, look up the item type
     if (typeof typeOrId === 'string') {
       const itemType = ITEM_TYPES[typeOrId];
@@ -199,6 +192,7 @@ export default class Item {
     }
     
     this.number = Math.max(1, quantity);
+    this.locked = locked;
   }
 
   canStack(other?: Item): boolean {
@@ -237,6 +231,10 @@ export default class Item {
 
   isRestricted(): boolean {
     return !!this.type.restricted;
+  }
+
+  isLocked(): boolean {
+    return this.locked;
   }
 
   getLayer(): WearLayer | undefined {

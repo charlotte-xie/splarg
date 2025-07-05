@@ -99,6 +99,7 @@ export default class Player {
 
   removeItem(index: number): Item | null {
     if (index >= 0 && index < this.inventory.length) {
+      const item = this.inventory[index];
       return this.inventory.splice(index, 1)[0] || null;
     }
     return null;
@@ -175,6 +176,11 @@ export default class Player {
   removeWornItem(wearLocation: string): Item | undefined {
     const item = this.wornItems.get(wearLocation);
     if (item) {
+      // Check if the item is locked
+      if (item.isLocked()) {
+        throw new Error(`Cannot remove locked item: ${item.getName()}`);
+      }
+      
       // Remove the item from all its wear locations
       const wearLocations = item.getWearLocations();
       if (wearLocations) {

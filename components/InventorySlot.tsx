@@ -1,5 +1,6 @@
 import React from 'react';
 import Item from '../classes/Item';
+import { Utils } from '../classes/Utils';
 
 interface InventorySlotProps {
   item: Item | null;
@@ -66,7 +67,24 @@ export default function InventorySlot({
                 lineHeight: 1
               }}
             >
-              {item.getQuantity() > 99 ? '99+' : item.getQuantity()}
+              {Utils.displayNumber(item.getQuantity())}
+            </div>
+          )}
+          
+          {/* Lock indicator */}
+          {item.isLocked() && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '2px',
+                right: '2px',
+                color: '#f56565',
+                fontSize: size * 0.3,
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                lineHeight: 1
+              }}
+            >
+              🔒
             </div>
           )}
           

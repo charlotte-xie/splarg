@@ -1,6 +1,6 @@
+import Area from './Area';
 import Player from './Player';
 import World from './World';
-import Area from './Area';
 
 interface GameSettings {
   soundEnabled: boolean;
@@ -26,6 +26,13 @@ type GameEvent = {
 };
 
 type GameEventCallback = (event: GameEvent) => void;
+
+type GameMessage = {
+  id: string;
+  text: string;
+  type: 'info' | 'warning' | 'error' | 'success';
+  timestamp: number;
+};
 
 /**
  * Game model class
@@ -55,6 +62,7 @@ export default class Game {
   public lastUpdate: number;
   public events: GameEvent[];
   public listeners: Map<string, GameEventCallback[]>;
+  public messages: GameMessage[];
   private gameLoop?: NodeJS.Timeout;
 
   constructor() {
@@ -82,6 +90,7 @@ export default class Game {
     this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
     this.events = [];
     this.listeners = new Map();
+    this.messages = [];
     this.initializeGame();
   }
 
@@ -323,6 +332,35 @@ export default class Game {
 
   getAvailableAreas(): any[] {
     return this.world.getAvailableAreas();
+  }
+
+  // Message System
+  addMessage(text: string, type: 'info' | 'warning' | 'error' | 'success' = 'info'): void {
+    const message: GameMessage = {
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      text,
+      type,
+      timestamp: Date.now()
+    };
+    
+    this.messages.push(message);
+    
+    // Keep only the last 20 messages
+    if (this.messages.length > 20) {
+      this.messages = this.messages.slice(-20);
+    }
+  }
+
+  removeMessage(messageId: string): void {
+    this.messages = this.messages.filter(msg => msg.id !== messageId);
+  }
+
+  clearMessages(): void {
+    this.messages = [];
+  }
+
+  getMessages(): GameMessage[] {
+    return [...this.messages];
   }
 
   // Cleanup

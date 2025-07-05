@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
-import Item, { WEAR_LAYERS, WEAR_TYPES, WearLayer, WearType, createWearLocation } from '../classes/Item';
-import Player from '../classes/Player';
-import Button from './Button';
+import React from 'react';
+import Game from '../classes/Game';
+import Item, { createWearLocation, WEAR_LAYERS, WEAR_TYPES, WearLayer, WearType } from '../classes/Item';
 import InventorySlot from './InventorySlot';
 import ItemDetails from './ItemDetails';
+import OutfitManagement from './OutfitManagement';
 
 interface OutfitProps {
-  player: Player;
-  onPlayerUpdate: (player: Player) => void;
+  game: Game;
+  onPlayerUpdate: (player: any) => void;
   selectedSlot?: string;
   onSlotClick?: (wearLocation: string, item: Item | null) => void;
 }
 
 export default function Outfit({ 
-  player, 
+  game,
   onPlayerUpdate,
   selectedSlot,
   onSlotClick
 }: OutfitProps) {
-  const [outfitName, setOutfitName] = useState('');
-  const [selectedOutfit, setSelectedOutfit] = useState('');
-
+  const player = game.getPlayer();
   const wornItems = player.getWornItems();
 
   // Use all wear types from the Item class
@@ -96,40 +94,27 @@ export default function Outfit({
         variant: 'danger' as const,
         onClick: () => {
           if (selectedSlot) {
-            // Remove the item from worn items
-            const removedItem = player.removeWornItem(selectedSlot);
-            if (removedItem) {
-              // Add the item back to inventory
-              player.addItem(removedItem);
-              onPlayerUpdate(player);
+            try {
+              // Remove the item from worn items
+              const removedItem = player.removeWornItem(selectedSlot);
+              if (removedItem) {
+                // Add the item back to inventory
+                player.addItem(removedItem);
+                onPlayerUpdate(player);
+                game.addMessage(`Removed ${removedItem.getName()} from ${selectedSlot}`, 'success');
+              }
+            } catch (error) {
+              // Handle locked item exception
+              if (error instanceof Error) {
+                game.addMessage(error.message, 'error');
+              } else {
+                game.addMessage('Failed to remove item', 'error');
+              }
             }
           }
         }
       }
     ];
-  };
-
-  const handleSaveOutfit = () => {
-    if (outfitName.trim()) {
-      if (player.saveOutfit(outfitName.trim())) {
-        setOutfitName('');
-        onPlayerUpdate(player);
-        console.log(`Saved outfit: ${outfitName.trim()}`);
-      } else {
-        console.log('Failed to save outfit');
-      }
-    }
-  };
-
-  const handleWearOutfit = () => {
-    if (selectedOutfit) {
-      if (player.wearOutfit(selectedOutfit)) {
-        onPlayerUpdate(player);
-        console.log(`Wearing outfit: ${selectedOutfit}`);
-      } else {
-        console.log('Failed to wear outfit');
-      }
-    }
   };
 
   return (
@@ -145,7 +130,7 @@ export default function Outfit({
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '80px min-content min-content min-content',
+          gridTemplateColumns: '80px 40px 40px 40px',
           gap: '0px',
           alignItems: 'center',
           fontSize: '13px',
@@ -207,109 +192,10 @@ export default function Outfit({
         )}
         
         {/* Outfit Management */}
-        <div style={{
-          marginTop: '16px',
-          padding: '12px',
-          backgroundColor: '#1a202c',
-          borderRadius: '6px',
-          border: '1px solid #4a5568'
-        }}>
-          <h5 style={{ 
-            margin: '0 0 12px 0', 
-            color: '#d69e2e',
-            fontSize: '13px'
-          }}>
-            Outfit Management
-          </h5>
-          
-          {/* Save Outfit */}
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            alignItems: 'center',
-            marginBottom: '12px'
-          }}>
-            <input
-              type="text"
-              placeholder="Outfit name..."
-              value={outfitName}
-              onChange={(e) => setOutfitName(e.target.value)}
-              style={{
-                flex: 1,
-                padding: '6px 8px',
-                backgroundColor: '#2d3748',
-                border: '1px solid #4a5568',
-                borderRadius: '4px',
-                color: '#e2e8f0',
-                fontSize: '12px'
-              }}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  handleSaveOutfit();
-                }
-              }}
-            />
-            <Button
-              variant="primary"
-              size="small"
-              onClick={handleSaveOutfit}
-              disabled={!outfitName.trim()}
-            >
-              Save
-            </Button>
-          </div>
-          
-          {/* Wear Outfit */}
-          {player.getOutfitNames().length > 0 && (
-            <div style={{
-              display: 'flex',
-              gap: '8px',
-              alignItems: 'center'
-            }}>
-              <select
-                value={selectedOutfit}
-                onChange={(e) => setSelectedOutfit(e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: '6px 8px',
-                  backgroundColor: '#2d3748',
-                  border: '1px solid #4a5568',
-                  borderRadius: '4px',
-                  color: '#e2e8f0',
-                  fontSize: '12px'
-                }}
-              >
-                <option value="">Select outfit...</option>
-                {player.getOutfitNames().map(outfitName => (
-                  <option key={outfitName} value={outfitName}>
-                    {outfitName}
-                  </option>
-                ))}
-              </select>
-              <Button
-                variant="success"
-                size="small"
-                onClick={handleWearOutfit}
-                disabled={!selectedOutfit}
-              >
-                Wear
-              </Button>
-            </div>
-          )}
-        </div>
-        
-        <div style={{
-          marginTop: '16px',
-          padding: '8px',
-          backgroundColor: '#1a202c',
-          borderRadius: '4px',
-          fontSize: '13px',
-          color: '#a0aec0'
-        }}>
-          <div>Equipped Items: {wornItems.size}</div>
-          <div>Available Slots: {wearAreas.length * 3}</div>
-          <div>Saved Outfits: {player.getOutfitNames().length}</div>
-        </div>
+        <OutfitManagement 
+          game={game}
+          onPlayerUpdate={onPlayerUpdate}
+        />
       </div>
     </div>
   );

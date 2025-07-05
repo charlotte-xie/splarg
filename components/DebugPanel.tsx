@@ -36,6 +36,24 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     onGameUpdate();
   };
 
+  const handleLockAllWornItems = () => {
+    const player = game.getPlayer();
+    const wornItems = player.getWornItems();
+    
+    // Get unique worn items (since items can span multiple locations)
+    const uniqueWornItems = new Set<Item>();
+    wornItems.forEach((item) => {
+      uniqueWornItems.add(item);
+    });
+    
+    // Lock all unique worn items
+    uniqueWornItems.forEach(item => {
+      (item as any).locked = true;
+    });
+    
+    onGameUpdate();
+  };
+
   return (
     <div className="debug-panel" style={{
       marginTop: '16px',
@@ -89,6 +107,14 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
           onClick={handleResetPlayer}
         >
           Reset Player
+        </Button>
+        
+        <Button
+          variant="secondary"
+          size="small"
+          onClick={handleLockAllWornItems}
+        >
+          Lock All Worn
         </Button>
       </div>
     </div>

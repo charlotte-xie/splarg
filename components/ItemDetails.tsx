@@ -1,4 +1,3 @@
-import React from 'react';
 import Item from '../classes/Item';
 import Button from './Button';
 
@@ -17,8 +16,8 @@ interface ItemDetailsProps {
 export default function ItemDetails({ item, actionButtons }: ItemDetailsProps) {
   return (
     <div style={{
-      marginTop: '16px',
-      padding: '12px',
+      marginTop: '3px',
+      padding: '6px',
       backgroundColor: '#1a202c',
       borderRadius: '6px',
       border: '1px solid #d69e2e',
