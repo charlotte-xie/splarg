@@ -35,4 +35,28 @@ export default class Item {
     }
     return !!this.type.stackable;
   }
+
+  getName(): string {
+    return this.type.name;
+  }
+
+  getDescription(): string {
+    return this.type.description;
+  }
+
+  getId(): string {
+    return this.type.id;
+  }
+
+  isStackable(): boolean {
+    return !!this.type.stackable;
+  }
+
+  getQuantity(): number {
+    return this.number;
+  }
+
+  hasMultiple(): boolean {
+    return this.number > 1;
+  }
 } 

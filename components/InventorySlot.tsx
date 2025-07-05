@@ -1,0 +1,108 @@
+import React from 'react';
+import Item from '../classes/Item';
+
+interface InventorySlotProps {
+  item: Item | null;
+  size?: number;
+  className?: string;
+  onClick?: () => void;
+  selected?: boolean;
+}
+
+export default function InventorySlot({ 
+  item, 
+  size = 48, 
+  className = "",
+  onClick,
+  selected = false
+}: InventorySlotProps) {
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  return (
+    <div
+      className={`inventory-slot ${className}`}
+      onClick={handleClick}
+      style={{
+        width: size,
+        height: size,
+        border: selected ? '2px solid #d69e2e' : '1px solid #4a5568',
+        borderRadius: '4px',
+        backgroundColor: item ? '#1a202c' : '#2d3748',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: 'all 0.2s ease',
+        fontSize: size * 0.4,
+        color: '#e2e8f0'
+      }}
+    >
+      {item ? (
+        <>
+          {/* Item symbol/icon */}
+          <span style={{ fontSize: size * 0.5 }}>
+            📦
+          </span>
+          
+          {/* Quantity indicator */}
+          {item.hasMultiple() && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '2px',
+                right: '2px',
+                backgroundColor: '#d69e2e',
+                color: '#1a202c',
+                borderRadius: '50%',
+                width: size * 0.3,
+                height: size * 0.3,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: size * 0.2,
+                fontWeight: 'bold',
+                border: '1px solid #1a202c'
+              }}
+            >
+              {item.getQuantity() > 99 ? '99+' : item.getQuantity()}
+            </div>
+          )}
+          
+          {/* Tooltip on hover */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-40px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              backgroundColor: '#1a202c',
+              color: '#e2e8f0',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              whiteSpace: 'nowrap',
+              opacity: 0,
+              pointerEvents: 'none',
+              transition: 'opacity 0.2s ease',
+              zIndex: 1000,
+              border: '1px solid #4a5568'
+            }}
+            className="slot-tooltip"
+          >
+            {item.getName()}
+            {item.hasMultiple() && ` (${item.getQuantity()})`}
+          </div>
+        </>
+      ) : (
+        <span style={{ color: '#4a5568', fontSize: size * 0.3 }}>
+          ⬚
+        </span>
+      )}
+    </div>
+  );
+} 
