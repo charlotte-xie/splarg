@@ -137,8 +137,12 @@ export default function GameScreen() {
     >
       <div className="game-content">
         <PlayerPanel 
-          player={gameState.player}
+          player={game.getPlayer()}
           onStatsUpdate={(stats: any) => { game.updatePlayerStats(stats); updateGame(); }}
+          onPlayerUpdate={(updatedPlayer: any) => { 
+            game.updatePlayer(updatedPlayer); 
+            updateGame(); 
+          }}
         />
         <div className="game-main">
           <div className="game-header">

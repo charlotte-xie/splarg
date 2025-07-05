@@ -46,7 +46,7 @@ export default function InventorySlot({
         <>
           {/* Item symbol/icon */}
           <span style={{ fontSize: size * 0.5 }}>
-            📦
+            {item.getSymbol()}
           </span>
           
           {/* Quantity indicator */}
@@ -77,25 +77,34 @@ export default function InventorySlot({
           <div
             style={{
               position: 'absolute',
-              top: '-40px',
+              top: '-60px',
               left: '50%',
               transform: 'translateX(-50%)',
               backgroundColor: '#1a202c',
               color: '#e2e8f0',
-              padding: '4px 8px',
-              borderRadius: '4px',
+              padding: '8px 12px',
+              borderRadius: '6px',
               fontSize: '12px',
               whiteSpace: 'nowrap',
               opacity: 0,
               pointerEvents: 'none',
               transition: 'opacity 0.2s ease',
               zIndex: 1000,
-              border: '1px solid #4a5568'
+              border: '1px solid #4a5568',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+              minWidth: '150px',
+              maxWidth: '200px',
+              textAlign: 'left'
             }}
             className="slot-tooltip"
           >
-            {item.getName()}
-            {item.hasMultiple() && ` (${item.getQuantity()})`}
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              {item.getName()}
+              {item.hasMultiple() && ` (${item.getQuantity()})`}
+            </div>
+            <div style={{ fontSize: '11px', color: '#a0aec0', whiteSpace: 'normal' }}>
+              {item.getDescription()}
+            </div>
           </div>
         </>
       ) : (
@@ -103,6 +112,12 @@ export default function InventorySlot({
           ⬚
         </span>
       )}
+      
+      <style jsx>{`
+        .inventory-slot:hover .slot-tooltip {
+          opacity: 1 !important;
+        }
+      `}</style>
     </div>
   );
 } 

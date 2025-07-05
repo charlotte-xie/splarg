@@ -208,6 +208,16 @@ export default class Game {
     });
   }
 
+  updatePlayer(player: Player): void {
+    this.player = player;
+    this.lastUpdate = Date.now();
+    this.triggerEvent({ 
+      type: 'playerUpdated', 
+      timestamp: Date.now(),
+      data: player 
+    });
+  }
+
   addScore(points: number): void {
     this.score += points;
     this.lastUpdate = Date.now();

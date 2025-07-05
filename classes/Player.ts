@@ -1,3 +1,5 @@
+import Item, { createExampleItems } from './Item';
+
 interface PlayerPosition {
   x: number;
   y: number;
@@ -19,10 +21,12 @@ interface PlayerStats {
 export default class Player {
   public position: PlayerPosition;
   public stats: PlayerStats;
+  public inventory: Item[];
 
   constructor(position: PlayerPosition = Player.defaultPosition(), stats: PlayerStats = Player.defaultStats()) {
     this.position = { ...position };
     this.stats = { ...stats };
+    this.inventory = createExampleItems();
   }
 
   static defaultStats(): PlayerStats {
@@ -76,5 +80,33 @@ export default class Player {
 
   addGold(amount: number): void {
     this.stats.gold += amount;
+  }
+
+  addItem(item: Item): void {
+    // Try to find an existing item to stack with
+    const existingItemIndex = this.inventory.findIndex(invItem => 
+      invItem.canStack(item)
+    );
+    
+    if (existingItemIndex !== -1) {
+      // Found an existing stack, add to it
+      const existingItem = this.inventory[existingItemIndex];
+      existingItem.stackWith(item);
+      return;
+    }
+    
+    // If no existing stack found, add as new item
+    this.inventory.push(item);
+  }
+
+  removeItem(index: number): Item | null {
+    if (index >= 0 && index < this.inventory.length) {
+      return this.inventory.splice(index, 1)[0] || null;
+    }
+    return null;
+  }
+
+  getInventory(): Item[] {
+    return this.inventory;
   }
 } 
