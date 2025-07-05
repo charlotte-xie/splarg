@@ -28,7 +28,7 @@ export default class Player {
   constructor(position: PlayerPosition = Player.defaultPosition(), stats: PlayerStats = Player.defaultStats()) {
     this.position = { ...position };
     this.stats = { ...stats };
-    this.inventory = createExampleItems();
+    this.inventory = [];
     this.wornItems = new Map();
     this.outfits = new Map();
   }
@@ -88,17 +88,11 @@ export default class Player {
 
   addItem(item: Item): void {
     // Try to find an existing item to stack with
-    const existingItemIndex = this.inventory.findIndex(invItem => 
-      invItem.canStack(item)
-    );
-    
-    if (existingItemIndex !== -1) {
-      // Found an existing stack, add to it
-      const existingItem = this.inventory[existingItemIndex];
+    const existingItem = this.inventory.find(invItem => invItem.canStack(item));
+    if (existingItem) {
       existingItem.stackWith(item);
       return;
     }
-    
     // If no existing stack found, add as new item
     this.inventory.push(item);
   }
@@ -135,6 +129,23 @@ export default class Player {
       }
     });
     
+    // Also check for items in the same body parts but different layers
+    wearLocations.forEach(location => {
+      // Extract body part from location (e.g., "chest-outer" -> "chest")
+      const bodyPart = location.split('-')[0];
+      const layer = location.split('-')[1];
+      
+      // Check for items in the same body part but different layer
+      this.wornItems.forEach((existingItem, existingLocation) => {
+        const existingBodyPart = existingLocation.split('-')[0];
+        const existingLayer = existingLocation.split('-')[1];
+        
+        if (existingBodyPart === bodyPart && existingLayer !== layer) {
+          itemsToRemove.add(existingItem);
+        }
+      });
+    });
+    
     // Remove all existing items from their wear locations and add them back to inventory
     itemsToRemove.forEach(existingItem => {
       const existingWearLocations = existingItem.getWearLocations();
@@ -146,6 +157,12 @@ export default class Player {
       // Add the removed item back to inventory
       this.addItem(existingItem);
     });
+    
+    // Remove the item from inventory before wearing
+    const invIndex = this.inventory.indexOf(item);
+    if (invIndex !== -1) {
+      this.inventory.splice(invIndex, 1);
+    }
     
     // Add the new item to all its wear locations
     wearLocations.forEach(location => {
@@ -165,6 +182,8 @@ export default class Player {
           this.wornItems.delete(location);
         });
       }
+      // Add the removed item back to inventory
+      this.addItem(item);
     }
     return item;
   }
@@ -212,8 +231,18 @@ export default class Player {
       return false;
     }
 
-    // Remove all currently worn items
+    // Remove all currently worn items and add them back to inventory
+    const currentlyWornItems = new Set<Item>();
+    this.wornItems.forEach((item) => {
+      currentlyWornItems.add(item);
+    });
+    
     this.wornItems.clear();
+    
+    // Add all removed items back to inventory
+    currentlyWornItems.forEach(item => {
+      this.addItem(item);
+    });
 
     // Try to wear each item in the outfit
     let successCount = 0;
