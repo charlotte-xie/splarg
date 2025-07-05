@@ -1,3 +1,20 @@
+// Wear location types for equipment
+export const WEAR_TYPES = {
+  head: 'head',
+  face: 'face',
+  neck: 'neck',
+  chest: 'chest',
+  belly: 'belly',
+  arm: 'arm',
+  hand: 'hand',
+  waist: 'waist',
+  hips: 'hips',
+  legs: 'legs',
+  feet: 'feet'
+} as const;
+
+export type WearType = typeof WEAR_TYPES[keyof typeof WEAR_TYPES];
+
 export class ItemType {
   public id: string;
   public name: string;
@@ -5,14 +22,16 @@ export class ItemType {
   public symbol: string;
   public stackable?: boolean;
   public wearable?: boolean;
+  public wearLocation?: WearType;
 
-  constructor({ id, name, description, symbol, stackable, wearable }: {
+  constructor({ id, name, description, symbol, stackable = false, wearable = false, wearLocation }: {
     id: string;
     name: string;
     description: string;
     symbol: string;
     stackable?: boolean;
     wearable?: boolean;
+    wearLocation?: WearType;
   }) {
     this.id = id;
     this.name = name;
@@ -20,6 +39,7 @@ export class ItemType {
     this.symbol = symbol;
     this.stackable = stackable;
     this.wearable = wearable;
+    this.wearLocation = wearLocation;
   }
 }
 
@@ -30,48 +50,44 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'Health Potion',
     description: 'A red potion that restores 50 health points when consumed.',
     symbol: '🧪',
-    stackable: true,
-    wearable: false
+    stackable: true
   }),
   manaPotion: new ItemType({
     id: 'manaPotion',
     name: 'Mana Potion',
     description: 'A blue potion that restores 30 mana points when consumed.',
     symbol: '🔮',
-    stackable: true,
-    wearable: false
+    stackable: true
   }),
   ironSword: new ItemType({
     id: 'ironSword',
     name: 'Iron Sword',
     description: 'A sturdy iron sword that deals 15-20 damage. Basic but reliable.',
     symbol: '⚔️',
-    stackable: false,
-    wearable: true
+    wearable: true,
+    wearLocation: WEAR_TYPES.hand
   }),
   leatherArmor: new ItemType({
     id: 'leatherArmor',
     name: 'Leather Armor',
     description: 'Light leather armor that provides 5 defense points.',
     symbol: '🛡️',
-    stackable: false,
-    wearable: true
+    wearable: true,
+    wearLocation: WEAR_TYPES.chest
   }),
   goldCoin: new ItemType({
     id: 'goldCoin',
     name: 'Gold Coin',
-    description: 'A shiny gold coin worth 1 gold piece.',
+    description: 'A shiny gold coin.',
     symbol: '🪙',
-    stackable: true,
-    wearable: false
+    stackable: true
   }),
   bread: new ItemType({
     id: 'bread',
     name: 'Bread',
     description: 'Fresh baked bread that restores 10 health points.',
     symbol: '🍞',
-    stackable: true,
-    wearable: false
+    stackable: true
   })
 };
 
@@ -126,6 +142,10 @@ export default class Item {
 
   isWearable(): boolean {
     return !!this.type.wearable;
+  }
+
+  getWearLocation(): WearType | undefined {
+    return this.type.wearLocation;
   }
 
   getQuantity(): number {

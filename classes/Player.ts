@@ -22,11 +22,13 @@ export default class Player {
   public position: PlayerPosition;
   public stats: PlayerStats;
   public inventory: Item[];
+  public wornItems: Map<string, Item>;
 
   constructor(position: PlayerPosition = Player.defaultPosition(), stats: PlayerStats = Player.defaultStats()) {
     this.position = { ...position };
     this.stats = { ...stats };
     this.inventory = createExampleItems();
+    this.wornItems = new Map();
   }
 
   static defaultStats(): PlayerStats {
@@ -108,5 +110,35 @@ export default class Player {
 
   getInventory(): Item[] {
     return this.inventory;
+  }
+
+  wearItem(item: Item): boolean {
+    if (!item.isWearable()) {
+      return false;
+    }
+    
+    const wearLocation = item.getWearLocation();
+    if (!wearLocation) {
+      return false;
+    }
+    
+    // Remove any existing item in that slot
+    this.wornItems.delete(wearLocation);
+    
+    // Add the new item
+    this.wornItems.set(wearLocation, item);
+    return true;
+  }
+
+  removeWornItem(wearLocation: string): Item | undefined {
+    return this.wornItems.get(wearLocation);
+  }
+
+  getWornItems(): Map<string, Item> {
+    return this.wornItems;
+  }
+
+  isWearingItem(wearLocation: string): boolean {
+    return this.wornItems.has(wearLocation);
   }
 } 

@@ -101,21 +101,14 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
 
   const handleWearItem = (index: number, item: Item) => {
     if (onPlayerUpdate) {
-      // Handle wearing different item types
-      switch (item.getId()) {
-        case 'ironSword':
-          console.log('Equipped iron sword');
-          // Add equipment logic here when implemented
-          break;
-        case 'leatherArmor':
-          console.log('Equipped leather armor');
-          // Add equipment logic here when implemented
-          break;
-        default:
-          console.log(`Wore ${item.getName()}`);
-          break;
+      // Try to wear the item
+      if (player.wearItem(item)) {
+        // Remove the item from inventory
+        player.removeItem(index);
+        onPlayerUpdate(player);
+      } else {
+        console.log(`Cannot wear ${item.getName()}`);
       }
-      onPlayerUpdate(player);
     }
   };
 
@@ -136,7 +129,15 @@ export default function PlayerPanel({ player, onStatsUpdate, onPlayerUpdate }: P
       id: 'outfit',
       icon: 'apparel',
       label: 'Outfit',
-      content: <Outfit />
+      content: <Outfit wornItems={player.getWornItems()} onRemoveItem={(wearLocation) => {
+        if (onPlayerUpdate) {
+          const removedItem = player.removeWornItem(wearLocation);
+          if (removedItem) {
+            player.addItem(removedItem);
+            onPlayerUpdate(player);
+          }
+        }
+      }} />
     },
     {
       id: 'controls',
