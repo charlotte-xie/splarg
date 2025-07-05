@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import InventorySlot from './InventorySlot';
 import Item from '../classes/Item';
 import Button from './Button';
+import ItemDetails from './ItemDetails';
 
 interface InventoryProps {
   items?: Item[];
@@ -67,6 +68,38 @@ export default function Inventory({
     ? items[selectedItemIndex] 
     : null;
 
+  // Create action buttons for the selected item
+  const getActionButtons = (item: Item) => {
+    const buttons: Array<{
+      label: string;
+      variant: 'primary' | 'secondary' | 'success' | 'danger';
+      onClick: () => void;
+      disabled?: boolean;
+    }> = [
+      {
+        label: 'Use',
+        variant: 'primary',
+        onClick: handleUseItem
+      }
+    ];
+
+    if (item.isWearable()) {
+      buttons.push({
+        label: 'Wear',
+        variant: 'success',
+        onClick: handleWearItem
+      });
+    }
+
+    buttons.push({
+      label: 'Drop',
+      variant: 'danger',
+      onClick: handleDropItem
+    });
+
+    return buttons;
+  };
+
   return (
     <div className="inventory">
       <h4>Inventory</h4>
@@ -112,91 +145,10 @@ export default function Inventory({
         
         {/* Selected Item Details */}
         {selectedItem && (
-          <div style={{
-            marginTop: '16px',
-            padding: '12px',
-            backgroundColor: '#1a202c',
-            borderRadius: '6px',
-            border: '1px solid #d69e2e',
-            color: '#e2e8f0'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '8px'
-            }}>
-              <span style={{ fontSize: '20px' }}>{selectedItem.getSymbol()}</span>
-              <h5 style={{ 
-                margin: 0, 
-                color: '#d69e2e',
-                fontSize: '14px'
-              }}>
-                {selectedItem.getName()}
-                {selectedItem.hasMultiple() && ` (${selectedItem.getQuantity()})`}
-              </h5>
-            </div>
-            <p style={{
-              margin: '8px 0',
-              fontSize: '12px',
-              color: '#a0aec0',
-              lineHeight: '1.4'
-            }}>
-              {selectedItem.getDescription()}
-            </p>
-            <div style={{
-              fontSize: '11px',
-              color: '#718096',
-              borderTop: '1px solid #4a5568',
-              paddingTop: '8px',
-              marginTop: '8px',
-              marginBottom: '12px'
-            }}>
-              <div>Type: {selectedItem.getId()}</div>
-              <div>Stackable: {selectedItem.isStackable() ? 'Yes' : 'No'}</div>
-              {selectedItem.hasMultiple() && (
-                <div>Quantity: {selectedItem.getQuantity()}</div>
-              )}
-              {selectedItem.isWearable() && (
-                <div style={{ marginTop: '4px' }}>
-                  <div style={{ color: '#d69e2e', fontWeight: '500' }}>Equipment:</div>
-                  <div>Layer: {selectedItem.getLayer()}</div>
-                  <div>Locations: {selectedItem.getLocations()?.join(', ') || 'None'}</div>
-                </div>
-              )}
-            </div>
-            
-            {/* Action Buttons */}
-            <div style={{
-              display: 'flex',
-              gap: '8px',
-              justifyContent: 'flex-end'
-            }}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={handleUseItem}
-              >
-                Use
-              </Button>
-              {selectedItem.isWearable() && (
-                <Button
-                  variant="success"
-                  size="small"
-                  onClick={handleWearItem}
-                >
-                  Wear
-                </Button>
-              )}
-              <Button
-                variant="danger"
-                size="small"
-                onClick={handleDropItem}
-              >
-                Drop
-              </Button>
-            </div>
-          </div>
+          <ItemDetails 
+            item={selectedItem}
+            actionButtons={getActionButtons(selectedItem)}
+          />
         )}
         
         <div style={{

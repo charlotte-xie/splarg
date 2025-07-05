@@ -36,9 +36,20 @@ export default function Outfit({ wornItems, onSlotClick, selectedSlot }: OutfitP
     WEAR_TYPES.hand
   ];
 
-  // Determine which areas to show based on whether items are worn
-  const hasWornItems = wornItems.size > 0;
-  const wearAreas = hasWornItems ? allWearAreas : essentialAreas;
+  // Helper function to check if a wear area has any worn items
+  const hasWornItemsInArea = (wearArea: WearType): boolean => {
+    const outerItem = wornItems.get(createWearLocation(wearArea, WEAR_LAYERS.outer));
+    const innerItem = wornItems.get(createWearLocation(wearArea, WEAR_LAYERS.inner));
+    const underItem = wornItems.get(createWearLocation(wearArea, WEAR_LAYERS.under));
+    return !!(outerItem || innerItem || underItem);
+  };
+
+  // Determine which areas to show: essential areas + areas with worn items
+  const areasWithWornItems = allWearAreas.filter(hasWornItemsInArea);
+  const wearAreas = [...new Set([...essentialAreas, ...areasWithWornItems])].sort((a, b) => {
+    // Sort by the order they appear in allWearAreas
+    return allWearAreas.indexOf(a) - allWearAreas.indexOf(b);
+  });
 
   const handleSlotClick = (wearLocation: string, item: Item | null) => {
     if (onSlotClick) {
