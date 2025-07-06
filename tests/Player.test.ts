@@ -1,5 +1,5 @@
-import Player from '../classes/Player';
 import Item, { ITEM_TYPES } from '../classes/Item';
+import Player from '../classes/Player';
 
 // Test helper to create a Player without default items
 function createTestPlayer(): Player {
@@ -227,17 +227,43 @@ describe('Player Wear/Remove Behavior', () => {
     });
 
     test('should handle wearing same item multiple times', () => {
-      const sword = new Item(ITEM_TYPES.ironSword);
-      player.addItem(sword);
-
-      // Wear the same item twice
-      const result1 = player.wearItem(sword);
-      const result2 = player.wearItem(sword);
+      const item = new Item('steampunkGlasses', 1);
+      player.addItem(item);
       
+      const result = player.wearItem(item);
+      expect(result).toBe(true);
+      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.getInventory()).toHaveLength(0);
+    });
+
+    test('should handle multiple copies of same item without destroying them', () => {
+      const item1 = new Item('steampunkGlasses', 1);
+      const item2 = new Item('steampunkGlasses', 1);
+      
+      // Add both items to inventory
+      player.addItem(item1);
+      player.addItem(item2);
+      expect(player.getInventory()).toHaveLength(2);
+      
+      // Wear the first item
+      const result1 = player.wearItem(item1);
       expect(result1).toBe(true);
+      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.getInventory()).toHaveLength(1); // One item removed from inventory
+      
+      // Wear the second item - this should return the first item to inventory
+      const result2 = player.wearItem(item2);
       expect(result2).toBe(true);
-      expect(player.isWearingItem('hand-outer')).toBe(true);
-      expect(player.getInventory()).toHaveLength(0); // item still worn, not in inventory
+      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.getInventory()).toHaveLength(1); // Should still have 1 item in inventory
+      
+      // Verify the worn item is the second one
+      const wornItem = player.getWornItems().get('eyes-outer');
+      expect(wornItem).toBe(item2);
+      
+      // Verify the first item is back in inventory
+      const inventoryItem = player.getInventory()[0];
+      expect(inventoryItem).toBe(item1);
     });
   });
 

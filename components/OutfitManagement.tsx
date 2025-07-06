@@ -75,8 +75,6 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
         }
       });
       
-
-      
       if (removedCount > 0 && lockedCount > 0) {
         game.addMessage(`Removed ${removedCount} items, ${lockedCount} items were locked`, 'warning');
       } else if (removedCount > 0) {

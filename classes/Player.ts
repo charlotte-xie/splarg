@@ -160,7 +160,7 @@ export default class Player {
       }
     });
     
-    // Remove the item from inventory before wearing
+    // Remove the new item from inventory before wearing
     const invIndex = this.inventory.indexOf(item);
     if (invIndex !== -1) {
       this.inventory.splice(invIndex, 1);

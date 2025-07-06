@@ -169,28 +169,6 @@ export default function GameScreen() {
             />
           </GameWindow>
           <MessagePanel game={game} />
-          <div className="area-selector">
-            <h3>Available Areas</h3>
-            <div className="area-list">
-              {availableAreas.map((areaId: string) => {
-                const area = gameState.gameMap.areas[areaId];
-                const isCurrent = areaId === gameState.gameMap.currentAreaId;
-                return (
-                  <button
-                    key={areaId}
-                    className={`area-button ${isCurrent ? 'current' : ''}`}
-                    onClick={() => handleAreaChange(areaId)}
-                    disabled={isCurrent}
-                  >
-                    <div className="area-name">{area.type.name}</div>
-                    <div className="area-status">
-                      {area.visited ? 'Visited' : 'Discovered'}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
         </div>
         <DebugPanel
           game={game}

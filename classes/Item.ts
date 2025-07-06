@@ -77,19 +77,19 @@ export class ItemType {
 export const ITEM_TYPES: Record<string, ItemType> = {
   healthPotion: new ItemType({
     id: 'healthPotion',
-    name: 'Health Potion',
+    name: 'health potion',
     description: 'A red potion that restores 50 health points when consumed.',
     symbol: '🧪'
   }),
   manaPotion: new ItemType({
     id: 'manaPotion',
-    name: 'Mana Potion',
+    name: 'mana potion',
     description: 'A blue potion that restores 30 mana points when consumed.',
     symbol: '🔮'
   }),
   ironSword: new ItemType({
     id: 'ironSword',
-    name: 'Iron Sword',
+    name: 'iron sword',
     description: 'A sturdy iron sword that deals 15-20 damage. Basic but reliable.',
     symbol: '⚔️',
     layer: WEAR_LAYERS.outer,
@@ -97,7 +97,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   leatherArmor: new ItemType({
     id: 'leatherArmor',
-    name: 'Leather Armor',
+    name: 'leather armor',
     description: 'Light leather armor that provides 5 defense points.',
     symbol: '🛡️',
     layer: WEAR_LAYERS.outer,
@@ -105,7 +105,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   longCoat: new ItemType({
     id: 'longCoat',
-    name: 'Steampunk Long Coat',
+    name: 'steampunk long coat',
     description: 'A stylish long coat with brass buttons and leather trim.',
     symbol: '🧥',
     layer: WEAR_LAYERS.outer,
@@ -113,7 +113,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   boots: new ItemType({
     id: 'boots',
-    name: 'Leather Boots',
+    name: 'leather boots',
     description: 'Sturdy leather boots with steel toe caps.',
     symbol: '👢',
     layer: WEAR_LAYERS.outer,
@@ -121,7 +121,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   vest: new ItemType({
     id: 'vest',
-    name: 'Steampunk Vest',
+    name: 'steampunk vest',
     description: 'A fitted vest with brass buttons and leather trim.',
     symbol: '🎽',
     layer: WEAR_LAYERS.inner,
@@ -129,7 +129,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   gloves: new ItemType({
     id: 'gloves',
-    name: 'Leather Gloves',
+    name: 'leather gloves',
     description: 'Fine leather gloves with brass knuckle reinforcements.',
     symbol: '🧤',
     layer: WEAR_LAYERS.outer,
@@ -145,7 +145,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   steampunkGlasses: new ItemType({
     id: 'steampunkGlasses',
-    name: 'Steampunk Glasses',
+    name: 'steampunk glasses',
     description: 'Brass-framed glasses with intricate gears and lenses. Provides a stylish view of the world.',
     symbol: '👓',
     layer: WEAR_LAYERS.outer,
@@ -153,7 +153,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   blindfold: new ItemType({
     id: 'blindfold',
-    name: 'Blindfold',
+    name: 'blindfold',
     description: 'A dark cloth blindfold that completely blocks vision.',
     symbol: '🕶️',
     layer: WEAR_LAYERS.outer,
@@ -162,13 +162,13 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   goldCoin: new ItemType({
     id: 'goldCoin',
-    name: 'Gold Coin',
+    name: 'gold coin',
     description: 'A shiny gold coin.',
     symbol: '🪙'
   }),
   bread: new ItemType({
     id: 'bread',
-    name: 'Bread',
+    name: 'bread',
     description: 'Fresh baked bread that restores 10 health points.',
     symbol: '🍞'
   })
