@@ -99,23 +99,6 @@ body {
   min-height: 0;
 }
 
-.player-header {
-  text-align: center;
-  border-bottom: 2px solid var(--brass);
-}
-
-.player-header h3 {
-  color: var(--accent);
-  font-size: 1.1rem;
-  margin-bottom: 2px;
-  font-family: var(--font-display);
-}
-
-.player-position {
-  font-size: 0.9rem;
-  color: var(--parchment);
-}
-
 .stats-section, .attributes-section, .resources-section {
   display: flex;
   flex-direction: column;
@@ -142,16 +125,13 @@ body {
 }
 
 .stat-label {
-  font-weight: 500;
+  font-weight: 400;
   color: var(--parchment);
 }
 
 .stat-value {
-  font-weight: bold;
   color: var(--accent);
 }
-
-
 
 .experience-bar {
   width: 100%;

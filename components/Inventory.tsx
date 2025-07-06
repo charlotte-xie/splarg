@@ -104,16 +104,7 @@ export default function Inventory({
 
   return (
     <div className="inventory">
-      <div style={{ 
-        padding: '6px', 
-        backgroundColor: 'var(--leather-dark)', 
-        borderRadius: '8px',
-        border: '1px solid #4a5568',
-        width: '100%',
-        boxSizing: 'border-box',
-        minWidth: 0,
-        overflow: 'hidden'
-      }}>
+      <div >
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: gridTemplateColumns, 

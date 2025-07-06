@@ -100,8 +100,8 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
         </div>
       </div>
 
-      <div className="attributes-section">
-        <h4>Attributes</h4>
+      <div>
+        <h3>Attributes</h3>
         <div className="stat-row">
           <span className="stat-label">Strength:</span>
           <span className="stat-value">{stats.strength}</span>

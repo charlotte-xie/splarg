@@ -53,8 +53,8 @@ export const TILE_TYPES: Record<string, TileType> = {
     color: '#6b7280',
     symbol: '🪨',
     textColor: '#ffffff',
-    walkable: true,
-    description: 'Solid stone walls and floors'
+    walkable: false,
+    description: 'Solid stone wall'
   }),
   sand: new TileType({
     id: 'sand',
