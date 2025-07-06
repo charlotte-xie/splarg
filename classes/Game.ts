@@ -173,10 +173,12 @@ export default class Game {
     const newX = this.player.position.x + dx;
     const newY = this.player.position.y + dy;
     if (newX < 0 || newX >= currentArea.type.width || newY < 0 || newY >= currentArea.type.height) {
+      // TODO: move to new area
       return false;
     }
     const targetTile = currentArea.getTile(newX, newY);
     if (!targetTile || !targetTile.isWalkable()) {
+      this.addMessage("Blocked by " +(targetTile?targetTile.getDescription():"the void"))
       return false;
     }
     this.player.position.x = newX;
