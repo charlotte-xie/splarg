@@ -12,6 +12,7 @@ interface OutfitProps {
   onSlotClick?: (wearLocation: string, item: Item | null) => void;
 }
 
+/* Component for displaying the player's outfit slots and details of equiped items */
 export default function Outfit({ 
   game,
   onPlayerUpdate,
@@ -120,19 +121,10 @@ export default function Outfit({
   };
 
   return (
-    <div className="outfit">
-      <h4>Equipment</h4>
-      <div style={{ 
-        padding: '6px', 
-        backgroundColor: 'var(--leather-dark)', 
-        borderRadius: '8px',
-        border: '1px solid #4a5568',
-        width: '100%',
-        boxSizing: 'border-box'
-      }}>
-        <div style={{
+    <div>
+      <div style={{
           display: 'grid',
-          gridTemplateColumns: '80px 40px 40px 40px',
+          gridTemplateColumns: '80px 48px 48px 48px',
           gap: '0px',
           alignItems: 'center',
           fontSize: '13px',
@@ -164,19 +156,16 @@ export default function Outfit({
                 </div>
                 <InventorySlot
                   item={outerItem || null}
-                  size={32}
                   selected={isSlotSelected(wearArea, WEAR_LAYERS.outer, outerItem)}
                   onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.outer), outerItem || null)}
                 />
                 <InventorySlot
                   item={innerItem || null}
-                  size={32}
                   selected={isSlotSelected(wearArea, WEAR_LAYERS.inner, innerItem)}
                   onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.inner), innerItem || null)}
                 />
                 <InventorySlot
                   item={underItem || null}
-                  size={32}
                   selected={isSlotSelected(wearArea, WEAR_LAYERS.under, underItem)}
                   onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.under), underItem || null)}
                 />
@@ -198,7 +187,6 @@ export default function Outfit({
           game={game}
           onPlayerUpdate={onPlayerUpdate}
         />
-      </div>
     </div>
   );
 } 

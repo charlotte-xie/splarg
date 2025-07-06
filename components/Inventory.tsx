@@ -21,11 +21,11 @@ export default function Inventory({
   onWearItem
 }: InventoryProps) {
   const MIN_SLOTS = 20;
-  const SLOTS_PER_ROW = 5;
+  const SLOTS_PER_ROW = 4;
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
   
   // Use fixed 5-column grid with proper sizing
-  const gridTemplateColumns = `repeat(${SLOTS_PER_ROW}, 36px)`;
+  const gridTemplateColumns = `repeat(${SLOTS_PER_ROW}, 48px)`;
   
   // Calculate how many slots we need (at least MIN_SLOTS, or more if we have more items)
   const totalSlots = Math.max(MIN_SLOTS, items.length);
@@ -104,7 +104,6 @@ export default function Inventory({
 
   return (
     <div className="inventory">
-      <h4>Inventory</h4>
       <div style={{ 
         padding: '6px', 
         backgroundColor: 'var(--leather-dark)', 
@@ -128,7 +127,6 @@ export default function Inventory({
               <InventorySlot
                 key={index}
                 item={item}
-                size={36}
                 selected={index === selectedItemIndex}
                 onClick={() => handleSlotClick(index)}
               />
