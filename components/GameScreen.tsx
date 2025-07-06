@@ -153,7 +153,7 @@ export default function GameScreen() {
               hoveredTile={hoveredTile}
             />
           </GameWindow>
-          <MessagePanel game={game} />
+          <MessagePanel game={game} onUpdate={updateGame} />
         </div>
         <DebugPanel
           game={game}

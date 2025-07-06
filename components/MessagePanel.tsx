@@ -4,9 +4,10 @@ import Button from './Button';
 
 interface MessagePanelProps {
   game: Game;
+  onUpdate: () => void;
 }
 
-export default function MessagePanel({ game }: MessagePanelProps) {
+export default function MessagePanel({ game, onUpdate }: MessagePanelProps) {
   const messages = game.getMessages();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -18,15 +19,18 @@ export default function MessagePanel({ game }: MessagePanelProps) {
     scrollToBottom();
   }, [messages]);
 
-
-
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString();
   };
 
+  const handleClearMessages = () => {
+    game.clearMessages();
+    onUpdate();
+  };
+
   return (
-    <div className="control-panel" style={{ maxHeight: '30vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="control-panel" style={{ maxHeight: '30vh', flex:1 , display: 'flex', flexDirection: 'column' }}>
       {/* Fixed Header */}
       <div className="control-panel-messages-header">
         <h5>
@@ -36,34 +40,25 @@ export default function MessagePanel({ game }: MessagePanelProps) {
       
       {/* Scrollable Messages Section */}
       <div className="control-panel-messages" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-        {messages.length === 0 ? (
-          <p data-type="empty">
-            No messages yet
+        {messages.map((message) => (
+          <p key={message.id} data-type={message.type}>
+            {message.text}
           </p>
-        ) : (
-          <>
-            {messages.map((message) => (
-              <p key={message.id} data-type={message.type}>
-                {message.text}
-              </p>
-            ))}
-            <div ref={messagesEndRef} />
-          </>
-        )}
+        ))}
+        <div ref={messagesEndRef} />
       </div>
       
       {/* Fixed Footer */}
-      {messages.length > 0 && (
-        <div className="control-panel-messages-footer">
-          <Button
-            onClick={() => game.clearMessages()}
-            variant="secondary"
-            size="small"
-          >
-            Clear Log
-          </Button>
-        </div>
-      )}
+      
+      <div className="control-panel-messages-footer">
+        <Button
+          onClick={handleClearMessages}
+          variant="secondary"
+          size="small"
+        >
+          Clear Log
+        </Button>
+      </div>
     </div>
   );
 } 
