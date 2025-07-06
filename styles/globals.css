@@ -65,26 +65,6 @@ body {
   overflow: hidden;
 }
 
-.game-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: linear-gradient(120deg, var(--brass) 60%, var(--copper) 100%);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px 0 rgba(68, 44, 15, 0.25);
-  border: 2px solid var(--iron);
-  font-family: var(--font-display);
-}
-
-.game-header h1 {
-  font-size: 2.5rem;
-  color: var(--accent);
-  text-shadow: 2px 2px 0 var(--shadow), 0 0 20px var(--brass);
-  letter-spacing: 2px;
-  font-family: var(--font-display);
-}
-
 .score, .play-time, .keyboard-indicator {
   font-size: 1.1rem;
   font-weight: bold;
@@ -392,6 +372,8 @@ body {
     repeating-linear-gradient(135deg, rgba(176,141,87,0.08) 0 10px, transparent 10px 20px),
     url('data:image/svg+xml;utf8,<svg width="40" height="120" viewBox="0 0 40 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="120" fill="%233b2412"/><path d="M10 0 Q15 20 10 40 Q5 60 10 80 Q15 100 10 120" stroke="%23543a1a" stroke-width="2" fill="none"/><path d="M30 0 Q25 20 30 40 Q35 60 30 80 Q25 100 30 120" stroke="%23543a1a" stroke-width="2" fill="none"/><ellipse cx="20" cy="60" rx="8" ry="40" fill="none" stroke="%23543a1a" stroke-width="1.5"/></svg>');
   background-blend-mode: multiply;
+  /* Ensure scrollbar stays inside border */
+  box-sizing: border-box;
 }
 
 /* Use Control panel for panels with text and buttons, dark blue background */
