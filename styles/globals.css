@@ -423,14 +423,8 @@ body {
 .control-panel-messages {
   display: flex;
   flex-direction: column;
-  height: 200px;
-}
-
-
-.control-panel-messages-content {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 12px;
 }
 
 .control-panel-messages-footer {
@@ -438,8 +432,6 @@ body {
   text-align: right;
   flex-shrink: 0;
 }
-
-
 
 .control-panel p {
   border-radius: 4px;
