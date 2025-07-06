@@ -559,10 +559,6 @@ body {
   height: 200px;
 }
 
-.control-panel-messages-header {
-  padding: 12px 12px 8px 12px;
-  flex-shrink: 0;
-}
 
 .control-panel-messages-content {
   flex: 1;
@@ -590,4 +586,48 @@ body {
 .control-panel-clear-button:hover {
   background-color: #2d3748;
   color: #e2e8f0;
+}
+
+.control-panel p {
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  border: 1px solid;
+  word-break: break-word;
+  margin: 4px 0;
+  padding: 8px;
+}
+
+.control-panel p[data-type="error"] {
+  background-color: #742a2a;
+  color: #fed7d7;
+  border-color: #9b2c2c;
+}
+
+.control-panel p[data-type="warning"] {
+  background-color: #744210;
+  color: #faf089;
+  border-color: #d69e2e;
+}
+
+.control-panel p[data-type="success"] {
+  background-color: #22543d;
+  color: #9ae6b4;
+  border-color: #38a169;
+}
+
+.control-panel p[data-type="info"] {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border-color: #4a5568;
+}
+
+.control-panel p[data-type="empty"] {
+  color: #718096;
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+  border: none;
+  background: none;
 } 

@@ -17,47 +17,7 @@ export default function MessagePanel({ game }: MessagePanelProps) {
     scrollToBottom();
   }, [messages]);
 
-  const getMessageStyle = (type: string) => {
-    const baseStyle = {
-      borderRadius: '4px',
-      fontSize: '14px',
-      lineHeight: '1.4',
-      border: '1px solid',
-      wordBreak: 'break-word' as const
-    };
 
-    switch (type) {
-      case 'error':
-        return {
-          ...baseStyle,
-          backgroundColor: '#742a2a',
-          color: '#fed7d7',
-          borderColor: '#9b2c2c'
-        };
-      case 'warning':
-        return {
-          ...baseStyle,
-          backgroundColor: '#744210',
-          color: '#faf089',
-          borderColor: '#d69e2e'
-        };
-      case 'success':
-        return {
-          ...baseStyle,
-          backgroundColor: '#22543d',
-          color: '#9ae6b4',
-          borderColor: '#38a169'
-        };
-      case 'info':
-      default:
-        return {
-          ...baseStyle,
-          backgroundColor: '#2d3748',
-          color: '#e2e8f0',
-          borderColor: '#4a5568'
-        };
-    }
-  };
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -76,23 +36,15 @@ export default function MessagePanel({ game }: MessagePanelProps) {
       {/* Scrollable Messages Section */}
       <div className="control-panel-messages-content">
         {messages.length === 0 ? (
-          <div style={{
-            color: '#718096',
-            fontSize: '12px',
-            fontStyle: 'italic',
-            textAlign: 'center',
-            padding: '20px'
-          }}>
+          <p data-type="empty">
             No messages yet
-          </div>
+          </p>
         ) : (
           <>
             {messages.map((message) => (
-              <div key={message.id} style={getMessageStyle(message.type)}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <span style={{ flex: 1 }}>{message.text}</span>
-                </div>
-              </div>
+              <p key={message.id} data-type={message.type}>
+                {message.text}
+              </p>
             ))}
             <div ref={messagesEndRef} />
           </>
