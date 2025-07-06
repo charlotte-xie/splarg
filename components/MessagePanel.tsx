@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import Game from '../classes/Game';
+import Button from './Button';
 
 interface MessagePanelProps {
   game: Game;
@@ -50,12 +51,13 @@ export default function MessagePanel({ game }: MessagePanelProps) {
       {/* Fixed Footer */}
       {messages.length > 0 && (
         <div className="control-panel-messages-footer">
-          <button
+          <Button
             onClick={() => game.clearMessages()}
-            className="control-panel-clear-button"
+            variant="secondary"
+            size="small"
           >
             Clear Log
-          </button>
+          </Button>
         </div>
       )}
     </div>

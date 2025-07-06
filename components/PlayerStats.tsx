@@ -1,4 +1,4 @@
-import React from 'react';
+import Button from './Button';
 
 interface PlayerStatsProps {
   stats: any;
@@ -51,13 +51,14 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
         <div className="stat-row">
           <span className="stat-label">Level:</span>
           <span className="stat-value">{stats.level}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="primary"
+            size="small"
             onClick={handleLevelUp}
             disabled={stats.experience < stats.experienceToNext}
           >
             Level Up
-          </button>
+          </Button>
         </div>
 
         <div className="stat-row">
@@ -75,25 +76,27 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
         <div className="stat-row">
           <span className="stat-label">Health:</span>
           <span className="stat-value">{stats.health} / {stats.maxHealth}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="success"
+            size="small"
             onClick={handleHeal}
             disabled={stats.health >= stats.maxHealth}
           >
             Heal
-          </button>
+          </Button>
         </div>
 
         <div className="stat-row">
           <span className="stat-label">Mana:</span>
           <span className="stat-value">{stats.mana} / {stats.maxMana}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="primary"
+            size="small"
             onClick={handleManaRestore}
             disabled={stats.mana >= stats.maxMana}
           >
             Restore
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -102,45 +105,49 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
         <div className="stat-row">
           <span className="stat-label">Strength:</span>
           <span className="stat-value">{stats.strength}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="secondary"
+            size="small"
             onClick={() => handleStatChange('strength', stats.strength + 1)}
           >
             +
-          </button>
+          </Button>
         </div>
         
         <div className="stat-row">
           <span className="stat-label">Dexterity:</span>
           <span className="stat-value">{stats.dexterity}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="secondary"
+            size="small"
             onClick={() => handleStatChange('dexterity', stats.dexterity + 1)}
           >
             +
-          </button>
+          </Button>
         </div>
         
         <div className="stat-row">
           <span className="stat-label">Intelligence:</span>
           <span className="stat-value">{stats.intelligence}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="secondary"
+            size="small"
             onClick={() => handleStatChange('intelligence', stats.intelligence + 1)}
           >
             +
-          </button>
+          </Button>
         </div>
         
         <div className="stat-row">
           <span className="stat-label">Constitution:</span>
           <span className="stat-value">{stats.constitution}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="secondary"
+            size="small"
             onClick={() => handleStatChange('constitution', stats.constitution + 1)}
           >
             +
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -148,12 +155,13 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
         <div className="stat-row">
           <span className="stat-label">Gold:</span>
           <span className="stat-value">{stats.gold}</span>
-          <button 
-            className="stat-button"
+          <Button 
+            variant="secondary"
+            size="small"
             onClick={() => handleStatChange('gold', stats.gold + 10)}
           >
             Add 10
-          </button>
+          </Button>
         </div>
       </div>
     </div>

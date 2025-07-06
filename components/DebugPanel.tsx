@@ -63,7 +63,6 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
       <div className="control-panel-grid">
         <Button
           variant="primary"
-          size="small"
           onClick={handleAddRandomItem}
         >
           Add Random Item
@@ -71,7 +70,6 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         
         <Button
           variant="primary"
-          size="small"
           onClick={handleAddGold}
         >
           Add 100 Gold
@@ -79,7 +77,6 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         
         <Button
           variant="success"
-          size="small"
           onClick={handleHealPlayer}
         >
           Heal Player
@@ -87,7 +84,6 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         
         <Button
           variant="danger"
-          size="small"
           onClick={handleResetPlayer}
         >
           Reset Player
@@ -95,7 +91,6 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         
         <Button
           variant="secondary"
-          size="small"
           onClick={handleLockAllWornItems}
         >
           Lock All Worn

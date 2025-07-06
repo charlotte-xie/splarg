@@ -157,30 +157,7 @@ body {
   color: var(--accent);
 }
 
-.stat-button {
-  background: var(--brass);
-  color: var(--iron);
-  border: 1.5px solid var(--iron);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: var(--font-secondary);
-  box-shadow: 0 1px 2px 0 rgba(68, 44, 15, 0.12);
-}
 
-.stat-button:hover:not(:disabled) {
-  background: var(--accent);
-  color: var(--shadow);
-  transform: translateY(-1px) scale(1.05);
-}
-
-.stat-button:disabled {
-  background: #666;
-  color: #999;
-  cursor: not-allowed;
-}
 
 .experience-bar {
   width: 100%;
@@ -536,30 +513,14 @@ body {
   flex-shrink: 0;
 }
 
-.control-panel-clear-button {
-  background: none;
-  border: 1px solid #4a5568;
-  color: #a0aec0;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
-.control-panel-clear-button:hover {
-  background-color: #2d3748;
-  color: #e2e8f0;
-}
 
 .control-panel p {
   border-radius: 4px;
   font-size: 14px;
   line-height: 1.4;
-  border: 1px solid;
   word-break: break-word;
-  margin: 4px 0;
-  padding: 8px;
+  padding: 2px;
 }
 
 .control-panel p[data-type="error"] {
@@ -594,4 +555,106 @@ body {
   padding: 20px;
   border: none;
   background: none;
+}
+
+/* Global Button Styles */
+.game-button {
+  border: 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 400;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: fit-content;
+  font-family: var(--font-secondary);
+}
+
+.game-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Button Sizes */
+.game-button--small {
+  padding: 6px 8px;
+  font-size: 10px;
+}
+
+.game-button--medium {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.game-button--large {
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+/* Button Variants */
+.game-button--primary {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border-color: #4a5568;
+}
+
+.game-button--primary:hover:not(:disabled) {
+  background-color: #4a5568;
+}
+
+.game-button--primary:disabled {
+  background-color: #1a202c;
+  color: #718096;
+  border-color: #2d3748;
+}
+
+.game-button--secondary {
+  background-color: #1a202c;
+  color: #e2e8f0;
+  border-color: #4a5568;
+}
+
+.game-button--secondary:hover:not(:disabled) {
+  background-color: #2d3748;
+}
+
+.game-button--secondary:disabled {
+  background-color: #0f1419;
+  color: #718096;
+  border-color: #2d3748;
+}
+
+.game-button--danger {
+  background-color: #742a2a;
+  color: #e2e8f0;
+  border-color: #9b2c2c;
+}
+
+.game-button--danger:hover:not(:disabled) {
+  background-color: #9b2c2c;
+}
+
+.game-button--danger:disabled {
+  background-color: #4a1a1a;
+  color: #718096;
+  border-color: #742a2a;
+}
+
+.game-button--success {
+  background-color: #22543d;
+  color: #e2e8f0;
+  border-color: #38a169;
+}
+
+.game-button--success:hover:not(:disabled) {
+  background-color: #38a169;
+}
+
+.game-button--success:disabled {
+  background-color: #1a3a2a;
+  color: #718096;
+  border-color: #22543d;
 } 
