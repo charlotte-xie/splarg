@@ -143,15 +143,6 @@ export default function GameScreen() {
           onUpdate={updateGame}
         />
         <div className="game-main">
-          <div className="game-header">
-            <h1>Splarg - {currentArea?.type.name || 'Unknown Area'}</h1>
-            <div className="game-status">
-              <span className="score">Score: {gameState.score}</span>
-              <span className="play-time">
-                Play Time: {Math.floor(gameState.progress.totalPlayTime / 1000)}s
-              </span>
-            </div>
-          </div>
           
           <GameWindow>
             <TileMap
