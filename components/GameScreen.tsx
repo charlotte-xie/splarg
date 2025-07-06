@@ -146,15 +146,9 @@ export default function GameScreen() {
           <div className="game-header">
             <h1>Splarg - {currentArea?.type.name || 'Unknown Area'}</h1>
             <div className="game-status">
-              <span className={`status-indicator ${gameState.status}`}>
-                {gameState.status.toUpperCase()}
-              </span>
               <span className="score">Score: {gameState.score}</span>
               <span className="play-time">
                 Play Time: {Math.floor(gameState.progress.totalPlayTime / 1000)}s
-              </span>
-              <span className="debug-info">
-                Player: ({gameState.player.position.x}, {gameState.player.position.y}) {isClient && `| Updates: ${gameState.lastUpdate || 0}`}
               </span>
             </div>
           </div>

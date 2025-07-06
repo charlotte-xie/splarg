@@ -25,16 +25,13 @@ export default function MessagePanel({ game }: MessagePanelProps) {
   };
 
   return (
-    <div className="control-panel control-panel-messages">
+    <div className="control-panel">
       {/* Fixed Header */}
-      <div className="control-panel-messages-header">
         <h5>
           Message Log
         </h5>
-      </div>
       
       {/* Scrollable Messages Section */}
-      <div className="control-panel-messages-content">
         {messages.length === 0 ? (
           <p data-type="empty">
             No messages yet
@@ -49,7 +46,6 @@ export default function MessagePanel({ game }: MessagePanelProps) {
             <div ref={messagesEndRef} />
           </>
         )}
-      </div>
       
       {/* Fixed Footer */}
       {messages.length > 0 && (
