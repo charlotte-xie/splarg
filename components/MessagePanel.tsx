@@ -65,31 +65,16 @@ export default function MessagePanel({ game }: MessagePanelProps) {
   };
 
   return (
-    <div style={{
-      marginTop: '16px',
-      backgroundColor: '#1a202c',
-      borderRadius: '6px',
-      border: '1px solid #4a5568',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '200px'
-    }}>
+    <div className="control-panel control-panel-messages">
       {/* Fixed Header */}
-      <div style={{
-        padding: '12px 12px 8px 12px',
-        flexShrink: 0
-      }}>
-        <h5 className="message-panel-header">
+      <div className="control-panel-messages-header">
+        <h5>
           Message Log
         </h5>
       </div>
       
       {/* Scrollable Messages Section */}
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: '8px 12px'
-      }}>
+      <div className="control-panel-messages-content">
         {messages.length === 0 ? (
           <div style={{
             color: '#718096',
@@ -116,31 +101,10 @@ export default function MessagePanel({ game }: MessagePanelProps) {
       
       {/* Fixed Footer */}
       {messages.length > 0 && (
-        <div style={{
-          padding: '8px 12px 12px 12px',
-          textAlign: 'right',
-          flexShrink: 0
-        }}>
+        <div className="control-panel-messages-footer">
           <button
             onClick={() => game.clearMessages()}
-            style={{
-              background: 'none',
-              border: '1px solid #4a5568',
-              color: '#a0aec0',
-              padding: '4px 8px',
-              borderRadius: '3px',
-              fontSize: '10px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#2d3748';
-              e.currentTarget.style.color = '#e2e8f0';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#a0aec0';
-            }}
+            className="control-panel-clear-button"
           >
             Clear Log
           </button>

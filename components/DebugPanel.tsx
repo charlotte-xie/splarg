@@ -55,28 +55,12 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   };
 
   return (
-    <div className="debug-panel" style={{
-      marginTop: '16px',
-      padding: '12px',
-      backgroundColor: '#1a202c',
-      borderRadius: '6px',
-      border: '1px solid #4a5568'
-    }}>
-      <h5 style={{ 
-        color: '#d69e2e', 
-        marginBottom: '8px', 
-        fontSize: '12px',
-        textTransform: 'uppercase',
-        letterSpacing: '1px'
-      }}>
+    <div className="control-panel">
+      <h5>
         Debug Controls
       </h5>
       
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '6px'
-      }}>
+      <div className="control-panel-grid">
         <Button
           variant="primary"
           size="small"

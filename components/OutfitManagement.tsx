@@ -103,35 +103,14 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
   };
 
   return (
-    <div style={{
-      marginTop: '16px',
-      padding: '12px',
-      backgroundColor: '#1a202c',
-      borderRadius: '6px',
-      border: '1px solid #4a5568'
-    }}>
-      <h5 style={{ 
-        color: '#d69e2e', 
-        marginBottom: '8px', 
-        fontSize: '12px',
-        textTransform: 'uppercase',
-        letterSpacing: '1px'
-      }}>
+    <div className="control-panel">
+      <h5>
         Outfit Management
       </h5>
       
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr',
-        gap: '8px'
-      }}>
+      <div className="control-panel-grid-single">
         {/* Save Outfit */}
-        <div style={{
-          display: 'flex',
-          gap: '6px',
-          alignItems: 'center',
-          minWidth: 0
-        }}>
+        <div className="control-panel-row">
           <input
             type="text"
             placeholder="Outfit name..."
@@ -142,18 +121,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
                 handleSaveOutfit();
               }
             }}
-            style={{
-              flex: 1,
-              padding: '6px 8px',
-              backgroundColor: '#2d3748',
-              border: '1px solid #4a5568',
-              borderRadius: '4px',
-              color: '#e2e8f0',
-              fontSize: '12px',
-              minWidth: 0,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}
+            className="control-panel-input"
           />
           <Button
             variant="primary"
@@ -167,27 +135,11 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
 
         {/* Wear Outfit */}
         {player.getOutfitNames().length > 0 && (
-          <div style={{
-            display: 'flex',
-            gap: '6px',
-            alignItems: 'center',
-            minWidth: 0
-          }}>
+          <div className="control-panel-row">
             <select
               value={selectedOutfit}
               onChange={(e) => setSelectedOutfit(e.target.value)}
-              style={{
-                flex: 1,
-                padding: '6px 8px',
-                backgroundColor: '#2d3748',
-                border: '1px solid #4a5568',
-                borderRadius: '4px',
-                color: '#e2e8f0',
-                fontSize: '12px',
-                minWidth: 0,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }}
+              className="control-panel-input"
             >
               <option value="">Select outfit...</option>
               {player.getOutfitNames().map(outfitName => (
