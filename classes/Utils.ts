@@ -12,10 +12,10 @@ export class Utils {
       return `${thousands}k`;
     } else if (number < 1000000000) {
       const millions = Math.floor(number / 1000000);
-      return `${millions}M`;
+      return `${millions}m`;
     } else {
       const billions = Math.floor(number / 1000000000);
-      return `${billions}B`;
+      return `${billions}b`;
     }
   }
 } 

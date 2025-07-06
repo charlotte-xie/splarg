@@ -1,5 +1,4 @@
-import React, { ReactNode } from 'react';
-import styles from './GameWindow.module.css';
+import { ReactNode } from 'react';
 
 interface GameWindowProps {
   children: ReactNode;
@@ -7,7 +6,7 @@ interface GameWindowProps {
 
 export default function GameWindow({ children }: GameWindowProps) {
   return (
-    <div className={styles.gameWindow}>
+    <div className="game-window">
       {children}
     </div>
   );
