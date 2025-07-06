@@ -108,7 +108,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
         Outfit Management
       </h5>
       
-      <div className="control-panel-grid-single">
+      <div className="control-panel-grid">
         {/* Save Outfit */}
         <div className="control-panel-row">
           <input

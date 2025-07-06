@@ -293,53 +293,9 @@ body {
   color: #a0a0a0;
 }
 
-.game-controls {
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 12px;
-  padding: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.game-controls h3 {
-  color: #c299fc;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.controls-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-.controls-grid > div {
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.controls-info {
-  margin-top: 20px;
-}
-
-.controls-info h4 {
-  color: #c299fc;
-  margin-bottom: 10px;
-}
-
-.control-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .control-key {
-  background: #c299fc;
-  color: #1a1a2e;
+  background: #d69e2e;
+  color: #1a202c;
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -348,7 +304,7 @@ body {
 
 .control-desc {
   font-size: 0.9rem;
-  color: #a0a0a0;
+  color: #e2e8f0;
 }
 
 .tile-info {
@@ -406,9 +362,7 @@ body {
     gap: 10px;
   }
   
-  .controls-grid {
-    grid-template-columns: 1fr;
-  }
+
   
   .tile-info {
     position: static;
@@ -458,14 +412,9 @@ body {
 
 .control-panel-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-}
-
-.control-panel-grid-single {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
+  grid-template-columns: auto 1fr;
+  gap: 8px 12px;
+  align-items: center;
 }
 
 .control-panel-input {
