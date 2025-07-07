@@ -17,7 +17,14 @@ export default function TabbedPanel({ tabs, defaultTab, className = "" }: Tabbed
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || '');
 
   return (
-    <div className={`tabbed-panel ${className}`}>
+    <div className={`tabbed-panel ${className}`} 
+       style={{
+        width: '100%',
+        minWidth:'350px',
+      height: '100%', 
+      flex: '1'
+    }}>
+
       <div className="tab-header" style={{
         display: 'flex',
         borderBottom: '2px solid #d69e2e',
@@ -56,7 +63,7 @@ export default function TabbedPanel({ tabs, defaultTab, className = "" }: Tabbed
       </div>
       
       <div className="tab-content" style={{
-        border: '1px solid #d69e2e',
+        border: '2px solid #d69e2e',
         borderTop: 'none',
         borderRadius: '0 0 8px 8px',
         padding: '16px',

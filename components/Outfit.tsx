@@ -122,6 +122,7 @@ export default function Outfit({
 
   return (
     <div className="control-panel-grid">
+      <h4>Currently Worn Outfit</h4>
       {/* The outfit grid */}
       <div style={{
           display: 'grid',
@@ -134,9 +135,9 @@ export default function Outfit({
         }}>
           {/* Header row */}
           <h5>Location</h5>
-          <h5>Outer</h5>
-          <h5>Inner</h5>
-          <h5>Under</h5>
+          <h5 style={{textAlign: 'center'}}>Outer</h5>
+          <h5 style={{textAlign: 'center'}}>Inner</h5>
+          <h5 style={{textAlign: 'center'}}>Under</h5>
           
           {/* Equipment rows */}
           {wearAreas.map((wearArea) => {

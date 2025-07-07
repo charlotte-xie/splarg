@@ -148,7 +148,7 @@ export default function TileMap({ area, playerPosition, player, onTileHover, hov
   };
 
   if (!area) {
-    return <div className="tile-map-loading">Loading map...</div>;
+    return <div>Loading map...</div>;
   }
 
   return (

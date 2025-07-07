@@ -159,16 +159,9 @@ export default function PlayerPanel({
   return (
     <div className="player-panel">
       {/* Avatar Section */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        boxSizing: 'border-box',
-        width: '300px'
-      }}>
-          <Box>
-            <Avatar size={128} />
-          </Box>
-      </div>
+      <Box>
+        <Avatar size={128} />
+      </Box>
 
       <TabbedPanel tabs={tabs} />
     </div>

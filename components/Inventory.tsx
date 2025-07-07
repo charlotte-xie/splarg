@@ -102,6 +102,7 @@ export default function Inventory({
 
   return (
     <div className="inventory">
+        <h4>Inventory</h4>
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: gridTemplateColumns, 

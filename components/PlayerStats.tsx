@@ -52,7 +52,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Level:</span>
           <span className="stat-value">{stats.level}</span>
           <Button 
-            variant="primary"
             size="small"
             onClick={handleLevelUp}
             disabled={stats.experience < stats.experienceToNext}
@@ -77,7 +76,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Health:</span>
           <span className="stat-value">{stats.health} / {stats.maxHealth}</span>
           <Button 
-            variant="success"
             size="small"
             onClick={handleHeal}
             disabled={stats.health >= stats.maxHealth}
@@ -90,7 +88,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Mana:</span>
           <span className="stat-value">{stats.mana} / {stats.maxMana}</span>
           <Button 
-            variant="primary"
             size="small"
             onClick={handleManaRestore}
             disabled={stats.mana >= stats.maxMana}
@@ -106,7 +103,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Strength:</span>
           <span className="stat-value">{stats.strength}</span>
           <Button 
-            variant="secondary"
             size="small"
             onClick={() => handleStatChange('strength', stats.strength + 1)}
           >
@@ -118,7 +114,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Dexterity:</span>
           <span className="stat-value">{stats.dexterity}</span>
           <Button 
-            variant="secondary"
             size="small"
             onClick={() => handleStatChange('dexterity', stats.dexterity + 1)}
           >
@@ -130,7 +125,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Intelligence:</span>
           <span className="stat-value">{stats.intelligence}</span>
           <Button 
-            variant="secondary"
             size="small"
             onClick={() => handleStatChange('intelligence', stats.intelligence + 1)}
           >
@@ -142,7 +136,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Constitution:</span>
           <span className="stat-value">{stats.constitution}</span>
           <Button 
-            variant="secondary"
             size="small"
             onClick={() => handleStatChange('constitution', stats.constitution + 1)}
           >
@@ -156,7 +149,6 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
           <span className="stat-label">Gold:</span>
           <span className="stat-value">{stats.gold}</span>
           <Button 
-            variant="secondary"
             size="small"
             onClick={() => handleStatChange('gold', stats.gold + 10)}
           >
