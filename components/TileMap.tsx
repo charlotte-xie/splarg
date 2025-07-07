@@ -43,7 +43,9 @@ export default function TileMap({ area, playerPosition, player, onTileHover, hov
       ctx.textBaseline = 'bottom';
       const spacing = TILE_SIZE / (itemSymbols.length + 1);
       itemSymbols.forEach((symbol, i) => {
-        ctx.fillText(symbol, tileX + spacing * (i + 1), tileY + TILE_SIZE - 2);
+        const sx = tileX + spacing * (i + 1);
+        const sy = tileY + TILE_SIZE - 2;
+        ctx.fillText(symbol, sx, sy);
       });
     }
   };
