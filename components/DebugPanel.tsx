@@ -60,7 +60,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         Debug Controls
       </h5>
       
-      <div className="control-panel-grid">
+      <div className="grid-container">
         <Button
           variant="primary"
           onClick={handleAddRandomItem}

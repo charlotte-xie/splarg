@@ -325,7 +325,14 @@ h5 {
   border: 1px solid #4a5568;
 }
 
-
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(0.5fr, 1fr));
+  gap: 8px; /* Fixed gap size */
+  justify-content: center; /* Pushes extra space to the edges */
+  width: 100%; /* Full container width */
+  box-sizing: border-box;
+}
 
 .control-panel-grid {
   display: grid;
@@ -419,10 +426,8 @@ h5 {
   transition: all 0.2s ease;
   font-weight: 400;
   text-align: center;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   min-width: fit-content;
   font-family: var(--font-secondary);
 }
