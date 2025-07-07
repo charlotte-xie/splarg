@@ -122,32 +122,13 @@ export default class Player {
     // Collect all existing items that need to be removed
     const itemsToRemove = new Set<Item>();
     
-    // Check each wear location for existing items
+    // Only remove items that overlap in the exact same wear location
     wearLocations.forEach(location => {
       const existingItem = this.wornItems.get(location);
       if (existingItem) {
         itemsToRemove.add(existingItem);
       }
     });
-    
-    // Also check for items in the same body parts but different layers
-    wearLocations.forEach(location => {
-      // Extract body part from location (e.g., "chest-outer" -> "chest")
-      const bodyPart = location.split('-')[0];
-      const layer = location.split('-')[1];
-      
-      // Check for items in the same body part but different layer
-      this.wornItems.forEach((existingItem, existingLocation) => {
-        const existingBodyPart = existingLocation.split('-')[0];
-        const existingLayer = existingLocation.split('-')[1];
-        
-        if (existingBodyPart === bodyPart && existingLayer !== layer) {
-          itemsToRemove.add(existingItem);
-        }
-      });
-    });
-    
-
     
     // Remove all existing items from their wear locations and add them back to inventory
     itemsToRemove.forEach(existingItem => {

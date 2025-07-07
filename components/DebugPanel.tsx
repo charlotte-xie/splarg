@@ -32,6 +32,18 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   const handleResetPlayer = () => {
     const newPlayer = new Player();
     createExampleItems().forEach(item => newPlayer.addItem(item));
+    // Add default outfit items
+    const defaultOutfitItems = [
+      new Item(ITEM_TYPES.leatherCorset, 1),
+      new Item(ITEM_TYPES.longSkirt, 1),
+      new Item(ITEM_TYPES.bra, 1),
+      new Item(ITEM_TYPES.plainPanties, 1),
+      new Item(ITEM_TYPES.socks, 1),
+      new Item(ITEM_TYPES.boots, 1)
+    ];
+    defaultOutfitItems.forEach(item => {
+      newPlayer.wearItem(item);
+    });
     game.updatePlayer(newPlayer);
     onGameUpdate();
   };

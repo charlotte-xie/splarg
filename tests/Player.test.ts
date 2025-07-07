@@ -304,4 +304,24 @@ describe('Player Wear/Remove Behavior', () => {
       expect(player.isWearingItem('feet-outer')).toBe(true);
     });
   });
+
+  describe('Layered Clothing', () => {
+    test('should allow wearing bra and corset at the same time (different layers)', () => {
+      const bra = new Item(ITEM_TYPES.bra);
+      const corset = new Item(ITEM_TYPES.leatherCorset);
+      player.addItem(bra);
+      player.addItem(corset);
+
+      // Wear bra (under layer, chest)
+      expect(player.wearItem(bra)).toBe(true);
+      expect(player.isWearingItem('chest-under')).toBe(true);
+      expect(player.getInventory()).toHaveLength(1); // corset still in inventory
+
+      // Wear corset (inner layer, chest)
+      expect(player.wearItem(corset)).toBe(true);
+      expect(player.isWearingItem('chest-under')).toBe(true); // bra still worn
+      expect(player.isWearingItem('chest-inner')).toBe(true); // corset now worn
+      expect(player.getInventory()).toHaveLength(0); // both items worn
+    });
+  });
 }); 

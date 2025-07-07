@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Game from '../classes/Game';
+import Item from '../classes/Item';
 import Button from './Button';
 
 interface OutfitManagementProps {
@@ -23,23 +24,63 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
     }
   };
 
-  const handleWearOutfit = () => {
-    if (selectedOutfit) {
-      try {
-        if (player.wearOutfit(selectedOutfit)) {
-          setOutfitName(selectedOutfit);
-          onPlayerUpdate(player);
-          game.addMessage(`Wearing outfit: ${selectedOutfit}`, 'success');
-        } else {
-          game.addMessage('Failed to wear outfit', 'error');
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          game.addMessage(error.message, 'error');
-        } else {
-          game.addMessage('Failed to wear outfit', 'error');
+  const getOutfitItems = (outfitName: string): Item[] => {
+    const itemIds = player.outfits.get(outfitName);
+    if (!itemIds) return [];
+    // Find each item by ID in inventory or currently worn items
+    return itemIds.map(id => {
+      let item = player.getInventory().find(i => i.getId() === id);
+      if (!item) {
+        // Try to find in worn items
+        for (const wornItem of player.getWornItems().values()) {
+          if (wornItem.getId() === id) return wornItem;
         }
       }
+      return item!;
+    }).filter(Boolean) as Item[];
+  };
+
+  const handleWearOutfit = () => {
+    if (selectedOutfit) {
+      const outfitItemIds = player.outfits.get(selectedOutfit);
+      if (outfitItemIds) {
+        // Remove any currently worn items not in the target outfit
+        const wornItems = player.getWornItems();
+        for (const [location, item] of wornItems) {
+          if (!outfitItemIds.includes(item.getId())) {
+            try {
+              player.removeWornItem(location);
+            } catch (e) {
+              // Ignore errors for locked items
+            }
+          }
+        }
+        // Now wear the outfit items
+        getOutfitItems(selectedOutfit).forEach(item => {
+          try {
+            player.wearItem(item);
+          } catch (e) {
+            // Ignore errors for locked/restricted items
+          }
+        });
+        setOutfitName(selectedOutfit);
+        onPlayerUpdate(player);
+        game.addMessage(`Wearing outfit: ${selectedOutfit}`, 'success');
+      }
+    }
+  };
+
+  const handleAddOutfit = () => {
+    if (selectedOutfit) {
+      getOutfitItems(selectedOutfit).forEach(item => {
+        try {
+          player.wearItem(item);
+        } catch (e) {
+          // Ignore errors for locked/restricted items
+        }
+      });
+      onPlayerUpdate(player);
+      game.addMessage(`Added items from outfit: ${selectedOutfit}`, 'success');
     }
   };
 
@@ -127,7 +168,6 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
             className="control-panel-input"
           />
           <Button
-            size="small"
             onClick={handleSaveOutfit}
             disabled={!outfitName.trim()}
           >
@@ -156,6 +196,12 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
               disabled={!selectedOutfit}
             >
               Wear
+            </Button>
+            <Button
+              onClick={handleAddOutfit}
+              disabled={!selectedOutfit}
+            >
+              Add
             </Button>
             <Button
               onClick={handleDeleteOutfit}

@@ -116,7 +116,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'leather boots',
     description: 'Sturdy leather boots with steel toe caps.',
     symbol: '👢',
-    layer: WEAR_LAYERS.outer,
+    layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.feet]
   }),
   vest: new ItemType({
@@ -171,6 +171,46 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'bread',
     description: 'Fresh baked bread that restores 10 health points.',
     symbol: '🍞'
+  }),
+  leatherCorset: new ItemType({
+    id: 'leatherCorset',
+    name: 'leather corset',
+    description: 'A fitted leather corset with brass buckles.',
+    symbol: '🎽',
+    layer: WEAR_LAYERS.inner,
+    locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
+  }),
+  longSkirt: new ItemType({
+    id: 'longSkirt',
+    name: 'long skirt',
+    description: 'A flowing long skirt made of soft fabric.',
+    symbol: '👗',
+    layer: WEAR_LAYERS.inner,
+    locations: [WEAR_TYPES.legs, WEAR_TYPES.hips]
+  }),
+  bra: new ItemType({
+    id: 'bra',
+    name: 'bra',
+    description: 'A simple, comfortable bra.',
+    symbol: '👙',
+    layer: WEAR_LAYERS.under,
+    locations: [WEAR_TYPES.chest]
+  }),
+  plainPanties: new ItemType({
+    id: 'plainPanties',
+    name: 'plain panties',
+    description: 'Plain, comfortable panties.',
+    symbol: '🩲',
+    layer: WEAR_LAYERS.under,
+    locations: [WEAR_TYPES.hips]
+  }),
+  socks: new ItemType({
+    id: 'socks',
+    name: 'socks',
+    description: 'A pair of plain socks.',
+    symbol: '🧦',
+    layer: WEAR_LAYERS.under,
+    locations: [WEAR_TYPES.feet]
   })
 };
 
