@@ -18,7 +18,8 @@ export const WEAR_TYPES = {
 export const WEAR_LAYERS = {
   outer: 'outer',
   inner: 'inner',
-  under: 'under'
+  under: 'under',
+  acc: 'acc'
 } as const;
 
 export type WearType = typeof WEAR_TYPES[keyof typeof WEAR_TYPES];

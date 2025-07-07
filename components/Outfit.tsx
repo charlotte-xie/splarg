@@ -127,6 +127,7 @@ export default function Outfit({
   let lastOuter=null;
   let lastInner=null;
   let lastUnder=null;
+  let lastAccessory=null;
   
   return (
     <div className="control-panel-grid">
@@ -134,7 +135,7 @@ export default function Outfit({
       {/* The outfit grid */}
       <div style={{
           display: 'grid',
-          gridTemplateColumns: '80px 48px 48px 48px',
+          gridTemplateColumns: '80px 48px 48px 48px 48px',
           gap: '0px',
           alignItems: 'center',
           fontSize: '13px',
@@ -146,7 +147,8 @@ export default function Outfit({
           <h5 style={{textAlign: 'center'}}>Outer</h5>
           <h5 style={{textAlign: 'center'}}>Inner</h5>
           <h5 style={{textAlign: 'center'}}>Under</h5>
-          
+          <h5 style={{textAlign: 'center'}}>Access.</h5>
+           
           {/* Equipment rows */}
           {(() => {
             const rows = [];
