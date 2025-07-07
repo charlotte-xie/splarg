@@ -1,5 +1,7 @@
 import Area from './Area';
+import Item from './Item';
 import Player from './Player';
+import Tile from './Tile';
 import World from './World';
 
 interface GameSettings {
@@ -413,5 +415,24 @@ export default class Game {
     });
     // Save the current outfit as 'Everyday'
     player.saveOutfit('Everyday');
+  }
+
+  getPlayerTile(): Tile | null {
+    const area = this.getPlayerArea();
+    const pos = this.player.position;
+    return area.getTile(pos.x, pos.y);
+  }
+
+  dropItem(player: Player, item: Item): boolean {
+    const inv = player.getInventory();
+    const idx = inv.indexOf(item);
+    if (idx === -1) return false;
+    player.removeItem(idx);
+    const tile = this.getPlayerTile();
+    if (tile) {
+      tile.addItem(item);
+      return true;
+    }
+    return false;
   }
 } 

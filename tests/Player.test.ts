@@ -386,4 +386,31 @@ describe('Player serialization', () => {
     }
     expect(bootsFound).toBe(true);
   });
+});
+
+describe('Game.dropItem', () => {
+  test('should remove item from inventory and add to current tile', () => {
+    const game = new Game();
+    const player = game.getPlayer();
+    const item = new Item(ITEM_TYPES.ironSword, 1);
+    player.addItem(item);
+    const pos = { ...player.position };
+    const area = game.getPlayerArea();
+    const tile = area.getTile(pos.x, pos.y);
+    expect(tile).not.toBeNull();
+    if (!tile) throw new Error('Tile is null');
+    expect(tile.items.length).toBe(0);
+    const result = game.dropItem(player, item);
+    expect(result).toBe(true);
+    expect(player.getInventory().includes(item)).toBe(false);
+    expect(tile.items.includes(item)).toBe(true);
+  });
+
+  test('should return false if item not in inventory', () => {
+    const game = new Game();
+    const player = game.getPlayer();
+    const item = new Item(ITEM_TYPES.ironSword, 1);
+    const result = game.dropItem(player, item);
+    expect(result).toBe(false);
+  });
 }); 
