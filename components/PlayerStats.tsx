@@ -42,7 +42,7 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
   return (
     <div className="player-stats">
        <div className="player-header">
-        <h3>Character Stats</h3>
+        <h4>Character Stats</h4>
         {/* <div className="player-position">
           Position: ({position.x}, {position.y})
         </div> */}
@@ -98,7 +98,7 @@ export default function PlayerStats({ stats, onStatsUpdate }: PlayerStatsProps) 
       </div>
 
       <div>
-        <h3>Attributes</h3>
+        <h4>Attributes</h4>
         <div className="stat-row">
           <span className="stat-label">Strength:</span>
           <span className="stat-value">{stats.strength}</span>

@@ -48,7 +48,7 @@ export default function MessagePanel({ game, onUpdate }: MessagePanelProps) {
       <div className="control-panel-messages" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         {messages.map((message) => (
           <p key={message.id} data-type={message.type}>
-            {message.text}
+            {message.text + ((message.repeat > 1) ? "  (x" + message.repeat + ")" : "")}
           </p>
         ))}
         <div ref={messagesEndRef} />

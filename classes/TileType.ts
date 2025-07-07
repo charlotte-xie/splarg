@@ -34,7 +34,7 @@ export const TILE_TYPES: Record<string, TileType> = {
     symbol: '🌱',
     textColor: '#ffffff',
     walkable: true,
-    description: 'Lush green grass covering the ground'
+    description: 'lush green grass covering the ground'
   }),
   water: new TileType({
     id: 'water',
@@ -43,7 +43,7 @@ export const TILE_TYPES: Record<string, TileType> = {
     symbol: '💧',
     textColor: '#ffffff',
     walkable: false,
-    description: 'Deep blue water - cannot walk here'
+    description: 'deep blue water - cannot walk here'
   }),
   stone: new TileType({
     id: 'stone',
@@ -52,7 +52,7 @@ export const TILE_TYPES: Record<string, TileType> = {
     symbol: '🪨',
     textColor: '#ffffff',
     walkable: false,
-    description: 'Solid stone wall'
+    description: 'solid stone wall'
   }),
   sand: new TileType({
     id: 'sand',
@@ -61,7 +61,7 @@ export const TILE_TYPES: Record<string, TileType> = {
     symbol: '🏖️',
     textColor: '#000000',
     walkable: true,
-    description: 'Warm golden sand'
+    description: 'warm golden sand'
   }),
   forest: new TileType({
     id: 'forest',
@@ -70,6 +70,6 @@ export const TILE_TYPES: Record<string, TileType> = {
     symbol: '🌲',
     textColor: '#ffffff',
     walkable: true,
-    description: 'Dense forest with tall trees'
+    description: 'dense forest with tall trees'
   })
 }; 

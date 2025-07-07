@@ -34,6 +34,7 @@ type GameMessage = {
   text: string;
   type: 'info' | 'warning' | 'error' | 'success';
   timestamp: number;
+  repeat: number;
 };
 
 /**
@@ -285,7 +286,8 @@ export default class Game {
       score: this.score,
       currentTime: this.currentTime,
       lastSaveTime: this.lastSaveTime,
-      lastUpdate: this.lastUpdate
+      lastUpdate: this.lastUpdate,
+      messages: this.messages
     };
   }
 
@@ -300,6 +302,7 @@ export default class Game {
     game.currentTime = obj.currentTime;
     game.lastSaveTime = obj.lastSaveTime;
     game.lastUpdate = obj.lastUpdate;
+    game.messages = obj.messages || [];
     return game;
   }
 
@@ -338,15 +341,20 @@ export default class Game {
 
   // Message System
   addMessage(text: string, type: 'info' | 'warning' | 'error' | 'success' = 'info'): void {
+    const last = this.messages[this.messages.length - 1];
+    if (last && last.text === text && last.type === type) {
+      last.repeat = (last.repeat || 1) + 1;
+      last.timestamp = Date.now();
+      return;
+    }
     const message: GameMessage = {
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       text,
       type,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      repeat: 1
     };
-    
     this.messages.push(message);
-    
     // Keep only the last 20 messages
     if (this.messages.length > 20) {
       this.messages = this.messages.slice(-20);
