@@ -42,6 +42,16 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Improve text rendering */
+  -webkit-text-size-adjust: 100%; /* Prevent iOS text size scaling */
+  -moz-osx-font-smoothing: grayscale; /* Smooth fonts on macOS */
+  -webkit-font-smoothing: antialiased; /* Smooth fonts on other browsers */
+  scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+  /* Define a base font size (62.5% makes 1rem = 10px for easy calculations) */
+  font-size: 100%;
+}
+
 body {
   font-family: var(--font-primary);
   background-color: #3b2412;
@@ -50,6 +60,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  color: var(--parchment);
   height: 100vh;
   overflow: hidden;
   margin: 0;
@@ -82,10 +93,17 @@ h5 {
 
 .game-content {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex: 1;
   min-height: 0;
   height: 100%;
+}
+
+.game-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 3;
 }
 
 .player-panel {
@@ -94,6 +112,7 @@ h5 {
   background: linear-gradient(120deg, var(--leather) 60%, var(--iron) 100%);
   border-radius: 12px;
   padding: 10px;
+  flex: auto;
   box-shadow: 0 4px 16px 0 rgba(68, 44, 15, 0.25);
   border: 2px solid var(--brass);
   display: flex;
@@ -148,12 +167,6 @@ h5 {
   transition: width 0.3s ease;
 }
 
-.game-main {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-}
 
 .tile-map-container {
   display: flex;

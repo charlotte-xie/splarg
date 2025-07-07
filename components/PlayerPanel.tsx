@@ -162,13 +162,12 @@ export default function PlayerPanel({
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
+        boxSizing: 'border-box',
+        width: '300px'
       }}>
-        <div style={{ width: '100%' }}>
           <Box>
-            <Avatar size={64} />
+            <Avatar size={128} />
           </Box>
-        </div>
       </div>
 
       <TabbedPanel tabs={tabs} />

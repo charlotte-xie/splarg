@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface AvatarProps {
   src?: string;
@@ -18,9 +18,8 @@ export default function Avatar({
   
   return (
     <div 
-      className={`avatar ${className}`}
       style={{ 
-        width: '100%', 
+        width: '250px', 
         aspectRatio: '1 / 1',
         display: 'flex',
         alignItems: 'center',

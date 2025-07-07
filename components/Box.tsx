@@ -66,7 +66,6 @@ export default function Box({
 
   return (
     <div
-      className={`steampunk-box ${className}`}
       style={{
         position: 'relative',
         padding: '16px',
