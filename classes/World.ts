@@ -1,6 +1,5 @@
-import { TILE_TYPES, TileType } from './Tile';
 import Area, { AREA_TYPES } from './Area';
-import Tile from './Tile';
+import Tile, { TILE_TYPES, TileType } from './Tile';
 
 interface GameMap {
   areas: { [key: string]: Area };
@@ -167,5 +166,25 @@ export default class World {
       }
     }
     return playerPosition;
+  }
+
+  toJSON() {
+    return {
+      gameMap: {
+        areas: Object.fromEntries(Object.entries(this.gameMap.areas).map(([id, area]) => [id, area.toJSON()])),
+        currentAreaId: this.gameMap.currentAreaId,
+        playerAreaId: this.gameMap.playerAreaId
+      }
+    };
+  }
+
+  static fromJSON(obj: any): World {
+    const world = new World();
+    world.gameMap.areas = Object.fromEntries(
+      Object.entries(obj.gameMap.areas).map(([id, areaObj]) => [id, Area.fromJSON(areaObj)])
+    );
+    world.gameMap.currentAreaId = obj.gameMap.currentAreaId;
+    world.gameMap.playerAreaId = obj.gameMap.playerAreaId;
+    return world;
   }
 } 

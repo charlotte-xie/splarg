@@ -315,6 +315,18 @@ export default class Item {
   hasMultiple(): boolean {
     return this.number > 1;
   }
+
+  toJSON() {
+    return {
+      type: this.type.id,
+      number: this.number,
+      locked: this.locked
+    };
+  }
+
+  static fromJSON(obj: any): Item {
+    return new Item(obj.type, obj.number, obj.locked);
+  }
 }
 
 // Helper function to create example items

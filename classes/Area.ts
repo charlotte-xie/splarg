@@ -131,4 +131,25 @@ export default class Area {
   get height(): number {
     return this.type.height;
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      type: this.type.id,
+      tiles: this.tiles.map(row => row.map(tile => tile.toJSON())),
+      visited: this.visited,
+      discovered: this.discovered
+    };
+  }
+
+  static fromJSON(obj: any): Area {
+    // Find the type from AREA_TYPES by id
+    const type = Object.values(AREA_TYPES).find(t => t.id === obj.type);
+    if (!type) throw new Error(`Unknown area type: ${obj.type}`);
+    const tiles = obj.tiles.map((row: any[]) => row.map((tileObj: any) => Tile.fromJSON(tileObj)));
+    const area = new Area(obj.id, type, tiles);
+    area.visited = obj.visited;
+    area.discovered = obj.discovered;
+    return area;
+  }
 } 

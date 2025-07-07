@@ -69,6 +69,16 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     onGameUpdate();
   };
 
+  const handleSaveGame = () => {
+    game.saveGame();
+    onGameUpdate();
+  };
+
+  const handleRestoreGame = () => {
+    game.loadGame();
+    onGameUpdate();
+  };
+
   return (
     <div className="control-panel" style={{height:"100%", flex: "1"}}>
       <h4>
@@ -110,6 +120,18 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
           onClick={handleUnlockAllWornItems}
         >
           Unlock All Worn
+        </Button>
+        
+        <Button
+          onClick={handleSaveGame}
+        >
+          Save Game
+        </Button>
+        
+        <Button
+          onClick={handleRestoreGame}
+        >
+          Restore Game
         </Button>
       </div>
     </div>

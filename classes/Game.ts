@@ -284,19 +284,37 @@ export default class Game {
   }
 
   // Save/Load System
+  toJSON() {
+    return {
+      status: this.status,
+      player: this.player.toJSON(),
+      world: this.world.toJSON(),
+      settings: this.settings,
+      progress: this.progress,
+      score: this.score,
+      currentTime: this.currentTime,
+      lastSaveTime: this.lastSaveTime,
+      lastUpdate: this.lastUpdate
+    };
+  }
+
+  static fromJSON(obj: any): Game {
+    const game = new Game();
+    game.status = obj.status;
+    game.player = Player.fromJSON(obj.player);
+    game.world = World.fromJSON(obj.world);
+    game.settings = obj.settings;
+    game.progress = obj.progress;
+    game.score = obj.score;
+    game.currentTime = obj.currentTime;
+    game.lastSaveTime = obj.lastSaveTime;
+    game.lastUpdate = obj.lastUpdate;
+    return game;
+  }
+
   saveGame(): void {
     try {
-      const saveData = JSON.stringify({
-        status: this.status,
-        player: this.player,
-        world: this.world.gameMap,
-        settings: this.settings,
-        progress: this.progress,
-        score: this.score,
-        currentTime: this.currentTime,
-        lastSaveTime: this.lastSaveTime,
-        lastUpdate: this.lastUpdate
-      });
+      const saveData = JSON.stringify(this.toJSON());
       localStorage.setItem('splarg_save', saveData);
       this.lastSaveTime = Date.now();
       this.triggerEvent({ type: 'gameSaved', timestamp: Date.now() });
@@ -310,15 +328,16 @@ export default class Game {
       const saveData = localStorage.getItem('splarg_save');
       if (!saveData) return;
       const parsed = JSON.parse(saveData);
-      this.status = parsed.status;
-      this.player = parsed.player;
-      this.world.gameMap = parsed.world;
-      this.settings = parsed.settings;
-      this.progress = parsed.progress;
-      this.score = parsed.score;
-      this.currentTime = parsed.currentTime;
-      this.lastSaveTime = parsed.lastSaveTime;
-      this.lastUpdate = parsed.lastUpdate;
+      const loaded = Game.fromJSON(parsed);
+      this.status = loaded.status;
+      this.player = loaded.player;
+      this.world = loaded.world;
+      this.settings = loaded.settings;
+      this.progress = loaded.progress;
+      this.score = loaded.score;
+      this.currentTime = loaded.currentTime;
+      this.lastSaveTime = loaded.lastSaveTime;
+      this.lastUpdate = loaded.lastUpdate;
       this.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
     } catch (e) {
       console.error('Failed to load game:', e);

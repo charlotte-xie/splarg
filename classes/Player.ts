@@ -277,4 +277,22 @@ export default class Player {
   hasOutfit(outfitName: string): boolean {
     return this.outfits.has(outfitName);
   }
+
+  toJSON() {
+    return {
+      position: this.position,
+      stats: this.stats,
+      inventory: this.inventory.map(item => item.toJSON()),
+      wornItems: Array.from(this.wornItems.entries()).map(([k, v]) => [k, v.toJSON()]),
+      outfits: Array.from(this.outfits.entries()),
+    };
+  }
+
+  static fromJSON(obj: any): Player {
+    const player = new Player(obj.position, obj.stats);
+    player.inventory = (obj.inventory || []).map((itemObj: any) => Item.fromJSON(itemObj));
+    player.wornItems = new Map((obj.wornItems || []).map(([k, v]: [string, any]) => [k, Item.fromJSON(v)]));
+    player.outfits = new Map(obj.outfits || []);
+    return player;
+  }
 } 

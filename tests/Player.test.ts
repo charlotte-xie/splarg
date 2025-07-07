@@ -1,3 +1,4 @@
+import Game from '../classes/Game';
 import Item, { ITEM_TYPES } from '../classes/Item';
 import Player from '../classes/Player';
 
@@ -323,5 +324,66 @@ describe('Player Wear/Remove Behavior', () => {
       expect(player.isWearingItem('chest-inner')).toBe(true); // corset now worn
       expect(player.getInventory()).toHaveLength(0); // both items worn
     });
+  });
+});
+
+describe('Game Save/Load', () => {
+  let localStorageMock: any;
+  beforeAll(() => {
+    localStorageMock = (function() {
+      let store: Record<string, string> = {};
+      return {
+        getItem(key: string) { return store[key] || null; },
+        setItem(key: string, value: string) { store[key] = value.toString(); },
+        clear() { store = {}; },
+        removeItem(key: string) { delete store[key]; }
+      };
+    })();
+    Object.defineProperty(global, 'localStorage', { value: localStorageMock });
+  });
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  test('should save and restore game state', () => {
+    const game = new Game();
+    const player = game.getPlayer();
+    player.stats.health = 42;
+    player.addGold(123);
+    game.saveGame();
+
+    // Change state after saving
+    player.stats.health = 1;
+    player.stats.gold = 0;
+
+    // Restore
+    game.loadGame();
+    const restoredPlayer = game.getPlayer();
+    expect(restoredPlayer.stats.health).toBe(42);
+    expect(restoredPlayer.stats.gold).toBe(123);
+  });
+});
+
+describe('Player serialization', () => {
+  test('should serialize and deserialize with worn and inventory items', () => {
+    const player = new Player();
+    const sword = new Item(ITEM_TYPES.ironSword, 1);
+    const boots = new Item(ITEM_TYPES.boots, 1);
+    player.addItem(sword);
+    player.addItem(boots);
+    player.wearItem(boots); // boots should be worn, sword in inventory
+
+    const json = player.toJSON();
+    const restored = Player.fromJSON(json);
+
+    // Inventory should contain sword
+    expect(restored.getInventory().length).toBe(1);
+    expect(restored.getInventory()[0].getId()).toBe('ironSword');
+    // Worn items should contain boots
+    let bootsFound = false;
+    for (const item of restored.getWornItems().values()) {
+      if (item.getId() === 'boots') bootsFound = true;
+    }
+    expect(bootsFound).toBe(true);
   });
 }); 

@@ -121,4 +121,19 @@ export default class Tile {
     }
     this.items.push(item);
   }
+
+  toJSON() {
+    return {
+      x: this.x,
+      y: this.y,
+      type: this.type.id,
+      items: this.items.map(item => item.toJSON())
+    };
+  }
+
+  static fromJSON(obj: any): Tile {
+    const tile = new Tile(obj.x, obj.y, TILE_TYPES[obj.type]);
+    tile.items = (obj.items || []).map((itemObj: any) => Item.fromJSON(itemObj));
+    return tile;
+  }
 } 
