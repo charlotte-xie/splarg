@@ -6,12 +6,12 @@ export interface BeingPosition {
 }
 
 export interface BeingStats {
-  health: number;
-  maxHealth: number;
-  level: number;
-  strength: number;
-  defense: number;
-  speed: number;
+  health?: number;
+  maxHealth?: number;
+  level?: number;
+  strength?: number;
+  defense?: number;
+  speed?: number;
   [key: string]: any;
 }
 
@@ -21,9 +21,9 @@ export class Being {
   public inventory: Item[];
   public wornItems: Map<string, Item>;
 
-  constructor(position: BeingPosition, stats: BeingStats) {
-    this.position = { ...position };
-    this.stats = { ...stats };
+  constructor() {
+    this.position = { x: 0, y: 0 };
+    this.stats = {};
     this.inventory = [];
     this.wornItems = new Map();
   }
@@ -35,28 +35,6 @@ export class Being {
 
   updateStats(newStats: Partial<BeingStats>): void {
     this.stats = { ...this.stats, ...newStats };
-  }
-
-  addExperience(amount: number): void {
-    this.stats.experience += amount;
-    while (this.stats.experience >= this.stats.experienceToNext) {
-      this.levelUp();
-    }
-  }
-
-  levelUp(): void {
-    this.stats.level += 1;
-    this.stats.experience -= this.stats.experienceToNext;
-    this.stats.experienceToNext = Math.floor(this.stats.experienceToNext * 1.5);
-    this.stats.health = this.stats.maxHealth;
-  }
-
-  heal(amount: number): void {
-    this.stats.health = Math.min(this.stats.maxHealth, this.stats.health + amount);
-  }
-
-  takeDamage(amount: number): void {
-    this.stats.health = Math.max(0, this.stats.health - amount);
   }
 
   addItem(item: Item): void {
@@ -159,7 +137,9 @@ export class Being {
   }
 
   static fromJSON(obj: any): Being {
-    const being = new Being(obj.position, obj.stats);
+    const being = new Being();
+    being.position = obj.position;
+    being.stats = obj.stats;
     being.inventory = (obj.inventory || []).map((itemObj: any) => Item.fromJSON(itemObj));
     being.wornItems = new Map((obj.wornItems || []).map(([k, v]: [string, any]) => [k, Item.fromJSON(v)]));
     return being;

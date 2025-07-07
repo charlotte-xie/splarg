@@ -1,13 +1,16 @@
 import { Being, BeingPosition, BeingStats } from './Being';
+import Game from './Game';
 import Item from './Item';
 
 // --- Player class ---
 export default class Player extends Being {
   public outfits: Map<string, string[]>; // "OutfitName" -> [list of item ids]
+  public game: Game | null;
 
-  constructor(position: BeingPosition = Player.defaultPosition(), stats: BeingStats = Player.defaultStats()) {
-    super(position, stats);
+  constructor() {
+    super();
     this.outfits = new Map();
+    this.game = null;
   }
 
   static defaultStats(): BeingStats {
@@ -87,9 +90,7 @@ export default class Player extends Being {
   }
 
   static fromJSON(obj: any): Player {
-    const player = new Player(obj.position, obj.stats);
-    player.inventory = (obj.inventory || []).map((itemObj: any) => Item.fromJSON(itemObj));
-    player.wornItems = new Map((obj.wornItems || []).map(([k, v]: [string, any]) => [k, Item.fromJSON(v)]));
+    const player = Object.assign(new Player(), super.fromJSON(obj));
     player.outfits = new Map(obj.outfits || []);
     return player;
   }

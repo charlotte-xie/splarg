@@ -13,14 +13,17 @@ interface HoveredTile {
 }
 
 export default function GameScreen() {
-  const gameRef = useRef<Game>(new Game());
+  const gameRef = useRef<Game>(new Game().initialise());
   const [version, setVersion] = useState(0);
   const [hoveredTile, setHoveredTile] = useState<HoveredTile | null>(null);
   const [isClient, setIsClient] = useState(false);
   const gameContainerRef = useRef<HTMLDivElement>(null);
 
   // Utility to trigger a re-render after mutating the game
-  const updateGame = () => setVersion(v => v + 1);
+  const updateGame = (game: Game) => {
+    gameRef.current = game;
+    setVersion(v => v + 1);
+  }
 
   useEffect(() => {
     setIsClient(true);
@@ -31,13 +34,13 @@ export default function GameScreen() {
       'scoreAdded', 'gameSaved', 'gameLoaded'
     ];
     eventTypes.forEach(eventType => {
-      game.addEventListener(eventType, updateGame);
+      game.addEventListener(eventType, () => updateGame(game));
     });
     game.startGame();
     return () => {
       eventTypes.forEach(eventType => {
-        game.removeEventListener(eventType, updateGame);
-      });
+        game.removeEventListener(eventType, () => updateGame(game));
+      }); 
       game.destroy();
     };
   }, []);
@@ -94,17 +97,10 @@ export default function GameScreen() {
             game.saveGame();
           }
           break;
-        case 'l':
-        case 'L':
-          if (event.ctrlKey) {
-            event.preventDefault();
-            game.loadGame();
-          }
-          break;
         default:
           break;
       }
-      updateGame();
+      updateGame(game);
     };
     document.addEventListener('keydown', handleGlobalKeyDown);
     return () => {
@@ -122,7 +118,7 @@ export default function GameScreen() {
 
   const handleAreaChange = (areaId: string) => {
     gameRef.current.changeArea(areaId);
-    updateGame();
+    updateGame(game);
   };
 
   const game = gameRef.current;
@@ -140,7 +136,7 @@ export default function GameScreen() {
       <div className="game-content">
         <PlayerPanel 
           game={game}
-          onUpdate={updateGame}
+          onUpdate={()=>updateGame(game)}
         />
         <div className="game-main">
           
@@ -153,7 +149,7 @@ export default function GameScreen() {
               hoveredTile={hoveredTile}
             />
           </GameWindow>
-          <MessagePanel game={game} onUpdate={updateGame} />
+          <MessagePanel game={game} onUpdate={()=>updateGame(game)} />
         </div>
         <DebugPanel
           game={game}

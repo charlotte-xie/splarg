@@ -73,7 +73,7 @@ export default function PlayerPanel({
     // Handle different item types
     switch (item.getId()) {
       case 'healthPotion':
-        player.heal(50);
+        //player.heal(50);
         // Remove one potion from stack
         if (item.getQuantity() > 1) {
           item.setQuantity(item.getQuantity() - 1);
@@ -92,7 +92,7 @@ export default function PlayerPanel({
         }
         break;
       case 'bread':
-        player.heal(10);
+        // player.heal(10);
         // Remove one bread from stack
         if (item.getQuantity() > 1) {
           item.setQuantity(item.getQuantity() - 1);

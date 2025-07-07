@@ -77,7 +77,7 @@ export default function Inventory({
       const item = items[selectedItemIndex];
       switch (item.getId()) {
         case 'healthPotion':
-          player.heal(50);
+          // player.heal(50);
           if (item.getQuantity() > 1) {
             item.setQuantity(item.getQuantity() - 1);
           } else {
@@ -95,7 +95,7 @@ export default function Inventory({
           game.addMessage('Restored 30 MP', 'success');
           break;
         case 'bread':
-          player.heal(10);
+          // player.heal(10);
           if (item.getQuantity() > 1) {
             item.setQuantity(item.getQuantity() - 1);
           } else {

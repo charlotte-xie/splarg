@@ -6,7 +6,7 @@ import Button from './Button';
 
 interface DebugPanelProps {
   game: Game;
-  onGameUpdate: () => void;
+  onGameUpdate: (game: Game) => void;
 }
 
 export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
@@ -14,27 +14,27 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     const player = game.getPlayer();
     const randomItem = createRandomItem();
     player.addItem(randomItem);
-    onGameUpdate();
+    onGameUpdate(game);
   };
 
   const handleAddGold = () => {
     const player = game.getPlayer();
     const goldItem = new Item(ITEM_TYPES.goldCoin, 100);
     player.addItem(goldItem);
-    onGameUpdate();
+    onGameUpdate(game);
   };
 
   const handleHealPlayer = () => {
     const player = game.getPlayer();
-    player.heal(50);
-    onGameUpdate();
+    // player.heal(50);
+    onGameUpdate(game);
   };
 
   const handleResetPlayer = () => {
     const newPlayer = new Player();
     game.addPlayerDefaults(newPlayer);
     game.updatePlayer(newPlayer);
-    onGameUpdate();
+    onGameUpdate(game);
   };
 
   const handleLockAllWornItems = () => {
@@ -52,7 +52,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
       item.props.locked = true;
     });
     
-    onGameUpdate();
+    onGameUpdate(game);
   };
 
   const handleUnlockAllWornItems = () => {
@@ -67,17 +67,16 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     uniqueWornItems.forEach(item => {
       item.props.locked = false;
     });
-    onGameUpdate();
+    onGameUpdate(game);
   };
 
   const handleSaveGame = () => {
     game.saveGame();
-    onGameUpdate();
+    onGameUpdate(game);
   };
 
   const handleRestoreGame = () => {
-    game.loadGame();
-    onGameUpdate();
+    onGameUpdate(Game.loadGame());
   };
 
   return (

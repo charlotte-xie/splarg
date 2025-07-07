@@ -93,13 +93,14 @@ export default class Game {
     this.events = [];
     this.listeners = new Map();
     this.messages = [];
-    this.addPlayerDefaults(this.player);
-    this.initializeGame();
   }
 
-  initializeGame(): void {
+  initialise(): Game {
+    this.updatePlayer( new Player());
+    this.addPlayerDefaults(this.player);
     this.setupEventListeners();
     this.startGameLoop();
+    return this
   }
 
   setupEventListeners(): void {
@@ -200,7 +201,6 @@ export default class Game {
   changeArea(areaId: string): boolean {
     try {
       const { from, to } = this.world.changeArea(areaId);
-      this.lastUpdate = Date.now();
       this.triggerEvent({ 
         type: 'areaChanged', 
         timestamp: Date.now(),
@@ -213,19 +213,9 @@ export default class Game {
     }
   }
 
-  updatePlayerStats(stats: any): void {
-    this.player.stats = { ...this.player.stats, ...stats };
-    this.lastUpdate = Date.now();
-    this.triggerEvent({ 
-      type: 'playerStatsUpdated', 
-      timestamp: Date.now(),
-      data: stats 
-    });
-  }
-
   updatePlayer(player: Player): void {
     this.player = player;
-    this.lastUpdate = Date.now();
+    player.game=this;
     this.triggerEvent({ 
       type: 'playerUpdated', 
       timestamp: Date.now(),
@@ -235,7 +225,6 @@ export default class Game {
 
   addScore(points: number): void {
     this.score += points;
-    this.lastUpdate = Date.now();
     this.triggerEvent({ 
       type: 'scoreAdded', 
       timestamp: Date.now(),
@@ -325,25 +314,13 @@ export default class Game {
     }
   }
 
-  loadGame(): void {
-    try {
+  static loadGame(): Game {
       const saveData = localStorage.getItem('splarg_save');
-      if (!saveData) return;
+      if (!saveData) throw new Error("No save data found");
       const parsed = JSON.parse(saveData);
       const loaded = Game.fromJSON(parsed);
-      this.status = loaded.status;
-      this.player = loaded.player;
-      this.world = loaded.world;
-      this.settings = loaded.settings;
-      this.progress = loaded.progress;
-      this.score = loaded.score;
-      this.currentTime = loaded.currentTime;
-      this.lastSaveTime = loaded.lastSaveTime;
-      this.lastUpdate = loaded.lastUpdate;
-      this.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
-    } catch (e) {
-      console.error('Failed to load game:', e);
-    }
+      loaded.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
+      return loaded;
   }
 
   // Utility Methods

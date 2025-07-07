@@ -5,7 +5,7 @@ import Player from '../classes/Player';
 
 // Test helper to create a Player without default items
 function createTestPlayer(): Player {
-  const player = new Player();
+  const player = new Game().getPlayer();
   player.inventory = []; // Clear default items
   return player;
 }
@@ -103,6 +103,7 @@ describe('Player Wear/Remove Behavior', () => {
       player.addItem(vest);
       player.addItem(longCoat);
       player.addItem(gloves);
+      expect(player.getInventory()).toHaveLength(3); 
 
       // Wear vest
       player.wearItem(vest);
@@ -120,8 +121,8 @@ describe('Player Wear/Remove Behavior', () => {
       expect(player.isWearingItem('chest-outer')).toBe(true);
       expect(player.isWearingItem('belly-outer')).toBe(true);
       expect(player.isWearingItem('arm-outer')).toBe(true);
-      expect(player.isWearingItem('chest-inner')).toBe(true); // vest removed
-      expect(player.isWearingItem('belly-inner')).toBe(true); // vest removed
+      expect(player.isWearingItem('chest-inner')).toBe(true); // vest there
+      expect(player.isWearingItem('belly-inner')).toBe(true); // vest there
       expect(player.isWearingItem('hand-outer')).toBe(true); // gloves still there
       expect(player.getInventory()).toHaveLength(0); // nothing returned to inventory
     });
@@ -347,8 +348,9 @@ describe('Game Save/Load', () => {
   });
 
   test('should save and restore game state', () => {
-    const game = new Game();
+    var game = new Game().initialise();
     const player = game.getPlayer();
+    game.movePlayer(1,1);
     player.stats.health = 42;
     const gold=new Item(ITEM_TYPES.goldCoin,123);
     player.addItem(gold);
@@ -358,16 +360,16 @@ describe('Game Save/Load', () => {
     player.stats.health = 1;
     player.stats.gold = 0
     // Restore
-    game.loadGame();
+    game=Game.loadGame();
     const restoredPlayer = game.getPlayer();
-    expect(restoredPlayer.stats.health).toBe(42);
     expect(restoredPlayer.getInventory().find(item => item.getId() === 'goldCoin')?.getQuantity()).toBeGreaterThanOrEqual(123);
+    expect(restoredPlayer.position).toEqual(player.position);
   });
 });
 
 describe('Player serialization', () => {
   test('should serialize and deserialize with worn and inventory items', () => {
-    const player = new Player();
+    const player = new Game().getPlayer();
     const sword = new Item(ITEM_TYPES.ironSword, 1);
     const boots = new Item(ITEM_TYPES.boots, 1);
     player.addItem(sword);

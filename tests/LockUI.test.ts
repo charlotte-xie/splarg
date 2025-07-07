@@ -1,3 +1,4 @@
+import Game from '../classes/Game';
 import Item from '../classes/Item';
 import Player from '../classes/Player';
 
@@ -5,7 +6,7 @@ describe('Lock UI Functionality', () => {
   let player: Player;
 
   beforeEach(() => {
-    player = new Player();
+    player = new Game().getPlayer();
   });
 
   test('should correctly identify locked items', () => {
