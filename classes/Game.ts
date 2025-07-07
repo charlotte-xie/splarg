@@ -428,37 +428,9 @@ export default class Game {
   }
 
   useItem(player: Player, item: Item): void {
-    switch (item.getId()) {
-      case 'healthPotion':
-        if (item.getQuantity() > 1) {
-          item.setQuantity(item.getQuantity() - 1);
-        } else {
-          const idx = player.getInventory().indexOf(item);
-          if (idx !== -1) player.removeItem(idx);
-        }
-        this.addMessage('Healed 50 HP', 'success');
-        break;
-      case 'manaPotion':
-        if (item.getQuantity() > 1) {
-          item.setQuantity(item.getQuantity() - 1);
-        } else {
-          const idx = player.getInventory().indexOf(item);
-          if (idx !== -1) player.removeItem(idx);
-        }
-        this.addMessage('Restored 30 MP', 'success');
-        break;
-      case 'bread':
-        if (item.getQuantity() > 1) {
-          item.setQuantity(item.getQuantity() - 1);
-        } else {
-          const idx = player.getInventory().indexOf(item);
-          if (idx !== -1) player.removeItem(idx);
-        }
-        this.addMessage('Healed 10 HP', 'success');
-        break;
-      default:
-        this.addMessage(`Used ${item.getName()}`, 'info');
-        break;
+    const result = item.type.use(this, player, item);
+    if (result && result.message) {
+      this.addMessage(result.message, result.type);
     }
   }
 

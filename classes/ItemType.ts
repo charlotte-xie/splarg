@@ -1,3 +1,7 @@
+import Game from './Game';
+import Item from './Item';
+import Player from './Player';
+
 // Wear location types for equipment
 export const WEAR_TYPES = {
   head: 'head',
@@ -68,6 +72,41 @@ export class ItemType {
     this.layer = layer;
     this.locations = locations;
     this.restricted = restricted;
+  }
+
+  // Add a use method for item-specific logic
+  use(game: Game, player: Player, item: Item): { message: string, type: 'info' | 'warning' | 'error' | 'success' } | null {
+    switch (this.id) {
+      case 'healthPotion': {
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          const idx = player.getInventory().indexOf(item);
+          if (idx !== -1) player.removeItem(idx);
+        }
+        return { message: 'Healed 50 HP', type: 'success' };
+      }
+      case 'manaPotion': {
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          const idx = player.getInventory().indexOf(item);
+          if (idx !== -1) player.removeItem(idx);
+        }
+        return { message: 'Restored 30 MP', type: 'success' };
+      }
+      case 'bread': {
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          const idx = player.getInventory().indexOf(item);
+          if (idx !== -1) player.removeItem(idx);
+        }
+        return { message: 'Healed 10 HP', type: 'success' };
+      }
+      default:
+        return { message: `Used ${this.name}`, type: 'info' };
+    }
   }
 }
 
