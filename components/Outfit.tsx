@@ -1,6 +1,7 @@
 import React from 'react';
 import Game from '../classes/Game';
-import Item, { createWearLocation, WEAR_LAYERS, WEAR_TYPES, WearLayer, WearType } from '../classes/Item';
+import Item from '../classes/Item';
+import { createWearLocation, WEAR_LAYERS, WEAR_TYPES, WearLayer, WearType } from '../classes/ItemType';
 import Utils from '../classes/Utils';
 import InventorySlot from './InventorySlot';
 import ItemDetails from './ItemDetails';

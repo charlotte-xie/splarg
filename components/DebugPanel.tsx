@@ -48,7 +48,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     
     // Lock all unique worn items
     uniqueWornItems.forEach(item => {
-      (item as any).locked = true;
+      item.props.locked = true;
     });
     
     onGameUpdate();
@@ -64,7 +64,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     });
     // Unlock all unique worn items
     uniqueWornItems.forEach(item => {
-      (item as any).locked = false;
+      item.props.locked = false;
     });
     onGameUpdate();
   };
