@@ -159,6 +159,22 @@ describe('Player Wear/Remove Behavior', () => {
       const removedItem = player.removeWornItem('hand-outer');
       expect(removedItem).toBeUndefined();
     });
+
+    test('should only add one item to inventory when removing a multi-location worn item', () => {
+      const longCoat = new Item(ITEM_TYPES.longCoat);
+      player.addItem(longCoat);
+      player.wearItem(longCoat);
+      // Remove from one of its locations
+      const removedItem = player.removeWornItem('chest-outer');
+      expect(removedItem).toBe(longCoat);
+      expect(player.isWearingItem('chest-outer')).toBe(false);
+      expect(player.isWearingItem('belly-outer')).toBe(false);
+      expect(player.isWearingItem('arm-outer')).toBe(false);
+      // Inventory should only have one instance of the long coat
+      const inventoryItems = player.getInventory().filter(i => i.getId() === 'longCoat');
+      expect(inventoryItems.length).toBe(1);
+      expect(inventoryItems[0]).toBe(longCoat);
+    });
   });
 
   describe('Inventory Integration', () => {

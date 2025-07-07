@@ -37,13 +37,19 @@ export class Being {
     this.stats = { ...this.stats, ...newStats };
   }
 
-  addItem(item: Item): void {
-    const existingItem = this.inventory.find(invItem => invItem.canStack(item));
-    if (existingItem) {
-      existingItem.stackWith(item);
-      return;
+  addItem(item: Item): Item {
+    for (const invItem of this.inventory) {
+      if (invItem === item) {
+        // Item already in inventory, return it
+        return invItem;
+      }
+      if (invItem.canStack(item)) {
+        invItem.stackWith(item);
+        return invItem;
+      }
     }
     this.inventory.push(item);
+    return item;
   }
 
   removeItem(index: number): Item | null {
