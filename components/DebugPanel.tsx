@@ -1,5 +1,6 @@
 import Game from '../classes/Game';
-import Item, { createRandomItem, ITEM_TYPES } from '../classes/Item';
+import Item, { createRandomItem } from '../classes/Item';
+import { ITEM_TYPES } from '../classes/ItemType';
 import Player from '../classes/Player';
 import Button from './Button';
 

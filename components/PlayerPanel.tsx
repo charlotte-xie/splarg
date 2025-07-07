@@ -125,17 +125,6 @@ export default function PlayerPanel({
       content: <PlayerStats stats={player.stats} onStatsUpdate={handleStatsUpdate} />
     },
     {
-      id: 'inventory',
-      icon: 'money_bag',
-      label: 'Inventory',
-      content: <Inventory
-        game={game}
-        onUpdate={onUpdate}
-        selectedSlot={selectedInventorySlot}
-        onSlotClick={handleInventorySlotClick}
-      />
-    },
-    {
       id: 'outfit',
       icon: 'apparel',
       label: 'Outfit',
@@ -147,8 +136,20 @@ export default function PlayerPanel({
       />
     },
     {
+      id: 'inventory',
+      icon: 'money_bag',
+      label: 'Inventory',
+      content: <Inventory
+        game={game}
+        onUpdate={onUpdate}
+        selectedSlot={selectedInventorySlot}
+        onSlotClick={handleInventorySlotClick}
+      />
+    },
+ 
+    {
       id: 'controls',
-      icon: 'keyboard',
+      icon: 'help',
       label: 'Controls',
       content: <Controls />
     }

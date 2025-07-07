@@ -57,13 +57,18 @@ export default function Inventory({
   const handleWearItem = () => {
     if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
       const item = items[selectedItemIndex];
-      if (player.wearItem(item)) {
-        player.removeItem(selectedItemIndex);
-        game.addMessage(`Wore ${item.getName()}`, 'success');
-        onUpdate();
-      } else {
-        game.addMessage(`Cannot wear ${item.getName()}`, 'error');
+      try{
+        if (player.wearItem(item)) {
+          player.removeItem(selectedItemIndex);
+          setSelectedItemIndex(-1);
+          game.addMessage(`Wore ${item.getName()}`, 'success');
+        } else {
+          game.addMessage(`Cannot wear ${item.getName()}`, 'error');
+        }
+      } catch(e: any) {
+        game.addMessage(`Cannot wear ${item.getName()}: ` +e.message, 'error');
       }
+      onUpdate
     }
   };
 
