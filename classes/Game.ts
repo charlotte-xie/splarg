@@ -412,7 +412,10 @@ export default class Game {
   dropItem(player: Player, item: Item, number?: number): boolean {
     const inv = player.getInventory();
     const idx = inv.indexOf(item);
-    if (idx === -1) return false;
+    if (idx === -1) {
+      this.addMessage('Failed to drop item', 'error');
+      return false;
+    }
     if (number && item.getQuantity() > number) {
       // Drop only part of the stack
       const singleItem = new Item(item.type, number, item.props);
@@ -420,8 +423,10 @@ export default class Game {
       const tile = this.getPlayerTile();
       if (tile) {
         tile.addItem(singleItem);
+        this.addMessage(`Dropped ${number} ${item.getName()}`, 'success');
         return true;
       }
+      this.addMessage('Failed to drop item', 'error');
       return false;
     } else {
       // Drop the whole stack
@@ -429,9 +434,63 @@ export default class Game {
       const tile = this.getPlayerTile();
       if (tile) {
         tile.addItem(item);
+        this.addMessage(`Dropped ${item.getName()}`, 'success');
         return true;
       }
+      this.addMessage('Failed to drop item', 'error');
       return false;
+    }
+  }
+
+  wearItem(player: Player, item: Item): boolean {
+    try {
+      if (player.wearItem(item)) {
+        const idx = player.getInventory().indexOf(item);
+        if (idx !== -1) player.removeItem(idx);
+        this.addMessage(`Wore ${item.getName()}`, 'success');
+        return true;
+      } else {
+        this.addMessage(`Cannot wear ${item.getName()}`, 'error');
+        return false;
+      }
+    } catch (e: any) {
+      this.addMessage(`Cannot wear ${item.getName()}: ${e.message}`, 'error');
+      return false;
+    }
+  }
+
+  useItem(player: Player, item: Item): void {
+    switch (item.getId()) {
+      case 'healthPotion':
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          const idx = player.getInventory().indexOf(item);
+          if (idx !== -1) player.removeItem(idx);
+        }
+        this.addMessage('Healed 50 HP', 'success');
+        break;
+      case 'manaPotion':
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          const idx = player.getInventory().indexOf(item);
+          if (idx !== -1) player.removeItem(idx);
+        }
+        this.addMessage('Restored 30 MP', 'success');
+        break;
+      case 'bread':
+        if (item.getQuantity() > 1) {
+          item.setQuantity(item.getQuantity() - 1);
+        } else {
+          const idx = player.getInventory().indexOf(item);
+          if (idx !== -1) player.removeItem(idx);
+        }
+        this.addMessage('Healed 10 HP', 'success');
+        break;
+      default:
+        this.addMessage(`Used ${item.getName()}`, 'info');
+        break;
     }
   }
 } 

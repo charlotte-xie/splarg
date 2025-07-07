@@ -35,11 +35,7 @@ export default function Inventory({
 
   const handleDropItem = () => {
     if (selectedItem) {
-      if (game.dropItem(player, selectedItem)) {
-        game.addMessage(`Dropped ${selectedItem.getName()}`, 'success');
-      } else {
-        game.addMessage('Failed to drop item', 'error');
-      }
+      game.dropItem(player, selectedItem);
       setSelectedItem(null);
       onUpdate();
     }
@@ -47,70 +43,25 @@ export default function Inventory({
 
   const handleDropOne = () => {
     if (selectedItem) {
-      if (selectedItem.getQuantity() > 1) {
-        if (game.dropItem(player, selectedItem, 1)) {
-          game.addMessage(`Dropped 1 ${selectedItem.getName()}`, 'success');
-        } else {
-          game.addMessage('Failed to drop item', 'error');
-        }
-      } else {
-        handleDropItem();
-      }
+      game.dropItem(player, selectedItem, 1);
       onUpdate();
     }
   };
 
   const handleWearItem = () => {
     if (selectedItem) {
-      try{
-        if (player.wearItem(selectedItem)) {
-          const idx = items.indexOf(selectedItem);
-          if (idx !== -1) player.removeItem(idx);
-          setSelectedItem(null);
-          game.addMessage(`Wore ${selectedItem.getName()}`, 'success');
-        } else {
-          game.addMessage(`Cannot wear ${selectedItem.getName()}`, 'error');
-        }
-      } catch(e: any) {
-        game.addMessage(`Cannot wear ${selectedItem.getName()}: ` +e.message, 'error');
-      }
+      game.wearItem(player, selectedItem);
+      setSelectedItem(null);
       onUpdate();
     }
   };
 
   const handleUseItem = () => {
     if (selectedItem) {
-      switch (selectedItem.getId()) {
-        case 'healthPotion':
-          if (selectedItem.getQuantity() > 1) {
-            selectedItem.setQuantity(selectedItem.getQuantity() - 1);
-          } else {
-            const idx = items.indexOf(selectedItem);
-            if (idx !== -1) player.removeItem(idx);
-          }
-          game.addMessage('Healed 50 HP', 'success');
-          break;
-        case 'manaPotion':
-          if (selectedItem.getQuantity() > 1) {
-            selectedItem.setQuantity(selectedItem.getQuantity() - 1);
-          } else {
-            const idx = items.indexOf(selectedItem);
-            if (idx !== -1) player.removeItem(idx);
-          }
-          game.addMessage('Restored 30 MP', 'success');
-          break;
-        case 'bread':
-          if (selectedItem.getQuantity() > 1) {
-            selectedItem.setQuantity(selectedItem.getQuantity() - 1);
-          } else {
-            const idx = items.indexOf(selectedItem);
-            if (idx !== -1) player.removeItem(idx);
-          }
-          game.addMessage('Healed 10 HP', 'success');
-          break;
-        default:
-          game.addMessage(`Used ${selectedItem.getName()}`, 'info');
-          break;
+      game.useItem(player, selectedItem);
+      // If the item is no longer in inventory, clear selection
+      if (!player.getInventory().includes(selectedItem)) {
+        setSelectedItem(null);
       }
       onUpdate();
     }
