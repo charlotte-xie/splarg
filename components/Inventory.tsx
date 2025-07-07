@@ -68,7 +68,7 @@ export default function Inventory({
       } catch(e: any) {
         game.addMessage(`Cannot wear ${item.getName()}: ` +e.message, 'error');
       }
-      onUpdate
+      onUpdate();
     }
   };
 
