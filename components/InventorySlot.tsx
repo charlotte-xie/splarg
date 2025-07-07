@@ -88,6 +88,23 @@ export default function InventorySlot({
             </div>
           )}
           
+          {/* Stop sign for restrained items */}
+          {item.isRestricted() && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '2px',
+                left: '2px',
+                color: '#f56565',
+                fontSize: size * 0.3,
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                lineHeight: 1
+              }}
+            >
+              🛑
+            </div>
+          )}
+          
           {/* Tooltip on hover */}
           <div
             style={{

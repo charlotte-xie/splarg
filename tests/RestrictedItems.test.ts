@@ -18,7 +18,7 @@ describe('Restricted Items', () => {
   });
 
   describe('Item Restricted Property', () => {
-    test('should identify blindfold as restricted', () => {
+    test('should identify blindfold as restricted', () => {333
       const blindfold = new Item(ITEM_TYPES.blindfold);
       expect(blindfold.isRestricted()).toBe(true);
     });
