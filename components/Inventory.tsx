@@ -109,6 +109,9 @@ export default function Inventory({
           gridTemplateColumns: gridTemplateColumns, 
           justifyContent: 'center',
           gap: '5px',
+          overflowX: 'hidden',
+          width: '100%',
+          boxSizing: 'border-box',
         }}>
           {Array.from({ length: totalSlots }, (_, index) => {
             const item = index < items.length ? items[index] : null;

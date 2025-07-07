@@ -163,7 +163,9 @@ export default function PlayerPanel({
         <Avatar size={128} />
       </Box>
 
-      <TabbedPanel tabs={tabs} />
+      <div style={{flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column'}}>
+        <TabbedPanel tabs={tabs} />
+      </div>
     </div>
   );
 } 
