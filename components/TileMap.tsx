@@ -33,6 +33,19 @@ export default function TileMap({ area, playerPosition, player, onTileHover, hov
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(tile.getSymbol(), tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2);
+
+    // Draw item symbols if present
+    if (tile.items && tile.items.length > 0) {
+      const maxItems = 3;
+      const itemSymbols = tile.items.slice(0, maxItems).map(item => item.getSymbol());
+      ctx.font = '12px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      const spacing = TILE_SIZE / (itemSymbols.length + 1);
+      itemSymbols.forEach((symbol, i) => {
+        ctx.fillText(symbol, tileX + spacing * (i + 1), tileY + TILE_SIZE - 2);
+      });
+    }
   };
 
   const drawBlackTile = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
