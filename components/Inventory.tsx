@@ -20,46 +20,36 @@ export default function Inventory({
   const player = game.getPlayer();
   const items = player.getInventory();
   const MIN_SLOTS = 20;
-  const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   
   // Calculate how many slots we need (at least MIN_SLOTS, or more if we have more items)
   const totalSlots = Math.max(MIN_SLOTS, items.length);
 
   const handleSlotClick = (index: number) => {
     const item = index < items.length ? items[index] : null;
-    
-    // Update selected item
-    if (item) {
-      setSelectedItemIndex(index);
-    } else {
-      setSelectedItemIndex(-1);
-    }
-    
-    // Call parent callback if provided
+    setSelectedItem(item);
     if (onSlotClick) {
       onSlotClick(index, item);
     }
   };
 
   const handleDropItem = () => {
-    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
-      const item = items[selectedItemIndex];
-      if (game.dropItem(player, item)) {
-        game.addMessage(`Dropped ${item.getName()}`, 'success');
+    if (selectedItem) {
+      if (game.dropItem(player, selectedItem)) {
+        game.addMessage(`Dropped ${selectedItem.getName()}`, 'success');
       } else {
         game.addMessage('Failed to drop item', 'error');
       }
-      setSelectedItemIndex(-1);
+      setSelectedItem(null);
       onUpdate();
     }
   };
 
   const handleDropOne = () => {
-    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
-      const item = items[selectedItemIndex];
-      if (item.getQuantity() > 1) {
-        if (game.dropItem(player, item, 1)) {
-          game.addMessage(`Dropped 1 ${item.getName()}`, 'success');
+    if (selectedItem) {
+      if (selectedItem.getQuantity() > 1) {
+        if (game.dropItem(player, selectedItem, 1)) {
+          game.addMessage(`Dropped 1 ${selectedItem.getName()}`, 'success');
         } else {
           game.addMessage('Failed to drop item', 'error');
         }
@@ -71,65 +61,60 @@ export default function Inventory({
   };
 
   const handleWearItem = () => {
-    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
-      const item = items[selectedItemIndex];
+    if (selectedItem) {
       try{
-        if (player.wearItem(item)) {
-          player.removeItem(selectedItemIndex);
-          setSelectedItemIndex(-1);
-          game.addMessage(`Wore ${item.getName()}`, 'success');
+        if (player.wearItem(selectedItem)) {
+          const idx = items.indexOf(selectedItem);
+          if (idx !== -1) player.removeItem(idx);
+          setSelectedItem(null);
+          game.addMessage(`Wore ${selectedItem.getName()}`, 'success');
         } else {
-          game.addMessage(`Cannot wear ${item.getName()}`, 'error');
+          game.addMessage(`Cannot wear ${selectedItem.getName()}`, 'error');
         }
       } catch(e: any) {
-        game.addMessage(`Cannot wear ${item.getName()}: ` +e.message, 'error');
+        game.addMessage(`Cannot wear ${selectedItem.getName()}: ` +e.message, 'error');
       }
       onUpdate();
     }
   };
 
   const handleUseItem = () => {
-    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
-      const item = items[selectedItemIndex];
-      switch (item.getId()) {
+    if (selectedItem) {
+      switch (selectedItem.getId()) {
         case 'healthPotion':
-          // player.heal(50);
-          if (item.getQuantity() > 1) {
-            item.setQuantity(item.getQuantity() - 1);
+          if (selectedItem.getQuantity() > 1) {
+            selectedItem.setQuantity(selectedItem.getQuantity() - 1);
           } else {
-            player.removeItem(selectedItemIndex);
+            const idx = items.indexOf(selectedItem);
+            if (idx !== -1) player.removeItem(idx);
           }
           game.addMessage('Healed 50 HP', 'success');
           break;
         case 'manaPotion':
-          // Add mana restoration logic here when implemented
-          if (item.getQuantity() > 1) {
-            item.setQuantity(item.getQuantity() - 1);
+          if (selectedItem.getQuantity() > 1) {
+            selectedItem.setQuantity(selectedItem.getQuantity() - 1);
           } else {
-            player.removeItem(selectedItemIndex);
+            const idx = items.indexOf(selectedItem);
+            if (idx !== -1) player.removeItem(idx);
           }
           game.addMessage('Restored 30 MP', 'success');
           break;
         case 'bread':
-          // player.heal(10);
-          if (item.getQuantity() > 1) {
-            item.setQuantity(item.getQuantity() - 1);
+          if (selectedItem.getQuantity() > 1) {
+            selectedItem.setQuantity(selectedItem.getQuantity() - 1);
           } else {
-            player.removeItem(selectedItemIndex);
+            const idx = items.indexOf(selectedItem);
+            if (idx !== -1) player.removeItem(idx);
           }
           game.addMessage('Healed 10 HP', 'success');
           break;
         default:
-          game.addMessage(`Used ${item.getName()}`, 'info');
+          game.addMessage(`Used ${selectedItem.getName()}`, 'info');
           break;
       }
       onUpdate();
     }
   };
-
-  const selectedItem = selectedItemIndex >= 0 && selectedItemIndex < items.length 
-    ? items[selectedItemIndex] 
-    : null;
 
   // Create action buttons for the selected item
   const getActionButtons = (item: Item | null) => {
@@ -198,7 +183,7 @@ export default function Inventory({
               <InventorySlot
                 key={index}
                 item={item}
-                selected={index === selectedItemIndex}
+                selected={item ? item === selectedItem : false}
                 onClick={() => handleSlotClick(index)}
               />
             );
