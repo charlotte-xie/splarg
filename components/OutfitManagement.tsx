@@ -216,7 +216,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
         <Button
           onClick={handleRemoveAll}
         >
-          Remove All Items
+          Remove All
         </Button>
       </div>
     </div>

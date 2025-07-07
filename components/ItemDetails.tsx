@@ -27,10 +27,12 @@ export default function ItemDetails({ item, actionButtons }: ItemDetailsProps) {
       color: '#e2e8f0',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'space-between',
       gap: '8px',
       marginBottom: '8px',
-      height: '100%', // allow parent to control height
+      width: '100%',
+      flexShrink: 0,
+      maxHeight: '200px',
+      boxSizing: 'border-box',
     }}>
       <div>
         <div className="control-panel-row" style={{alignContent: 'end'}}>
