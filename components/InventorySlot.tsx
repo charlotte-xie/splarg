@@ -1,6 +1,6 @@
 import React from 'react';
 import Item from '../classes/Item';
-import { Utils } from '../classes/Utils';
+import Utils from '../classes/Utils';
 
 interface InventorySlotProps {
   item: Item | null;

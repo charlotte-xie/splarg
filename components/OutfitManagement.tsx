@@ -176,7 +176,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
         </div>
 
         {/* Wear Outfit */}
-        {player.getOutfitNames().length > 0 && (
+        {
           <div className="control-panel-row" style={{ width: '100%' }}>
             <select
               value={selectedOutfit}
@@ -210,7 +210,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
               Delete
             </Button>
           </div>
-        )}
+        }
 
         {/* Remove All Button */}
         <Button
