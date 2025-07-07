@@ -21,15 +21,10 @@ export default function Inventory({
   onWearItem
 }: InventoryProps) {
   const MIN_SLOTS = 20;
-  const SLOTS_PER_ROW = 4;
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
-  
-  // Use fixed 5-column grid with proper sizing
-  const gridTemplateColumns = `repeat(${SLOTS_PER_ROW}, 48px)`;
   
   // Calculate how many slots we need (at least MIN_SLOTS, or more if we have more items)
   const totalSlots = Math.max(MIN_SLOTS, items.length);
-  const rows = Math.ceil(totalSlots / SLOTS_PER_ROW);
 
   const handleSlotClick = (index: number) => {
     const item = index < items.length ? items[index] : null;
@@ -102,15 +97,16 @@ export default function Inventory({
     return buttons;
   };
 
+  // Use fixed 5-column grid with proper sizing
+  const gridTemplateColumns = `repeat(auto-fill,48px)`;
+
   return (
     <div className="inventory">
-      <div >
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: gridTemplateColumns, 
-          gap: '5px',
           justifyContent: 'center',
-          width: '100%'
+          gap: '5px',
         }}>
           {Array.from({ length: totalSlots }, (_, index) => {
             const item = index < items.length ? items[index] : null;
@@ -129,7 +125,7 @@ export default function Inventory({
           <p style={{ 
             color: '#a0aec0', 
             textAlign: 'center',
-            marginTop: '16px',
+            marginTop: '8px',
             fontStyle: 'italic'
           }}>
             Inventory is empty
@@ -143,7 +139,6 @@ export default function Inventory({
             actionButtons={getActionButtons(selectedItem)}
           />
         )}
-      </div>
     </div>
   );
 } 

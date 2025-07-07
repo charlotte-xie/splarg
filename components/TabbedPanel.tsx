@@ -60,6 +60,7 @@ export default function TabbedPanel({ tabs, defaultTab, className = "" }: Tabbed
         borderTop: 'none',
         borderRadius: '0 0 8px 8px',
         padding: '16px',
+        width: '100%',
         backgroundColor: 'var(--leather-dark)'
       }}>
         {tabs.find(tab => tab.id === activeTab)?.content}
