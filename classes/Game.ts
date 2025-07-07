@@ -91,6 +91,7 @@ export default class Game {
     this.events = [];
     this.listeners = new Map();
     this.messages = [];
+    this.addPlayerDefaults(this.player);
     this.initializeGame();
   }
 
@@ -162,6 +163,7 @@ export default class Game {
     this.lastUpdate = 0;
     this.world = new World();
     this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
+    this.addPlayerDefaults(this.player);
     this.triggerEvent({ type: 'gameReset', timestamp: Date.now() });
   }
 
@@ -372,5 +374,25 @@ export default class Game {
     }
     this.listeners.clear();
     this.events = [];
+  }
+
+  addPlayerDefaults(player: Player): void {
+    // Add example items
+    const { createExampleItems, ITEM_TYPES } = require('./Item');
+    createExampleItems().forEach((item: any) => player.addItem(item));
+    // Add default outfit items
+    const defaultOutfitItems = [
+      new (require('./Item').default)(ITEM_TYPES.leatherCorset, 1),
+      new (require('./Item').default)(ITEM_TYPES.longSkirt, 1),
+      new (require('./Item').default)(ITEM_TYPES.bra, 1),
+      new (require('./Item').default)(ITEM_TYPES.plainPanties, 1),
+      new (require('./Item').default)(ITEM_TYPES.socks, 1),
+      new (require('./Item').default)(ITEM_TYPES.boots, 1)
+    ];
+    defaultOutfitItems.forEach(item => {
+      player.wearItem(item);
+    });
+    // Save the current outfit as 'Everyday'
+    player.saveOutfit('Everyday');
   }
 } 
