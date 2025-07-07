@@ -47,9 +47,8 @@ type GameMessage = {
  * - settings: { soundEnabled, musicEnabled, difficulty, autoSave }
  * - progress: { totalPlayTime, areasDiscovered, enemiesDefeated, itemsCollected, questsCompleted }
  * - score: number
- * - currentTime: number
+ * - time: number
  * - lastSaveTime: number
- * - lastUpdate: number
  *
  * Methods: startGame, resetGame, saveGame, loadGame, movePlayer, changeArea, updatePlayerStats, addScore, triggerEvent, etc.
  */
@@ -60,13 +59,11 @@ export default class Game {
   public settings: GameSettings;
   public progress: GameProgress;
   public score: number;
-  public currentTime: number;
-  public lastSaveTime: number;
-  public lastUpdate: number;
+  public time: number;
+  public lastSaveTime: number | null;
   public events: GameEvent[];
   public listeners: Map<string, GameEventCallback[]>;
   public messages: GameMessage[];
-  private gameLoop?: NodeJS.Timeout;
 
   constructor() {
     this.status = 'ready';
@@ -86,9 +83,8 @@ export default class Game {
       questsCompleted: 0
     };
     this.score = 0;
-    this.currentTime = Date.now();
-    this.lastSaveTime = Date.now();
-    this.lastUpdate = 0;
+    this.time = 0;
+    this.lastSaveTime = null;
     // Ensure player starts on a walkable tile
     this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
     this.events = [];
@@ -98,9 +94,9 @@ export default class Game {
 
   initialise(): Game {
     this.updatePlayer( new Player());
+    this.time=0;
     this.addPlayerDefaults(this.player);
     this.setupEventListeners();
-    this.startGameLoop();
     return this
   }
 
@@ -129,9 +125,8 @@ export default class Game {
       settings: this.settings,
       progress: this.progress,
       score: this.score,
-      currentTime: this.currentTime,
-      lastSaveTime: this.lastSaveTime,
-      lastUpdate: this.lastUpdate
+      time: this.time,
+      lastSaveTime: this.lastSaveTime
     }));
   }
 
@@ -149,8 +144,7 @@ export default class Game {
 
   startGame(): void {
     this.status = 'playing';
-    this.currentTime = Date.now();
-    this.triggerEvent({ type: 'gameStarted', timestamp: Date.now() });
+    this.triggerEvent({ type: 'gameStarted', timestamp: this.time });
   }
 
   resetGame(): void {
@@ -164,11 +158,11 @@ export default class Game {
       itemsCollected: 0,
       questsCompleted: 0
     };
-    this.lastUpdate = 0;
+    this.time = 0;
     this.world = new World();
     this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
     this.addPlayerDefaults(this.player);
-    this.triggerEvent({ type: 'gameReset', timestamp: Date.now() });
+    this.triggerEvent({ type: 'gameReset', timestamp: this.time });
   }
 
   movePlayer(dx: number, dy: number): boolean {
@@ -190,10 +184,9 @@ export default class Game {
     this.player.position.x = newX;
     this.player.position.y = newY;
     currentArea.visited = true;
-    this.lastUpdate = Date.now();
     this.triggerEvent({ 
       type: 'playerMoved', 
-      timestamp: Date.now(),
+      timestamp: this.time,
       data: { x: newX, y: newY, dx, dy }
     });
     return true;
@@ -204,7 +197,7 @@ export default class Game {
       const { from, to } = this.world.changeArea(areaId);
       this.triggerEvent({ 
         type: 'areaChanged', 
-        timestamp: Date.now(),
+        timestamp: this.time,
         data: { from, to }
       });
       return true;
@@ -219,7 +212,7 @@ export default class Game {
     player.game=this;
     this.triggerEvent({ 
       type: 'playerUpdated', 
-      timestamp: Date.now(),
+      timestamp: this.time,
       data: player 
     });
   }
@@ -228,7 +221,7 @@ export default class Game {
     this.score += points;
     this.triggerEvent({ 
       type: 'scoreAdded', 
-      timestamp: Date.now(),
+      timestamp: this.time,
       data: { points, totalScore: this.score }
     });
   }
@@ -256,25 +249,6 @@ export default class Game {
     }
   }
 
-  // Game Loop
-  startGameLoop(): void {
-    this.gameLoop = setInterval(() => {
-      this.update();
-    }, 1000 / 60);
-  }
-
-  update(): void {
-    if (this.status === 'playing') {
-      const now = Date.now();
-      this.progress.totalPlayTime += now - this.currentTime;
-      this.currentTime = now;
-      if (this.settings.autoSave && 
-          now - this.lastSaveTime > 30000) {
-        this.saveGame();
-      }
-    }
-  }
-
   // Save/Load System
   toJSON() {
     return {
@@ -284,9 +258,8 @@ export default class Game {
       settings: this.settings,
       progress: this.progress,
       score: this.score,
-      currentTime: this.currentTime,
+      time: this.time,
       lastSaveTime: this.lastSaveTime,
-      lastUpdate: this.lastUpdate,
       messages: this.messages
     };
   }
@@ -299,18 +272,17 @@ export default class Game {
     game.settings = obj.settings;
     game.progress = obj.progress;
     game.score = obj.score;
-    game.currentTime = obj.currentTime;
+    game.time = obj.time;
     game.lastSaveTime = obj.lastSaveTime;
-    game.lastUpdate = obj.lastUpdate;
     game.messages = obj.messages || [];
     return game;
   }
 
   saveGame(): void {
     try {
+      this.lastSaveTime = Date.now();
       const saveData = JSON.stringify(this.toJSON());
       localStorage.setItem('splarg_save', saveData);
-      this.lastSaveTime = Date.now();
       this.triggerEvent({ type: 'gameSaved', timestamp: Date.now() });
     } catch (e) {
       console.error('Failed to save game:', e);
@@ -344,18 +316,17 @@ export default class Game {
     const last = this.messages[this.messages.length - 1];
     if (last && last.text === text && last.type === type) {
       last.repeat = (last.repeat || 1) + 1;
-      last.timestamp = Date.now();
+      last.timestamp = this.time;
       return;
     }
     const message: GameMessage = {
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      id: this.time.toString() + Math.random().toString(36).substr(2, 9),
       text,
       type,
-      timestamp: Date.now(),
+      timestamp: this.time,
       repeat: 1
     };
     this.messages.push(message);
-    // Keep only the last 20 messages
     if (this.messages.length > 20) {
       this.messages = this.messages.slice(-20);
     }
@@ -375,9 +346,6 @@ export default class Game {
 
   // Cleanup
   destroy(): void {
-    if (this.gameLoop) {
-      clearInterval(this.gameLoop);
-    }
     this.listeners.clear();
     this.events = [];
   }
@@ -492,5 +460,9 @@ export default class Game {
         this.addMessage(`Used ${item.getName()}`, 'info');
         break;
     }
+  }
+
+  timeLapse(amount: number) {
+    this.time += amount;
   }
 } 

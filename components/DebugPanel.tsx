@@ -134,6 +134,15 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
           Restore Game
         </Button>
       </div>
+
+      {/* Info box below buttons */}
+      <div className="control-panel">
+        <div><b>Last Save:</b> {game.lastSaveTime ? new Date(game.lastSaveTime).toLocaleString() : 'Never'}</div>
+        <div><b>Score:</b> {game.score}</div>
+        <div><b>Game Time:</b> {game.time}</div>
+        <div><b>Inventory:</b> {game.getPlayer().getInventory().length} items</div>
+        <div><b>Player Pos:</b> ({game.getPlayer().position.x}, {game.getPlayer().position.y})</div>
+      </div>
     </div>
   );
 } 
