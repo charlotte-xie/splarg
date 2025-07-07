@@ -1,9 +1,5 @@
+import Entity from './Entity';
 import Item from './Item';
-
-export interface BeingPosition {
-  x: number;
-  y: number;
-}
 
 export interface BeingStats {
   health?: number;
@@ -15,22 +11,16 @@ export interface BeingStats {
   [key: string]: any;
 }
 
-export class Being {
-  public position: BeingPosition;
+export class Being extends Entity {
   public stats: BeingStats;
   public inventory: Item[];
   public wornItems: Map<string, Item>;
 
   constructor() {
-    this.position = { x: 0, y: 0 };
+    super();
     this.stats = {};
     this.inventory = [];
     this.wornItems = new Map();
-  }
-
-  setPosition(x: number, y: number): void {
-    this.position.x = x;
-    this.position.y = y;
   }
 
   updateStats(newStats: Partial<BeingStats>): void {
@@ -157,8 +147,9 @@ export class Being {
   }
 
   toJSON() {
+    const base = super.toJSON();
     return {
-      position: this.position,
+      ...base,
       stats: this.stats,
       inventory: this.inventory.map(item => item.toJSON()),
       wornItems: Array.from(this.wornItems.entries()).map(([k, v]) => [k, v.toJSON()])
@@ -166,8 +157,7 @@ export class Being {
   }
 
   static fromJSON(obj: any): Being {
-    const being = new Being();
-    being.position = obj.position;
+    const being = Object.assign(new Being(), super.fromJSON(obj));
     being.stats = obj.stats;
     being.inventory = (obj.inventory || []).map((itemObj: any) => Item.fromJSON(itemObj));
     being.wornItems = new Map((obj.wornItems || []).map(([k, v]: [string, any]) => [k, Item.fromJSON(v)]));

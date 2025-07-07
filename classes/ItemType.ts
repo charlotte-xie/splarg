@@ -187,7 +187,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'steampunk glasses',
     description: 'Brass-framed glasses with intricate gears and lenses. Provides a stylish view of the world.',
     symbol: '👓',
-    layer: WEAR_LAYERS.outer,
+    layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.eyes]
   }),
   blindfold: new ItemType({

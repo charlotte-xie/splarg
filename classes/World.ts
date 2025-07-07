@@ -8,6 +8,8 @@ interface GameMap {
   playerAreaId: string;
 }
 
+export type Position = { x: number; y: number; areaId?: string };
+
 export default class World {
   public gameMap: GameMap;
 
@@ -188,4 +190,4 @@ export default class World {
     world.gameMap.playerAreaId = obj.gameMap.playerAreaId;
     return world;
   }
-} 
+}

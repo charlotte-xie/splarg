@@ -1,6 +1,7 @@
-import { Being, BeingPosition, BeingStats } from './Being';
+import { Being, BeingStats } from './Being';
 import Game from './Game';
 import Item from './Item';
+import { Position } from './World';
 
 // --- Player class ---
 export default class Player extends Being {
@@ -27,7 +28,7 @@ export default class Player extends Being {
     };
   }
 
-  static defaultPosition(): BeingPosition {
+  static defaultPosition(): Position {
     return { x: 3, y: 3 };
   }
 

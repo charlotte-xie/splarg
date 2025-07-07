@@ -24,7 +24,7 @@ describe('Eyes Location Items', () => {
       const result = player.wearItem(glasses);
       
       expect(result).toBe(true);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(0); // Item removed from inventory
     });
 
@@ -36,12 +36,12 @@ describe('Eyes Location Items', () => {
 
       // Wear first glasses
       player.wearItem(glasses1);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(1); // glasses2 still in inventory
 
       // Wear second glasses
       player.wearItem(glasses2);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(1); // glasses1 back in inventory
     });
 
@@ -50,10 +50,10 @@ describe('Eyes Location Items', () => {
       player.addItem(glasses);
       player.wearItem(glasses);
 
-      const removedItem = player.removeWornItem('eyes-outer');
+      const removedItem = player.removeWornItem('eyes-inner');
       
       expect(removedItem).toBe(glasses);
-      expect(player.isWearingItem('eyes-outer')).toBe(false);
+      expect(player.isWearingItem('eyes-inner')).toBe(false);
       expect(player.getInventory()).toHaveLength(1); // glasses back in inventory
     });
   });
@@ -66,7 +66,7 @@ describe('Eyes Location Items', () => {
       const result = player.wearItem(blindfold);
       
       expect(result).toBe(true);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(0); // Item removed from inventory
     });
 
@@ -78,12 +78,12 @@ describe('Eyes Location Items', () => {
 
       // Wear glasses first
       player.wearItem(glasses);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(1); // blindfold still in inventory
 
       // Wear blindfold (replaces glasses)
       player.wearItem(blindfold);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(1); // glasses back in inventory
     });
 
@@ -92,10 +92,10 @@ describe('Eyes Location Items', () => {
       player.addItem(blindfold);
       player.wearItem(blindfold);
 
-      const removedItem = player.removeWornItem('eyes-outer');
+      const removedItem = player.removeWornItem('eyes-inner');
       
       expect(removedItem).toBe(blindfold);
-      expect(player.isWearingItem('eyes-outer')).toBe(false);
+      expect(player.isWearingItem('eyes-inner')).toBe(false);
       expect(player.getInventory()).toHaveLength(1); // blindfold back in inventory
     });
   });
@@ -109,17 +109,17 @@ describe('Eyes Location Items', () => {
 
       // Wear glasses
       player.wearItem(glasses);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(1); // blindfold in inventory
 
       // Switch to blindfold
       player.wearItem(blindfold);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(1); // glasses back in inventory
 
       // Switch back to glasses
       player.wearItem(glasses);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.getInventory()).toHaveLength(1); // blindfold back in inventory
     });
 
@@ -131,11 +131,11 @@ describe('Eyes Location Items', () => {
 
       // Wear glasses
       player.wearItem(glasses);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
 
       // Wear scarf (should not conflict)
       player.wearItem(scarf);
-      expect(player.isWearingItem('eyes-outer')).toBe(true);
+      expect(player.isWearingItem('eyes-inner')).toBe(true);
       expect(player.isWearingItem('neck-outer')).toBe(true);
       expect(player.getInventory()).toHaveLength(0); // both items worn
     });
@@ -150,7 +150,7 @@ describe('Eyes Location Items', () => {
       expect(glasses.getSymbol()).toBe('👓');
       expect(glasses.isWearable()).toBe(true);
       expect(glasses.isStackable()).toBe(false);
-      expect(glasses.getWearLocations()).toEqual(['eyes-outer']);
+      expect(glasses.getWearLocations()).toEqual(['eyes-inner']);
     });
 
     test('should have correct properties for blindfold', () => {
@@ -162,7 +162,7 @@ describe('Eyes Location Items', () => {
       expect(blindfold.isWearable()).toBe(true);
       expect(blindfold.isStackable()).toBe(false);
       expect(blindfold.isRestricted()).toBe(true);
-      expect(blindfold.getWearLocations()).toEqual(['eyes-outer']);
+      expect(blindfold.getWearLocations()).toEqual(['eyes-inner']);
     });
   });
 }); 

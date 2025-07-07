@@ -58,7 +58,7 @@ describe('Lock UI Functionality', () => {
     player.wearItem(lockedItem);
     // steampunkGlasses is worn at 'eyes-outer'
     expect(() => {
-      player.removeWornItem('eyes-outer');
+      player.removeWornItem('eyes-inner');
     }).toThrow('Cannot remove locked item: steampunk glasses');
   });
 }); 

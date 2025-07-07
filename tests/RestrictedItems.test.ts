@@ -107,11 +107,11 @@ describe('Restricted Items', () => {
       player.addItem(blindfold);
       player.wearItem(blindfold);
 
-      expect(player.isRestricted('eyes-outer')).toBe(true);
+      expect(player.isRestricted('eyes')).toBe(true);
 
       // Remove the blindfold
-      player.removeWornItem('eyes-outer');
-      expect(player.isRestricted('eyes-outer')).toBe(false);
+      player.removeWornItem('eyes-inner');
+      expect(player.isRestricted('eyes')).toBe(false);
     });
 
     test('should work with multi-location items', () => {
