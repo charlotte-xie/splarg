@@ -125,6 +125,7 @@ export function createExampleItems(): Item[] {
     new Item(ITEM_TYPES.longCoat, 1),
     new Item(ITEM_TYPES.vest, 1),
     new Item(ITEM_TYPES.boots, 1),
+    new Item(ITEM_TYPES.highHeels, 1),
     new Item(ITEM_TYPES.gloves, 1),
     new Item(ITEM_TYPES.scarf, 1),
     new Item(ITEM_TYPES.steampunkGlasses, 1),

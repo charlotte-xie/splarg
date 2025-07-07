@@ -8,14 +8,15 @@ export const WEAR_TYPES = {
   face: 'face',
   eyes: 'eyes',
   neck: 'neck',
+  hand: 'hand',
   arm: 'arm',
   chest: 'chest',
   belly: 'belly',
   waist: 'waist',
   hips: 'hips',
   legs: 'legs',
-  feet: 'feet',
-  hand: 'hand'
+  feet: 'feet'
+
 } as const;
 
 // Wear layers
@@ -194,7 +195,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'blindfold',
     description: 'A dark cloth blindfold that completely blocks vision.',
     symbol: '🕶️',
-    layer: WEAR_LAYERS.outer,
+    layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.eyes],
     restricted: true
   }),
@@ -270,5 +271,42 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     locations: [WEAR_TYPES.hand],
     allowsAccess: false,
     restricted: true
+  }),
+  isolationHood: new ItemType({
+    id: 'isolationHood',
+    name: 'isolation hood',
+    description: 'A heavy hood that completely isolates the wearer from their surroundings.',
+    symbol: '🪖',
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.head, WEAR_TYPES.eyes, WEAR_TYPES.face],
+    allowsAccess: false,
+    restricted: true
+  }),
+  leatherLegBinder: new ItemType({
+    id: 'leatherLegBinder',
+    name: 'leather leg binder',
+    description: 'A restrictive leather binder that immobilizes the legs and feet.',
+    symbol: '🦵',
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.legs, WEAR_TYPES.feet],
+    restricted: true
+  }),
+  highHeels: new ItemType({
+    id: 'highHeels',
+    name: 'high heels',
+    description: 'A pair of stylish high-heeled sandals.',
+    symbol: '👠',
+    layer: WEAR_LAYERS.inner,
+    locations: [WEAR_TYPES.feet],
+    allowsAccess: true
+  }),
+  cowboyHat: new ItemType({
+    id: 'cowboyHat',
+    name: 'cowboy hat',
+    description: 'A rugged cowboy hat with a wide brim and a leather band.',
+    symbol: '🤠',
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.head],
+    allowsAccess: true
   })
 }; 
