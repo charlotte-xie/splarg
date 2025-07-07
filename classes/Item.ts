@@ -217,9 +217,9 @@ export const ITEM_TYPES: Record<string, ItemType> = {
 export default class Item {
   public number: number;
   public type: ItemType;
-  public locked: boolean;
+  public props: Record<string, any>;
 
-  constructor(typeOrId: ItemType | string, quantity: number = 1, locked: boolean = false) {
+  constructor(typeOrId: ItemType | string, quantity: number = 1, props: Record<string, any> = {}) {
     // If first parameter is a string, look up the item type
     if (typeof typeOrId === 'string') {
       const itemType = ITEM_TYPES[typeOrId];
@@ -230,9 +230,8 @@ export default class Item {
     } else {
       this.type = typeOrId;
     }
-    
     this.number = Math.max(1, quantity);
-    this.locked = locked;
+    this.props = { ...props };
   }
 
   canStack(other?: Item): boolean {
@@ -274,7 +273,7 @@ export default class Item {
   }
 
   isLocked(): boolean {
-    return this.locked;
+    return !!this.props.locked;
   }
 
   getLayer(): WearLayer | undefined {
@@ -320,12 +319,12 @@ export default class Item {
     return {
       type: this.type.id,
       number: this.number,
-      locked: this.locked
+      props: this.props
     };
   }
 
   static fromJSON(obj: any): Item {
-    return new Item(obj.type, obj.number, obj.locked);
+    return new Item(obj.type, obj.number, obj.props || {});
   }
 }
 
