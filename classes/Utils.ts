@@ -1,4 +1,4 @@
-export class Utils {
+export default class Utils {
   /**
    * Formats a number for display, using abbreviations for large numbers
    * @param number - The number to format
@@ -17,5 +17,9 @@ export class Utils {
       const billions = Math.floor(number / 1000000000);
       return `${billions}b`;
     }
+  }
+
+  static capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
 } 

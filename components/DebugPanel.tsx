@@ -66,6 +66,21 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     onGameUpdate();
   };
 
+  const handleUnlockAllWornItems = () => {
+    const player = game.getPlayer();
+    const wornItems = player.getWornItems();
+    // Get unique worn items (since items can span multiple locations)
+    const uniqueWornItems = new Set<Item>();
+    wornItems.forEach((item) => {
+      uniqueWornItems.add(item);
+    });
+    // Unlock all unique worn items
+    uniqueWornItems.forEach(item => {
+      (item as any).locked = false;
+    });
+    onGameUpdate();
+  };
+
   return (
     <div className="control-panel" style={{height:"100%", flex: "1"}}>
       <h4>
@@ -101,6 +116,12 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
           onClick={handleLockAllWornItems}
         >
           Lock All Worn
+        </Button>
+        
+        <Button
+          onClick={handleUnlockAllWornItems}
+        >
+          Unlock All Worn
         </Button>
       </div>
     </div>

@@ -30,44 +30,14 @@ export default function ItemDetails({ item, actionButtons }: ItemDetailsProps) {
         marginBottom: '8px'
       }}>
         <span style={{ fontSize: '20px' }}>{item.getSymbol()}</span>
-        <h5 style={{ 
-          margin: 0, 
-          color: '#d69e2e',
-          fontSize: '14px'
-        }}>
+        <h5>
           {item.getName()}
           {item.hasMultiple() && ` (${item.getQuantity()})`}
         </h5>
       </div>
-      <p style={{
-        margin: '8px 0',
-        fontSize: '12px',
-        color: '#a0aec0',
-        lineHeight: '1.4'
-      }}>
+      <p>
         {item.getDescription()}
       </p>
-      <div style={{
-        fontSize: '11px',
-        color: '#718096',
-        borderTop: '1px solid #4a5568',
-        paddingTop: '8px',
-        marginTop: '8px',
-        marginBottom: '12px'
-      }}>
-        <div>Type: {item.getId()}</div>
-        <div>Stackable: {item.isStackable() ? 'Yes' : 'No'}</div>
-        {item.hasMultiple() && (
-          <div>Quantity: {item.getQuantity()}</div>
-        )}
-        {item.isWearable() && (
-          <div style={{ marginTop: '4px' }}>
-            <div style={{ color: '#d69e2e', fontWeight: '500' }}>Equipment:</div>
-            <div>Layer: {item.getLayer()}</div>
-            <div>Locations: {item.getLocations()?.join(', ') || 'None'}</div>
-          </div>
-        )}
-      </div>
       
       {/* Action Buttons */}
       <div style={{
@@ -78,8 +48,6 @@ export default function ItemDetails({ item, actionButtons }: ItemDetailsProps) {
         {actionButtons.map((button, index) => (
           <Button
             key={index}
-            variant={button.variant}
-            size="small"
             onClick={button.onClick}
             disabled={button.disabled}
           >

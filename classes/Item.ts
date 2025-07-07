@@ -4,15 +4,15 @@ export const WEAR_TYPES = {
   face: 'face',
   eyes: 'eyes',
   neck: 'neck',
+  arm: 'arm',
   chest: 'chest',
   belly: 'belly',
-  arm: 'arm',
-  hand: 'hand',
   waist: 'waist',
   hips: 'hips',
   legs: 'legs',
-  feet: 'feet'
-} as const;
+  feet: 'feet',
+  hand: 'hand'
+  } as const;
 
 // Wear layers
 export const WEAR_LAYERS = {

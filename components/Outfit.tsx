@@ -1,6 +1,7 @@
 import React from 'react';
 import Game from '../classes/Game';
 import Item, { createWearLocation, WEAR_LAYERS, WEAR_TYPES, WearLayer, WearType } from '../classes/Item';
+import Utils from '../classes/Utils';
 import InventorySlot from './InventorySlot';
 import ItemDetails from './ItemDetails';
 import OutfitManagement from './OutfitManagement';
@@ -120,6 +121,11 @@ export default function Outfit({
     ];
   };
 
+
+  let lastOuter=null;
+  let lastInner=null;
+  let lastUnder=null;
+  
   return (
     <div className="control-panel-grid">
       <h4>Currently Worn Outfit</h4>
@@ -140,34 +146,31 @@ export default function Outfit({
           <h5 style={{textAlign: 'center'}}>Under</h5>
           
           {/* Equipment rows */}
-          {wearAreas.map((wearArea) => {
-            const outerItem = getItemForLocation(wearArea, WEAR_LAYERS.outer);
-            const innerItem = getItemForLocation(wearArea, WEAR_LAYERS.inner);
-            const underItem = getItemForLocation(wearArea, WEAR_LAYERS.under);
-            
-            return (
-              <React.Fragment key={wearArea}>
-                <p>
-                  {wearArea}
-                </p>
-                <InventorySlot
-                  item={outerItem || null}
-                  selected={isSlotSelected(wearArea, WEAR_LAYERS.outer, outerItem)}
-                  onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.outer), outerItem || null)}
-                />
-                <InventorySlot
-                  item={innerItem || null}
-                  selected={isSlotSelected(wearArea, WEAR_LAYERS.inner, innerItem)}
-                  onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.inner), innerItem || null)}
-                />
-                <InventorySlot
-                  item={underItem || null}
-                  selected={isSlotSelected(wearArea, WEAR_LAYERS.under, underItem)}
-                  onClick={() => handleSlotClick(createWearLocation(wearArea, WEAR_LAYERS.under), underItem || null)}
-                />
-              </React.Fragment>
-            );
-          })}
+          {(() => {
+            const rows = [];
+            const layers = Object.values(WEAR_LAYERS);
+            for (const wearArea of wearAreas) {
+              const slots = [];
+              for (const layer of layers) {
+                const item = getItemForLocation(wearArea, layer);
+                slots.push(
+                  <InventorySlot
+                    key={layer}
+                    item={item || null}
+                    selected={isSlotSelected(wearArea, layer, item)}
+                    onClick={() => handleSlotClick(createWearLocation(wearArea, layer), item || null)}
+                  />
+                );
+              }
+              rows.push(
+                <React.Fragment key={wearArea}>
+                  <p>{Utils.capitalize(wearArea)}</p>
+                  {slots}
+                </React.Fragment>
+              );
+            }
+            return rows;
+          })()}
         </div>
         
         {/* Selected Item Details */}
