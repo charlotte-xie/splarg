@@ -399,7 +399,8 @@ export default class Game {
 
   addPlayerDefaults(player: Player): void {
     // Add example items
-    const { createExampleItems, ITEM_TYPES } = require('./Item');
+    const { createExampleItems } = require('./Item');
+    const { ITEM_TYPES } = require('./ItemType');
     createExampleItems().forEach((item: any) => player.addItem(item));
     // Add default outfit items
     const defaultOutfitItems = [

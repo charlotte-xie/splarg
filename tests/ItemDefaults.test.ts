@@ -1,4 +1,4 @@
-import { ItemType, WEAR_LAYERS, WEAR_TYPES } from '../classes/Item';
+import { ItemType, WEAR_LAYERS, WEAR_TYPES } from '../classes/ItemType';
 
 describe('ItemType Defaults', () => {
   test('should make items stackable by default unless wearable', () => {
