@@ -6,16 +6,9 @@ import MessagePanel from './MessagePanel';
 import PlayerPanel from './PlayerPanel';
 import TileMap from './TileMap';
 
-interface HoveredTile {
-  tile: any;
-  x: number;
-  y: number;
-}
-
 export default function GameScreen() {
   const gameRef = useRef<Game>(new Game().initialise());
   const [version, setVersion] = useState(0);
-  const [hoveredTile, setHoveredTile] = useState<HoveredTile | null>(null);
   const [isClient, setIsClient] = useState(false);
   const gameContainerRef = useRef<HTMLDivElement>(null);
 
@@ -108,25 +101,12 @@ export default function GameScreen() {
     };
   }, []);
 
-  const handleTileHover = (tile: any, x: number, y: number) => {
-    if (tile && x >= 0 && y >= 0) {
-      setHoveredTile({ tile, x, y });
-    } else {
-      setHoveredTile(null);
-    }
-  };
-
   const handleAreaChange = (areaId: string) => {
     gameRef.current.changeArea(areaId);
     updateGame(game);
   };
 
   const game = gameRef.current;
-  const currentArea = game.world.getCurrentArea();
-  const availableAreas = Object.values(game.getState().gameMap.areas)
-    .filter((area: any) => area.discovered)
-    .map((area: any) => area.id);
-  const gameState = game.getState();
 
   return (
     <div 
@@ -139,14 +119,11 @@ export default function GameScreen() {
           onUpdate={()=>updateGame(game)}
         />
         <div className="game-main">
-          
           <GameWindow>
             <TileMap
-              area={currentArea}
-              playerPosition={gameState.player.position}
-              player={game.getPlayer()}
-              onTileHover={handleTileHover}
-              hoveredTile={hoveredTile}
+              game={game}
+              onUpdate={() => updateGame(game)}
+              version={version}
             />
           </GameWindow>
           <MessagePanel game={game} onUpdate={()=>updateGame(game)} />
@@ -155,18 +132,7 @@ export default function GameScreen() {
           game={game}
           onGameUpdate={updateGame}
         />
-
       </div>
-
-      {hoveredTile && hoveredTile.tile && (
-        <div className="tile-info">
-          <h4>Tile Info</h4>
-          <p>Position: ({hoveredTile.x}, {hoveredTile.y})</p>
-          <p>Type: {hoveredTile.tile.name}</p>
-          <p>Walkable: {hoveredTile.tile.walkable ? 'Yes' : 'No'}</p>
-          <p>Description: {hoveredTile.tile.description}</p>
-        </div>
-      )}
     </div>
   );
 } 

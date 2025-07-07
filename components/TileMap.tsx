@@ -1,18 +1,21 @@
-import { useEffect, useRef } from 'react';
-import Player from '../classes/Player';
+import { useEffect, useRef, useState } from 'react';
+import Game from '../classes/Game';
 import Tile from '../classes/Tile';
 
 interface TileMapProps {
-  area: any;
-  playerPosition: any;
-  player: Player;
-  onTileHover: (tile: any, x: number, y: number) => void;
-  hoveredTile: any;
+  game: Game;
+  onUpdate: (game: Game) => void;
+  version: number;
 }
 
-export default function TileMap({ area, playerPosition, player, onTileHover, hoveredTile }: TileMapProps) {
+export default function TileMap({ game, onUpdate, version }: TileMapProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const TILE_SIZE = 32;
+  const [hoveredTile, setHoveredTile] = useState<{tile: any, x: number, y: number} | null>(null);
+
+  const player = game.getPlayer();
+  const area = game.world.getCurrentArea();
+  const playerPosition = player.position;
 
   const drawTile = (ctx: CanvasRenderingContext2D, tile: Tile, x: number, y: number) => {
     const tileX = x * TILE_SIZE;
@@ -81,10 +84,8 @@ export default function TileMap({ area, playerPosition, player, onTileHover, hov
 
   const drawHoveredTile = (ctx: CanvasRenderingContext2D, hoveredTile: any) => {
     if (!hoveredTile) return;
-
     const hoverX = hoveredTile.x * TILE_SIZE;
     const hoverY = hoveredTile.y * TILE_SIZE;
-
     ctx.strokeStyle = '#ffd700';
     ctx.lineWidth = 2;
     ctx.setLineDash([5, 5]);
@@ -95,27 +96,18 @@ export default function TileMap({ area, playerPosition, player, onTileHover, hov
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !area) return;
-
     const width = area.getWidth();
     const height = area.getHeight();
     if (width === 0 || height === 0) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     canvas.width = width * TILE_SIZE;
     canvas.height = height * TILE_SIZE;
-
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Check if eyes are restricted
     const eyesRestricted = player && player.isRestricted && player.isRestricted('eyes');
-
-    // Draw tiles
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (eyesRestricted) {
-          // Only render the player's tile, everything else is black
           if (x === playerPosition.x && y === playerPosition.y) {
             const tile = area.getTile(x, y);
             if (tile) drawTile(ctx, tile, x, y);
@@ -128,38 +120,28 @@ export default function TileMap({ area, playerPosition, player, onTileHover, hov
         }
       }
     }
-
-    // Draw player
     drawPlayer(ctx, playerPosition);
-
-    // Draw hovered tile highlight
     if (!eyesRestricted) {
       drawHoveredTile(ctx, hoveredTile);
     }
-
-  }, [area, playerPosition, hoveredTile, player]);
+  }, [area, playerPosition, hoveredTile, player, version]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas || !area) return;
-
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor((event.clientX - rect.left) / TILE_SIZE);
     const y = Math.floor((event.clientY - rect.top) / TILE_SIZE);
-
-    if (
-      x >= 0 && x < area.getWidth() &&
-      y >= 0 && y < area.getHeight()
-    ) {
+    if (x >= 0 && x < area.getWidth() && y >= 0 && y < area.getHeight()) {
       const tile = area.getTile(x, y);
-      onTileHover(tile, x, y);
+      setHoveredTile({ tile, x, y });
     } else {
-      onTileHover(null, -1, -1);
+      setHoveredTile(null);
     }
   };
 
   const handleMouseLeave = () => {
-    onTileHover(null, -1, -1);
+    setHoveredTile(null);
   };
 
   if (!area) {
@@ -179,6 +161,15 @@ export default function TileMap({ area, playerPosition, player, onTileHover, hov
           cursor: 'crosshair'
         }}
       />
+      {hoveredTile && hoveredTile.tile && (
+        <div className="tile-info">
+          <h4>Tile Info</h4>
+          <p>Position: ({hoveredTile.x}, {hoveredTile.y})</p>
+          <p>Type: {hoveredTile.tile.name}</p>
+          <p>Walkable: {hoveredTile.tile.walkable ? 'Yes' : 'No'}</p>
+          <p>Description: {hoveredTile.tile.description}</p>
+        </div>
+      )}
     </div>
   );
 } 
