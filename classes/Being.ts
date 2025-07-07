@@ -159,4 +159,8 @@ export class Being {
     being.wornItems = new Map((obj.wornItems || []).map(([k, v]: [string, any]) => [k, Item.fromJSON(v)]));
     return being;
   }
+
+  isPlayer(): boolean {
+    return false;
+  }
 } 

@@ -94,4 +94,8 @@ export default class Player extends Being {
     player.outfits = new Map(obj.outfits || []);
     return player;
   }
+
+  isPlayer(): boolean {
+    return true;
+  }
 } 
