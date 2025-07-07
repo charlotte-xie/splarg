@@ -121,6 +121,7 @@ export function createExampleItems(): Item[] {
     new Item(ITEM_TYPES.manaPotion, 2),
     new Item(ITEM_TYPES.ironSword, 1),
     new Item(ITEM_TYPES.leatherArmor, 1),
+    new Item(ITEM_TYPES.straightJacket, 1),
     new Item(ITEM_TYPES.longCoat, 1),
     new Item(ITEM_TYPES.vest, 1),
     new Item(ITEM_TYPES.boots, 1),

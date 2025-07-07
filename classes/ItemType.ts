@@ -49,8 +49,9 @@ export class ItemType {
   public layer?: WearLayer;
   public locations?: WearType[];
   public restricted?: boolean;
+  public allowsAccess: boolean;
 
-  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false }: {
+  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false, allowsAccess = true }: {
     id: string;
     name: string;
     description: string;
@@ -60,6 +61,7 @@ export class ItemType {
     layer?: WearLayer;
     locations?: WearType[];
     restricted?: boolean;
+    allowsAccess?: boolean;
   }) {
     this.id = id;
     this.name = name;
@@ -72,6 +74,7 @@ export class ItemType {
     this.layer = layer;
     this.locations = locations;
     this.restricted = restricted;
+    this.allowsAccess = allowsAccess;
   }
 
   // Add a use method for item-specific logic
@@ -149,6 +152,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'leather boots',
     description: 'Sturdy leather boots with steel toe caps.',
     symbol: '👢',
+    allowsAccess: false,
     layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.feet]
   }),
@@ -157,6 +161,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'steampunk vest',
     description: 'A fitted vest with brass buttons and leather trim.',
     symbol: '🎽',
+    allowsAccess: false,
     layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
   }),
@@ -211,6 +216,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     description: 'A fitted leather corset with brass buckles.',
     symbol: '🎽',
     layer: WEAR_LAYERS.inner,
+    allowsAccess: false,
     locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
   }),
   longSkirt: new ItemType({
@@ -252,7 +258,8 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     symbol: '🧥',
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.chest, WEAR_TYPES.belly, WEAR_TYPES.arm, WEAR_TYPES.hand],
-    restricted: true
+    restricted: true,
+    allowsAccess: false
   }),
   restraintGloves: new ItemType({
     id: 'restraintGloves',
@@ -261,6 +268,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     symbol: '🧤',
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.hand],
+    allowsAccess: false,
     restricted: true
   })
 }; 

@@ -112,6 +112,20 @@ export class Being {
       if (item.isLocked()) {
         throw new Error(`Cannot remove locked item: ${item.getName()}`);
       }
+      // Enforce allowsAccess: check for blocking items on the same body part and higher layers
+      const [bodyPart, layer] = wearLocation.split('-');
+      const LAYER_ORDER = ['outer', 'inner', 'under'];
+      const currentLayerIdx = LAYER_ORDER.indexOf(layer);
+      if (currentLayerIdx > -1) {
+        for (let i = 0; i < currentLayerIdx; i++) {
+          const higherLayer = LAYER_ORDER[i];
+          const higherLoc = `${bodyPart}-${higherLayer}`;
+          const blockingItem = this.wornItems.get(higherLoc);
+          if (blockingItem && blockingItem.type.allowsAccess === false) {
+            throw new Error(`Cannot remove ${item.getName()} while ${blockingItem.getName()} is worn over it.`);
+          }
+        }
+      }
       const wearLocations = item.getWearLocations();
       if (wearLocations) {
         wearLocations.forEach(location => {

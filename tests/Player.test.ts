@@ -337,6 +337,27 @@ describe('Player Wear/Remove Behavior', () => {
       expect(player.getInventory()).toHaveLength(0); // both items worn
     });
   });
+
+  describe('Access Restriction (allowsAccess)', () => {
+    test('should block removal of inner/under items when straightjacket is worn', () => {
+      const straightJacket = new Item(ITEM_TYPES.straightJacket); // outer, allowsAccess: false
+      const vest = new Item(ITEM_TYPES.vest); // inner
+      const bra = new Item(ITEM_TYPES.bra); // under
+      player.addItem(straightJacket);
+      player.addItem(vest);
+      player.addItem(bra);
+      player.wearItem(bra);
+      player.wearItem(vest);
+      player.wearItem(straightJacket);
+      // Should not be able to remove vest or bra while straightjacket is worn
+      expect(() => player.removeWornItem('chest-inner')).toThrow(/while straight jacket is worn over it/);
+      expect(() => player.removeWornItem('chest-under')).toThrow(/while straight jacket is worn over it/);
+      // After removing straightjacket, should be able to remove vest and bra
+      player.removeWornItem('chest-outer');
+      expect(() => player.removeWornItem('chest-inner')).not.toThrow();
+      expect(() => player.removeWornItem('chest-under')).not.toThrow();
+    });
+  });
 });
 
 describe('Game Save/Load', () => {
