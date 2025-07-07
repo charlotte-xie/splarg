@@ -249,7 +249,7 @@ export default class Player {
   // Wear a saved outfit
   wearOutfit(outfitName: string): boolean {
     const itemIds = this.outfits.get(outfitName);
-    if (!itemIds || itemIds.length === 0) {
+    if (!itemIds) {
       return false;
     }
 

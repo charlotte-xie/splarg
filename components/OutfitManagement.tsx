@@ -15,7 +15,6 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
   const handleSaveOutfit = () => {
     if (outfitName.trim()) {
       if (player.saveOutfit(outfitName.trim())) {
-        setOutfitName('');
         onPlayerUpdate(player);
         game.addMessage(`Saved outfit: ${outfitName.trim()}`, 'success');
       } else {
@@ -28,6 +27,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
     if (selectedOutfit) {
       try {
         if (player.wearOutfit(selectedOutfit)) {
+          setOutfitName(selectedOutfit);
           onPlayerUpdate(player);
           game.addMessage(`Wearing outfit: ${selectedOutfit}`, 'success');
         } else {
@@ -102,6 +102,9 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
     onPlayerUpdate(player);
   };
 
+  // Determine if the current outfitName matches an existing outfit
+  const isOverwrite = outfitName.trim() && player.getOutfitNames().includes(outfitName.trim());
+
   return (
     <div className="control-panel">
       <h4>
@@ -116,13 +119,19 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
             placeholder="Outfit name..."
             value={outfitName}
             onChange={(e) => setOutfitName(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleSaveOutfit();
+              }
+            }}
             className="control-panel-input"
           />
           <Button
+            size="small"
             onClick={handleSaveOutfit}
             disabled={!outfitName.trim()}
           >
-            Save
+            {isOverwrite ? 'Overwrite' : 'Save'}
           </Button>
         </div>
 
