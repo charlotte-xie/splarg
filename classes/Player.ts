@@ -48,8 +48,22 @@ export default class Player extends Being {
   wearOutfit(outfitName: string): boolean {
     if (!this.outfits.has(outfitName)) return false;
     const itemIds = this.outfits.get(outfitName)!;
-    // ... logic to wear items by id ...
-    return true;
+    let allWorn = true;
+    for (const itemId of itemIds) {
+      // Find the item in inventory
+      const item = this.inventory.find(i => i.getId() === itemId);
+      if (item) {
+        const result = this.wearItem(item);
+        if (!result) allWorn = false;
+      } else {
+        // If item is not in inventory, try to find it already worn (for multi-location items)
+        const alreadyWorn = Array.from(this.wornItems.values()).find(i => i.getId() === itemId);
+        if (!alreadyWorn) {
+          allWorn = false;
+        }
+      }
+    }
+    return allWorn;
   }
 
   getOutfitNames(): string[] {

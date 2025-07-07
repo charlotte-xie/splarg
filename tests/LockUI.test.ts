@@ -9,25 +9,25 @@ describe('Lock UI Functionality', () => {
   });
 
   test('should correctly identify locked items', () => {
-    const lockedItem = new Item('steampunkGlasses', 1, true);
-    const unlockedItem = new Item('steampunkGlasses', 1, false);
+    const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
+    const unlockedItem = new Item('steampunkGlasses', 1, { locked: false });
     
     expect(lockedItem.isLocked()).toBe(true);
     expect(unlockedItem.isLocked()).toBe(false);
   });
 
   test('should allow locking items after creation', () => {
-    const item = new Item('steampunkGlasses', 1, false);
+    const item = new Item('steampunkGlasses', 1, { locked: false });
     expect(item.isLocked()).toBe(false);
     
     // Lock the item
-    (item as any).locked = true;
+    item.props.locked=true;
     expect(item.isLocked()).toBe(true);
   });
 
   test('should handle locking multiple worn items', () => {
-    const item1 = new Item('steampunkGlasses', 1, false);
-    const item2 = new Item('longCoat', 1, false);
+    const item1 = new Item('steampunkGlasses', 1, { locked: false });
+    const item2 = new Item('longCoat', 1, { locked: false });
     
     player.addItem(item1);
     player.addItem(item2);
@@ -42,7 +42,7 @@ describe('Lock UI Functionality', () => {
     });
     
     uniqueWornItems.forEach(item => {
-      (item as any).locked = true;
+      item.props.locked=true;
     });
     
     // Verify all worn items are locked
@@ -52,12 +52,12 @@ describe('Lock UI Functionality', () => {
   });
 
   test('should prevent removing locked worn items', () => {
-    const lockedItem = new Item('steampunkGlasses', 1, true);
+    const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
     player.addItem(lockedItem);
     player.wearItem(lockedItem);
-    
+    // steampunkGlasses is worn at 'eyes-outer'
     expect(() => {
       player.removeWornItem('eyes-outer');
-    }).toThrow('Cannot remove locked item: Steampunk Glasses');
+    }).toThrow('Cannot remove locked item: steampunk glasses');
   });
 }); 

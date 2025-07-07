@@ -144,7 +144,7 @@ describe('Eyes Location Items', () => {
     test('should have correct properties for steampunk glasses', () => {
       const glasses = new Item(ITEM_TYPES.steampunkGlasses);
       
-      expect(glasses.getName()).toBe('Steampunk Glasses');
+      expect(glasses.getName()).toBe('steampunk glasses');
       expect(glasses.getDescription()).toBe('Brass-framed glasses with intricate gears and lenses. Provides a stylish view of the world.');
       expect(glasses.getSymbol()).toBe('👓');
       expect(glasses.isWearable()).toBe(true);
@@ -155,7 +155,7 @@ describe('Eyes Location Items', () => {
     test('should have correct properties for blindfold', () => {
       const blindfold = new Item(ITEM_TYPES.blindfold);
       
-      expect(blindfold.getName()).toBe('Blindfold');
+      expect(blindfold.getName()).toBe('blindfold');
       expect(blindfold.getDescription()).toBe('A dark cloth blindfold that completely blocks vision.');
       expect(blindfold.getSymbol()).toBe('🕶️');
       expect(blindfold.isWearable()).toBe(true);
