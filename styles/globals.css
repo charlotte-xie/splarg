@@ -433,16 +433,22 @@ h5 {
 
 /* Global Button Styles */
 .game-button {
-  border: 1px solid;
+  background-color: var(--iron);
+  color: var(--parchment);
+  border: 1px solid var(--brass);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-weight: 400;
   text-align: center;
   align-items: center;
   justify-content: center;
   min-width: fit-content;
   font-family: var(--font-secondary);
+}
+
+.game-button:hover:not(:disabled) {
+  background-color: var(--accent);
+  color: var(--brass);
 }
 
 .game-button:disabled {
@@ -464,69 +470,4 @@ h5 {
 .game-button--large {
   padding: 12px 16px;
   font-size: 14px;
-}
-
-/* Button Variants */
-.game-button--primary {
-  background-color: #2d3748;
-  color: #e2e8f0;
-  border-color: #4a5568;
-}
-
-.game-button--primary:hover:not(:disabled) {
-  background-color: #4a5568;
-}
-
-.game-button--primary:disabled {
-  background-color: #1a202c;
-  color: #718096;
-  border-color: #2d3748;
-}
-
-.game-button--secondary {
-  background-color: #1a202c;
-  color: #e2e8f0;
-  border-color: #4a5568;
-}
-
-.game-button--secondary:hover:not(:disabled) {
-  background-color: #2d3748;
-}
-
-.game-button--secondary:disabled {
-  background-color: #0f1419;
-  color: #718096;
-  border-color: #2d3748;
-}
-
-.game-button--danger {
-  background-color: #742a2a;
-  color: #e2e8f0;
-  border-color: #9b2c2c;
-}
-
-.game-button--danger:hover:not(:disabled) {
-  background-color: #9b2c2c;
-}
-
-.game-button--danger:disabled {
-  background-color: #4a1a1a;
-  color: #718096;
-  border-color: #742a2a;
-}
-
-.game-button--success {
-  background-color: #22543d;
-  color: #e2e8f0;
-  border-color: #38a169;
-}
-
-.game-button--success:hover:not(:disabled) {
-  background-color: #38a169;
-}
-
-.game-button--success:disabled {
-  background-color: #1a3a2a;
-  color: #718096;
-  border-color: #22543d;
 } 

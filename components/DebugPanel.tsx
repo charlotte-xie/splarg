@@ -62,35 +62,30 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
       
       <div className="grid-container">
         <Button
-          variant="primary"
           onClick={handleAddRandomItem}
         >
           Add Random Item
         </Button>
         
         <Button
-          variant="primary"
           onClick={handleAddGold}
         >
           Add 100 Gold
         </Button>
         
         <Button
-          variant="success"
           onClick={handleHealPlayer}
         >
           Heal Player
         </Button>
         
         <Button
-          variant="danger"
           onClick={handleResetPlayer}
         >
           Reset Player
         </Button>
         
         <Button
-          variant="secondary"
           onClick={handleLockAllWornItems}
         >
           Lock All Worn

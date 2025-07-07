@@ -94,12 +94,12 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
     if (selectedOutfit) {
       if (player.deleteOutfit(selectedOutfit)) {
         setSelectedOutfit('');
-        onPlayerUpdate(player);
         game.addMessage(`Deleted outfit: ${selectedOutfit}`, 'success');
       } else {
         game.addMessage('Failed to delete outfit', 'error');
       }
     }
+    onPlayerUpdate(player);
   };
 
   return (
@@ -116,16 +116,9 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
             placeholder="Outfit name..."
             value={outfitName}
             onChange={(e) => setOutfitName(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleSaveOutfit();
-              }
-            }}
             className="control-panel-input"
           />
           <Button
-            variant="primary"
-            size="small"
             onClick={handleSaveOutfit}
             disabled={!outfitName.trim()}
           >
@@ -149,16 +142,12 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
               ))}
             </select>
             <Button
-              variant="success"
-              size="small"
               onClick={handleWearOutfit}
               disabled={!selectedOutfit}
             >
               Wear
             </Button>
             <Button
-              variant="danger"
-              size="small"
               onClick={handleDeleteOutfit}
               disabled={!selectedOutfit}
             >
@@ -169,8 +158,6 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
 
         {/* Remove All Button */}
         <Button
-          variant="secondary"
-          size="small"
           onClick={handleRemoveAll}
         >
           Remove All Items
