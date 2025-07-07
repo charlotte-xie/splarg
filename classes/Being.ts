@@ -9,12 +9,9 @@ export interface BeingStats {
   health: number;
   maxHealth: number;
   level: number;
-  experience: number;
-  experienceToNext: number;
   strength: number;
   defense: number;
   speed: number;
-  gold: number;
   [key: string]: any;
 }
 
@@ -60,10 +57,6 @@ export class Being {
 
   takeDamage(amount: number): void {
     this.stats.health = Math.max(0, this.stats.health - amount);
-  }
-
-  addGold(amount: number): void {
-    this.stats.gold += amount;
   }
 
   addItem(item: Item): void {

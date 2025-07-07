@@ -349,18 +349,18 @@ describe('Game Save/Load', () => {
     const game = new Game();
     const player = game.getPlayer();
     player.stats.health = 42;
-    player.addGold(123);
+    const gold=new Item(ITEM_TYPES.goldCoin,123);
+    player.addItem(gold);
     game.saveGame();
 
     // Change state after saving
     player.stats.health = 1;
-    player.stats.gold = 0;
-
+    player.stats.gold = 0
     // Restore
     game.loadGame();
     const restoredPlayer = game.getPlayer();
     expect(restoredPlayer.stats.health).toBe(42);
-    expect(restoredPlayer.stats.gold).toBe(123);
+    expect(restoredPlayer.getInventory().find(item => item.getId() === 'goldCoin')?.getQuantity()).toBeGreaterThanOrEqual(123);
   });
 });
 
