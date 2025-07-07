@@ -1,4 +1,5 @@
 import Item from '../classes/Item';
+import Utils from '../classes/Utils';
 import Button from './Button';
 
 interface ActionButton {
@@ -9,11 +10,12 @@ interface ActionButton {
 }
 
 interface ItemDetailsProps {
-  item: Item;
+  item: Item | null;
   actionButtons: ActionButton[];
 }
 
 export default function ItemDetails({ item, actionButtons }: ItemDetailsProps) {
+  const isEmpty = !item;
   return (
     <div style={{
       marginTop: '3px',
@@ -21,29 +23,32 @@ export default function ItemDetails({ item, actionButtons }: ItemDetailsProps) {
       backgroundColor: '#1a202c',
       borderRadius: '6px',
       border: '1px solid #d69e2e',
-      color: '#e2e8f0'
+      minHeight: '120px',
+      color: '#e2e8f0',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      gap: '8px',
+      marginBottom: '8px',
+      height: '100%', // allow parent to control height
     }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        marginBottom: '8px'
-      }}>
-        <span style={{ fontSize: '20px' }}>{item.getSymbol()}</span>
-        <h5>
-          {item.getName()}
-          {item.hasMultiple() && ` (${item.getQuantity()})`}
-        </h5>
+      <div>
+        <div className="control-panel-row" style={{alignContent: 'end'}}>
+          <span style={{ fontSize: '20px' }}>{isEmpty ? ' ' : item.getSymbol()}</span>
+          <h5>
+            {isEmpty ? 'No item selected' : Utils.capitalize(item.getName())}
+            {!isEmpty && item.hasMultiple() && ` (${item.getQuantity()})`}
+          </h5>
+        </div>
+        <p>
+          {isEmpty ? '' : item.getDescription()}
+        </p>
       </div>
-      <p>
-        {item.getDescription()}
-      </p>
-      
       {/* Action Buttons */}
       <div style={{
         display: 'flex',
         gap: '8px',
-        justifyContent: 'flex-end'
+        marginTop: 'auto',
       }}>
         {actionButtons.map((button, index) => (
           <Button

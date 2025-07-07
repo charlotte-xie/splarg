@@ -333,7 +333,7 @@ h5 {
 }
 
 .control-panel-grid {
-  display: flex;
+  display: grid;
   flex-wrap: wrap;
   gap: var(--grid-gap);
 }

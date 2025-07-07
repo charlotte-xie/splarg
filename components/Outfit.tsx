@@ -86,10 +86,11 @@ export default function Outfit({
   };
 
   // Get the selected item
-  const selectedItem = selectedSlot ? wornItems.get(selectedSlot) : null;
+  const selectedItem = selectedSlot ? (wornItems.get(selectedSlot) || null) : null;
 
   // Create action buttons for the selected worn item
-  const getActionButtons = (item: Item) => {
+  const getActionButtons = (item: Item | null) => {
+    if (!item) return [];
     return [
       {
         label: 'Remove',
@@ -174,12 +175,11 @@ export default function Outfit({
         </div>
         
         {/* Selected Item Details */}
-        {selectedItem && (
           <ItemDetails 
             item={selectedItem}
             actionButtons={getActionButtons(selectedItem)}
           />
-        )}
+
         
         {/* Outfit Management */}
         <OutfitManagement 

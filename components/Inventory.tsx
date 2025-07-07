@@ -66,7 +66,8 @@ export default function Inventory({
     : null;
 
   // Create action buttons for the selected item
-  const getActionButtons = (item: Item) => {
+  const getActionButtons = (item: Item | null) => {
+    if (!item) return [];
     const buttons: Array<{
       label: string;
       variant: 'primary' | 'secondary' | 'success' | 'danger';
@@ -122,24 +123,11 @@ export default function Inventory({
           })}
         </div>
         
-        {items.length === 0 && (
-          <p style={{ 
-            color: '#a0aec0', 
-            textAlign: 'center',
-            marginTop: '8px',
-            fontStyle: 'italic'
-          }}>
-            Inventory is empty
-          </p>
-        )}
-        
         {/* Selected Item Details */}
-        {selectedItem && (
           <ItemDetails 
             item={selectedItem}
             actionButtons={getActionButtons(selectedItem)}
           />
-        )}
     </div>
   );
 } 
