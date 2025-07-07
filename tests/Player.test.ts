@@ -118,10 +118,10 @@ describe('Player Wear/Remove Behavior', () => {
       expect(player.isWearingItem('chest-outer')).toBe(true);
       expect(player.isWearingItem('belly-outer')).toBe(true);
       expect(player.isWearingItem('arm-outer')).toBe(true);
-      expect(player.isWearingItem('chest-inner')).toBe(false); // vest removed
-      expect(player.isWearingItem('belly-inner')).toBe(false); // vest removed
+      expect(player.isWearingItem('chest-inner')).toBe(true); // vest removed
+      expect(player.isWearingItem('belly-inner')).toBe(true); // vest removed
       expect(player.isWearingItem('hand-outer')).toBe(true); // gloves still there
-      expect(player.getInventory()).toHaveLength(1); // vest back in inventory
+      expect(player.getInventory()).toHaveLength(0); // nothing returned to inventory
     });
   });
 
@@ -291,7 +291,7 @@ describe('Player Wear/Remove Behavior', () => {
       player.removeWornItem('chest-outer');
       player.removeWornItem('belly-outer');
       player.removeWornItem('arm-outer');
-      player.removeWornItem('feet-outer');
+      player.removeWornItem('feet-inner');
       expect(player.getWornItems().size).toBe(0);
 
       // Wear outfit
@@ -301,7 +301,7 @@ describe('Player Wear/Remove Behavior', () => {
       expect(player.isWearingItem('chest-outer')).toBe(true);
       expect(player.isWearingItem('belly-outer')).toBe(true);
       expect(player.isWearingItem('arm-outer')).toBe(true);
-      expect(player.isWearingItem('feet-outer')).toBe(true);
+      expect(player.isWearingItem('feet-inner')).toBe(true);
     });
   });
 

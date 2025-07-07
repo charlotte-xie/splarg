@@ -10,7 +10,7 @@ interface OutfitManagementProps {
 
 export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagementProps) {
   const player = game.getPlayer();
-  const [outfitName, setOutfitName] = useState('');
+  const [outfitName, setOutfitName] = useState('Everyday');
   const [selectedOutfit, setSelectedOutfit] = useState('');
 
   const handleSaveOutfit = () => {
