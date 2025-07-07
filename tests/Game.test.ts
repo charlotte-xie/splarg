@@ -84,4 +84,70 @@ describe('Game.getEntity', () => {
     expect(game.getEntity(0)).toBe(newPlayer);
     expect(game.getEntity(0)).toBe(game.getPlayer());
   });
+});
+
+describe('Game serialization', () => {
+  let game: Game;
+
+  beforeEach(() => {
+    game = new Game();
+  });
+
+  test('should serialize and deserialize entities map', () => {
+    // Add some test entities
+    const entity1 = new Entity();
+    entity1.setId(1);
+    const entity2 = new Entity();
+    entity2.setId(2);
+    
+    game.addEntity(entity1, { x: 5, y: 5 });
+    game.addEntity(entity2, { x: 10, y: 10 });
+
+    const json = game.toJSON();
+    expect(json.entities).toBeDefined();
+    expect(json.entities.length).toBe(3); // player (0) + 2 entities
+
+    const deserialized = Game.fromJSON(json);
+    expect(deserialized.getEntity(0)).toBe(deserialized.getPlayer());
+    expect(deserialized.getEntity(1)).toBeDefined();
+    expect(deserialized.getEntity(2)).toBeDefined();
+  });
+
+  test('should maintain player instance identity after deserialization', () => {
+    const json = game.toJSON();
+    const deserialized = Game.fromJSON(json);
+    
+    // Player should be the same instance as entity 0
+    expect(deserialized.getEntity(0)).toBe(deserialized.getPlayer());
+    expect(deserialized.getEntity(0)).toBe(deserialized.getPlayer());
+  });
+
+  test('should preserve entity positions after deserialization', () => {
+    const entity = new Entity();
+    entity.setId(5);
+    game.addEntity(entity, { x: 15, y: 20, areaId: 'grasslands' });
+
+    const json = game.toJSON();
+    const deserialized = Game.fromJSON(json);
+    
+    const loadedEntity = deserialized.getEntity(5);
+    expect(loadedEntity).toBeDefined();
+    expect(loadedEntity?.position).toEqual({ x: 15, y: 20, areaId: 'grasslands' });
+  });
+
+  test('should produce equivalent JSON after serialize-deserialize-serialize cycle', () => {
+    // Create and initialize game
+    const game = new Game();
+    game.initialise();
+    
+    // First serialization
+    const firstJson = game.toJSON();
+    
+    // Deserialize and serialize again
+    const deserialized = Game.fromJSON(firstJson);
+    const secondJson = deserialized.toJSON();
+    
+    // Compare the two serializations
+    expect(secondJson).toEqual(firstJson);
+  });
 }); 

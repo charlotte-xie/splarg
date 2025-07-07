@@ -92,7 +92,6 @@ export default class Game {
     this.entities = new Map();
     this.entityIdCounter = 1;
     // Ensure player starts on a walkable tile
-    this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
     // Add player to entities map with ID 0
     this.entities.set(0, this.player);
     this.events = [];
@@ -102,6 +101,9 @@ export default class Game {
 
   initialise(): Game {
     this.updatePlayer( new Player());
+    this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
+
+    this.addEntity(this.player,this.player.position);
     this.time=0;
     this.addPlayerDefaults(this.player);
     this.setupEventListeners();
@@ -268,14 +270,15 @@ export default class Game {
       score: this.score,
       time: this.time,
       lastSaveTime: this.lastSaveTime,
-      messages: this.messages
+      messages: this.messages,
+      entities: Array.from(this.entities.entries()).map(([id, entity]) => [id, entity.toJSON()]),
+      entityIdCounter: this.entityIdCounter
     };
   }
 
   static fromJSON(obj: any): Game {
     const game = new Game();
     game.status = obj.status;
-    game.player = Player.fromJSON(obj.player);
     game.world = World.fromJSON(obj.world);
     game.settings = obj.settings;
     game.progress = obj.progress;
@@ -283,6 +286,27 @@ export default class Game {
     game.time = obj.time;
     game.lastSaveTime = obj.lastSaveTime;
     game.messages = obj.messages || [];
+    
+    // Load entities map first
+    var highestID=0;
+    game.entities = new Map();
+    if (obj.entities) {
+      obj.entities.forEach(([id, entityObj]: [number, any]) => {
+        highestID=Math.max(highestID,id);
+        if (id === 0) {
+          // Player entity - load as Player
+          const player = Player.fromJSON(entityObj);
+          game.entities.set(0, player);
+          game.player = player;
+        } else {
+          // Other entities - load as Entity
+          const entity = Entity.fromJSON(entityObj);
+          game.entities.set(id, entity);
+        }
+      });
+    }
+    game.entityIdCounter = highestID+1;
+    
     return game;
   }
 
@@ -452,6 +476,17 @@ export default class Game {
       entity.setPosition(position);
     }
     this.entities.set(entityId, entity);
+    
+    // Add entity to the area's entities list if position has areaId
+    if (entity.position.areaId) {
+      const area = this.world.gameMap.areas[entity.position.areaId];
+      if (area) {
+        area.entities.add(entityId);
+      }
+    } else {
+      throw new Error("Entity has no areaId");
+    }
+    
     return entityId;
   }
 
@@ -459,7 +494,15 @@ export default class Game {
   removeEntity(entityID: Entity | number): boolean {
     const entity : Entity | null = entityID instanceof Entity ? entityID : (this.entities.get(entityID) || null); 
     if (entity) {
-      return this.entities.delete(entity.getId());
+      const entityId = entity.getId();
+      const removed = this.entities.delete(entityId);
+      
+      // Remove entity from its area
+      if (entity.position.areaId) {
+        this.world.getArea(entity.position.areaId).entities.delete(entityId);
+      }
+      
+      return removed;
     }
     return false;
   }

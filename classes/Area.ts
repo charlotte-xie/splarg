@@ -89,6 +89,7 @@ export default class Area {
   public tiles: any[][];
   public visited: boolean;
   public discovered: boolean;
+  public entities: Set<number>;
 
   constructor(id: string, type: AreaType, tiles: any[][]) {
     this.id = id;
@@ -96,6 +97,7 @@ export default class Area {
     this.tiles = tiles; // 2D array of TileType
     this.visited = false;
     this.discovered = false;
+    this.entities = new Set();
   }
 
   getTile(x: number, y: number): Tile | null {
@@ -138,7 +140,8 @@ export default class Area {
       type: this.type.id,
       tiles: this.tiles.map(row => row.map(tile => tile.toJSON())),
       visited: this.visited,
-      discovered: this.discovered
+      discovered: this.discovered,
+      entities: Array.from(this.entities)
     };
   }
 
@@ -150,6 +153,7 @@ export default class Area {
     const area = new Area(obj.id, type, tiles);
     area.visited = obj.visited;
     area.discovered = obj.discovered;
+    area.entities = new Set(obj.entities || []);
     return area;
   }
 } 

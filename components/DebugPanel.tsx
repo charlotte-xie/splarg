@@ -143,6 +143,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         <div><b>Inventory:</b> {game.getPlayer().getInventory().length} items</div>
         <div><b>Player Pos:</b> {JSON.stringify(game.getPlayer().position)}</div>
         <div><b>Entity Count:</b> {game.entities.size}</div>
+        <div><b>Entities in Area:</b> {game.getCurrentArea().entities.size}</div>
       </div>
     </div>
   );

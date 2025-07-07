@@ -125,6 +125,14 @@ export default class World {
     return this.gameMap.areas[this.gameMap.playerAreaId];
   }
 
+  getArea(areaId: string): Area {
+    const area = this.gameMap.areas[areaId];
+    if (!area) {
+      throw new Error(`Area ${areaId} does not exist`);
+    }
+    return area;
+  }
+
   changeArea(areaId: string): { from: string; to: string } {
     if (!this.gameMap.areas[areaId]) {
       throw new Error(`Area ${areaId} does not exist`);
@@ -153,7 +161,7 @@ export default class World {
       .map((area: any) => area.id);
   }
 
-  ensurePlayerOnWalkableTile(playerPosition: { x: number; y: number }): { x: number; y: number } {
+  ensurePlayerOnWalkableTile(playerPosition: Position): Position {
     const currentArea = this.getCurrentArea();
     if (!currentArea) return playerPosition;
     const currentTile = currentArea.getTile(playerPosition.x, playerPosition.y);
@@ -164,7 +172,7 @@ export default class World {
       for (let x = 1; x < currentArea.width - 1; x++) {
         const tile = currentArea.getTile(x, y);
         if (tile && tile.isWalkable()) {
-          return { x, y };
+          return { areaId: currentArea.id, x, y };
         }
       }
     }
