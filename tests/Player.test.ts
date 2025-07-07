@@ -230,13 +230,7 @@ describe('Player Wear/Remove Behavior', () => {
 
     test('should handle items without wear locations', () => {
       // Create an item without wear locations
-      const invalidItem = new Item({
-        id: 'invalid',
-        name: 'Invalid Item',
-        description: 'An item without wear locations',
-        symbol: '❓',
-        wearable: true
-      });
+      const invalidItem = new Item(ITEM_TYPES.goldCoin);
       player.addItem(invalidItem);
 
       const result = player.wearItem(invalidItem);

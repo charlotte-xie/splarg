@@ -52,10 +52,19 @@ export class Being {
     return item;
   }
 
-  removeItem(index: number): Item | null {
+  removeItem(item: Item): Item | null {
+    const idx = this.inventory.indexOf(item);
+    if (idx !== -1) {
+     return this.removeItemByIndex(idx);
+    }
+    return null;
+  }
+
+  removeItemByIndex(index: number): Item | null {
     if (index >= 0 && index < this.inventory.length) {
       const item = this.inventory[index];
-      return this.inventory.splice(index, 1)[0] || null;
+      this.inventory.splice(index, 1)[0];
+      return item;
     }
     return null;
   }

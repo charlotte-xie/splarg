@@ -115,26 +115,17 @@ describe('Restricted Items', () => {
     });
 
     test('should work with multi-location items', () => {
-      // Create a hypothetical restricted multi-location item for testing
-      const restrictedVest = new Item({
-        id: 'restrictedVest',
-        name: 'Restricted Vest',
-        description: 'A vest that restricts movement',
-        symbol: '🎽',
-        wearable: true,
-        layer: 'inner',
-        locations: ['chest', 'belly'],
-        restricted: true
-      });
+      // Use the restricted straightJacket item type for testing
+      const straightJacket = new Item(ITEM_TYPES.straightJacket);
 
-      player.addItem(restrictedVest);
-      player.wearItem(restrictedVest);
+      player.addItem(straightJacket);
+      player.wearItem(straightJacket);
 
       expect(player.isRestricted('chest-inner')).toBe(true);
       expect(player.isRestricted('belly-inner')).toBe(true);
       expect(player.isRestricted('chest-outer')).toBe(true); // Same body part
       expect(player.isRestricted('belly-outer')).toBe(true); // Same body part
-      expect(player.isRestricted('hand-outer')).toBe(false); // Different body part
+      expect(player.isRestricted('hand-outer')).toBe(true); // Now covered by straightJacket
     });
   });
 
@@ -147,16 +138,7 @@ describe('Restricted Items', () => {
 
     test('should handle multiple restricted items on different body parts', () => {
       // Create another restricted item for a different body part
-      const restrictedGloves = new Item({
-        id: 'restrictedGloves',
-        name: 'Restricted Gloves',
-        description: 'Gloves that restrict hand movement',
-        symbol: '🧤',
-        wearable: true,
-        layer: 'outer',
-        locations: ['hand'],
-        restricted: true
-      });
+      const restrictedGloves = new Item(ITEM_TYPES.restraintGloves);
 
       const blindfold = new Item(ITEM_TYPES.blindfold);
       

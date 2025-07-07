@@ -398,7 +398,7 @@ export default class Game {
       return false;
     } else {
       // Drop the whole stack
-      player.removeItem(idx);
+      player.removeItem(item);
       const tile = this.getPlayerTile();
       if (tile) {
         tile.addItem(item);
@@ -413,8 +413,7 @@ export default class Game {
   wearItem(player: Player, item: Item): boolean {
     try {
       if (player.wearItem(item)) {
-        const idx = player.getInventory().indexOf(item);
-        if (idx !== -1) player.removeItem(idx);
+        player.removeItem(item);
         this.addMessage(`Wore ${item.getName()}`, 'success');
         return true;
       } else {

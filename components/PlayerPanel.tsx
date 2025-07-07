@@ -45,7 +45,7 @@ export default function PlayerPanel({
   const handleWearItem = (index: number, item: Item) => {
     if (player.wearItem(item)) {
       // Remove the item from inventory
-      player.removeItem(index);
+      player.removeItem(item);
       onUpdate();
       game.addMessage(`Wore ${item.getName()}`, 'success');
     } else {
@@ -55,7 +55,7 @@ export default function PlayerPanel({
 
   const handleDropItem = (index: number, item: Item) => {
     try {
-      const removedItem = player.removeItem(index);
+      const removedItem = player.removeItem(item);
       if (removedItem) {
         onUpdate();
         game.addMessage(`Dropped ${removedItem.getName()}`, 'success');
@@ -70,40 +70,7 @@ export default function PlayerPanel({
   };
 
   const handleUseItem = (index: number, item: Item) => {
-    // Handle different item types
-    switch (item.getId()) {
-      case 'healthPotion':
-        //player.heal(50);
-        // Remove one potion from stack
-        if (item.getQuantity() > 1) {
-          item.setQuantity(item.getQuantity() - 1);
-        } else {
-          player.removeItem(index);
-        }
-        break;
-      case 'manaPotion':
-        // Add mana restoration logic here when implemented
-        console.log('Used mana potion');
-        // Remove one potion from stack
-        if (item.getQuantity() > 1) {
-          item.setQuantity(item.getQuantity() - 1);
-        } else {
-          player.removeItem(index);
-        }
-        break;
-      case 'bread':
-        // player.heal(10);
-        // Remove one bread from stack
-        if (item.getQuantity() > 1) {
-          item.setQuantity(item.getQuantity() - 1);
-        } else {
-          player.removeItem(index);
-        }
-        break;
-      default:
-        console.log(`Used ${item.getName()}`);
-        break;
-    }
+    game.useItem(player, item);
     onUpdate();
   };
 

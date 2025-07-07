@@ -81,8 +81,7 @@ export class ItemType {
         if (item.getQuantity() > 1) {
           item.setQuantity(item.getQuantity() - 1);
         } else {
-          const idx = player.getInventory().indexOf(item);
-          if (idx !== -1) player.removeItem(idx);
+          player.removeItem(item);
         }
         return { message: 'Healed 50 HP', type: 'success' };
       }
@@ -90,8 +89,7 @@ export class ItemType {
         if (item.getQuantity() > 1) {
           item.setQuantity(item.getQuantity() - 1);
         } else {
-          const idx = player.getInventory().indexOf(item);
-          if (idx !== -1) player.removeItem(idx);
+          player.removeItem(item);
         }
         return { message: 'Restored 30 MP', type: 'success' };
       }
@@ -99,8 +97,7 @@ export class ItemType {
         if (item.getQuantity() > 1) {
           item.setQuantity(item.getQuantity() - 1);
         } else {
-          const idx = player.getInventory().indexOf(item);
-          if (idx !== -1) player.removeItem(idx);
+          player.removeItem(item);
         }
         return { message: 'Healed 10 HP', type: 'success' };
       }
@@ -247,5 +244,23 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     symbol: '🧦',
     layer: WEAR_LAYERS.under,
     locations: [WEAR_TYPES.feet]
+  }),
+  straightJacket: new ItemType({
+    id: 'straightJacket',
+    name: 'straight jacket',
+    description: 'A restrictive jacket that immobilizes the wearer.',
+    symbol: '🧥',
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.chest, WEAR_TYPES.belly, WEAR_TYPES.arm, WEAR_TYPES.hand],
+    restricted: true
+  }),
+  restraintGloves: new ItemType({
+    id: 'restraintGloves',
+    name: 'restraint gloves',
+    description: 'Gloves that restrict hand movement',
+    symbol: '🧤',
+    layer: WEAR_LAYERS.outer,
+    locations: [WEAR_TYPES.hand],
+    restricted: true
   })
 }; 
