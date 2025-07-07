@@ -104,9 +104,9 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
 
   return (
     <div className="control-panel">
-      <h5>
+      <h4>
         Outfit Management
-      </h5>
+      </h4>
       
       <div className="control-panel-grid">
         {/* Save Outfit */}
@@ -128,11 +128,12 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
 
         {/* Wear Outfit */}
         {player.getOutfitNames().length > 0 && (
-          <div className="control-panel-row">
+          <div className="control-panel-row" style={{ width: '100%' }}>
             <select
               value={selectedOutfit}
               onChange={(e) => setSelectedOutfit(e.target.value)}
               className="control-panel-input"
+              style={{ flex: 1, minWidth: 0 }}
             >
               <option value="">Select outfit...</option>
               {player.getOutfitNames().map(outfitName => (

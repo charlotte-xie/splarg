@@ -14,6 +14,7 @@
   --font-display: 'Special Elite', serif;
   --font-icons: 'Material Symbols Outlined';
   --leather-dark: #2d0a0a;
+  --grid-gap: 8px;
 }
 
 /* Global scrollbar styling */
@@ -78,7 +79,6 @@ h5 {
   color: var(--accent);
   margin-bottom: 6px;
   font-size: 12px;
-  text-transform: uppercase;
   letter-spacing: 1px;
 }
 
@@ -107,7 +107,6 @@ h5 {
 }
 
 .player-panel {
-  width: 300px;
   height: 100%;
   background: linear-gradient(120deg, var(--leather) 60%, var(--iron) 100%);
   border-radius: 12px;
@@ -118,7 +117,6 @@ h5 {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  font-size: 0.85rem;
   min-height: 0;
 }
 
@@ -127,8 +125,6 @@ h5 {
   flex-direction: column;
   gap: 10px;
 }
-
-
 
 .stat-row {
   display: flex;
@@ -166,7 +162,6 @@ h5 {
   background: linear-gradient(90deg, var(--copper), var(--brass));
   transition: width 0.3s ease;
 }
-
 
 .tile-map-container {
   display: flex;
@@ -298,15 +293,11 @@ h5 {
     gap: 10px;
   }
   
-
-  
   .tile-info {
     position: static;
     margin-top: 20px;
   }
 }
-
-
 
 .game-window {
   background: rgba(59, 36, 18, 0.92);
@@ -329,50 +320,62 @@ h5 {
   box-sizing: border-box;
 }
 
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(0.5fr, 1fr));
+  gap: var(--grid-gap); 
+  justify-content: center; /* Pushes extra space to the edges */
+  width: 100%; /* Full container width */
+  box-sizing: border-box;
+}
+
 /* Use Control panel for panels with text and buttons, dark blue background */
 .control-panel {
-  margin-top: 16px;
   padding: 12px;
   background-color: #1a202c;
   border-radius: 6px;
   border: 1px solid #4a5568;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(0.5fr, 1fr));
-  gap: 8px; /* Fixed gap size */
-  justify-content: center; /* Pushes extra space to the edges */
-  width: 100%; /* Full container width */
-  box-sizing: border-box;
+.control-panel-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--grid-gap);
 }
 
-.control-panel-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 8px 12px;
+/* Use Control panel row to group control panel items that need to stay in same row */
+.control-panel-row {
+  display: flex;
+  gap: var(--grid-gap);
+  width: 100%;
   align-items: center;
+  min-width: 0;
+}
+
+/* Use Control panel row to group control panel items that need to stay in same row */
+.control-panel-row {
+  display: flex;
+  gap: var(--grid-gap);
+  width: 100%;
+  align-items: center;
+  min-width: 0;
 }
 
 .control-panel-input {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
   padding: 6px 8px;
   background-color: #2d3748;
   border: 1px solid #4a5568;
   border-radius: 4px;
   color: #e2e8f0;
   font-size: 12px;
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.control-panel-row {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  min-width: 0;
-}
+} 
 
 .control-panel-messages {
   display: flex;
@@ -380,8 +383,6 @@ h5 {
   flex: 1;
   overflow-y: auto;
 }
-
-
 
 .control-panel-messages-footer {
   margin-top: 8px;
@@ -470,4 +471,4 @@ h5 {
 .game-button--large {
   padding: 12px 16px;
   font-size: 14px;
-} 
+}

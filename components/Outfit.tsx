@@ -121,7 +121,8 @@ export default function Outfit({
   };
 
   return (
-    <div>
+    <div className="control-panel-grid">
+      {/* The outfit grid */}
       <div style={{
           display: 'grid',
           gridTemplateColumns: '80px 48px 48px 48px',
@@ -132,10 +133,10 @@ export default function Outfit({
           boxSizing: 'border-box'
         }}>
           {/* Header row */}
-          <div style={{ fontWeight: 'bold', color: '#d69e2e', fontSize: '12px' }}>Location</div>
-          <div style={{ fontWeight: 'bold', color: '#d69e2e', textAlign: 'center', fontSize: '12px' }}>Outer</div>
-          <div style={{ fontWeight: 'bold', color: '#d69e2e', textAlign: 'center', fontSize: '12px' }}>Inner</div>
-          <div style={{ fontWeight: 'bold', color: '#d69e2e', textAlign: 'center', fontSize: '12px' }}>Under</div>
+          <h5>Location</h5>
+          <h5>Outer</h5>
+          <h5>Inner</h5>
+          <h5>Under</h5>
           
           {/* Equipment rows */}
           {wearAreas.map((wearArea) => {
@@ -145,15 +146,9 @@ export default function Outfit({
             
             return (
               <React.Fragment key={wearArea}>
-                <div style={{ 
-                  color: '#e2e8f0', 
-                  fontSize: '11px',
-                  textTransform: 'capitalize',
-                  textAlign: 'left',
-                  fontWeight: '500'
-                }}>
+                <p>
                   {wearArea}
-                </div>
+                </p>
                 <InventorySlot
                   item={outerItem || null}
                   selected={isSlotSelected(wearArea, WEAR_LAYERS.outer, outerItem)}
