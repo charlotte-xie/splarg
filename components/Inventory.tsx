@@ -46,11 +46,27 @@ export default function Inventory({
       const item = items[selectedItemIndex];
       if (game.dropItem(player, item)) {
         game.addMessage(`Dropped ${item.getName()}`, 'success');
-        onUpdate();
       } else {
         game.addMessage('Failed to drop item', 'error');
       }
       setSelectedItemIndex(-1);
+      onUpdate();
+    }
+  };
+
+  const handleDropOne = () => {
+    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
+      const item = items[selectedItemIndex];
+      if (item.getQuantity() > 1) {
+        if (game.dropItem(player, item, 1)) {
+          game.addMessage(`Dropped 1 ${item.getName()}`, 'success');
+        } else {
+          game.addMessage('Failed to drop item', 'error');
+        }
+      } else {
+        handleDropItem();
+      }
+      onUpdate();
     }
   };
 
@@ -139,11 +155,24 @@ export default function Inventory({
       });
     }
 
-    buttons.push({
-      label: 'Drop',
-      variant: 'danger',
-      onClick: handleDropItem
-    });
+    if (item.getQuantity() > 1) {
+      buttons.push({
+        label: 'Drop 1',
+        variant: 'danger',
+        onClick: handleDropOne
+      });
+      buttons.push({
+        label: 'Drop All',
+        variant: 'danger',
+        onClick: handleDropItem
+      });
+    } else {
+      buttons.push({
+        label: 'Drop',
+        variant: 'danger',
+        onClick: handleDropItem
+      });
+    }
 
     return buttons;
   };

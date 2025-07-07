@@ -409,16 +409,29 @@ export default class Game {
     return area.getTile(pos.x, pos.y);
   }
 
-  dropItem(player: Player, item: Item): boolean {
+  dropItem(player: Player, item: Item, number?: number): boolean {
     const inv = player.getInventory();
     const idx = inv.indexOf(item);
     if (idx === -1) return false;
-    player.removeItem(idx);
-    const tile = this.getPlayerTile();
-    if (tile) {
-      tile.addItem(item);
-      return true;
+    if (number && item.getQuantity() > number) {
+      // Drop only part of the stack
+      const singleItem = new Item(item.type, number, item.props);
+      item.setQuantity(item.getQuantity() - number);
+      const tile = this.getPlayerTile();
+      if (tile) {
+        tile.addItem(singleItem);
+        return true;
+      }
+      return false;
+    } else {
+      // Drop the whole stack
+      player.removeItem(idx);
+      const tile = this.getPlayerTile();
+      if (tile) {
+        tile.addItem(item);
+        return true;
+      }
+      return false;
     }
-    return false;
   }
 } 
