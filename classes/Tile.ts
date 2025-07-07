@@ -77,14 +77,10 @@ export const TILE_TYPES: Record<string, TileType> = {
 };
 
 export default class Tile {
-  public x: number;
-  public y: number;
   public type: TileType;
   public items: Item[];
 
-  constructor(x: number, y: number, type: TileType) {
-    this.x = x;
-    this.y = y;
+  constructor(type: TileType) {
     this.type = type;
     this.items = [];
   }
@@ -123,17 +119,26 @@ export default class Tile {
   }
 
   toJSON() {
-    return {
-      x: this.x,
-      y: this.y,
-      type: this.type.id,
-      items: this.items.map(item => item.toJSON())
-    };
+    if (!this.items || this.items.length === 0) {
+      return this.type.id;
+    }
+    return [this.type.id, this.items.map(item => item.toJSON())];
   }
 
   static fromJSON(obj: any): Tile {
-    const tile = new Tile(obj.x, obj.y, TILE_TYPES[obj.type]);
-    tile.items = (obj.items || []).map((itemObj: any) => Item.fromJSON(itemObj));
-    return tile;
+    if (typeof obj === 'string') {
+      // Just a type id, no items
+      return new Tile(TILE_TYPES[obj]);
+    } else if (Array.isArray(obj)) {
+      const [typeId, itemsArr] = obj;
+      const tile = new Tile(TILE_TYPES[typeId]);
+      tile.items = (itemsArr || []).map((itemObj: any) => Item.fromJSON(itemObj));
+      return tile;
+    } else {
+      // fallback for old format
+      const tile = new Tile(TILE_TYPES[obj.type]);
+      tile.items = (obj.items || []).map((itemObj: any) => Item.fromJSON(itemObj));
+      return tile;
+    }
   }
 } 

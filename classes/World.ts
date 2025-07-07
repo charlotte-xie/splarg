@@ -72,7 +72,7 @@ export default class World {
           tileType = TILE_TYPES.grass;
       }
     }
-    return new Tile(x, y, tileType);
+    return new Tile(tileType);
   }
 
   generateGrasslandsTile(x: number, y: number): TileType {

@@ -10,7 +10,7 @@ describe('Locked Items', () => {
 
   describe('Item locking', () => {
     test('should create locked items', () => {
-      const lockedItem = new Item('steampunkGlasses', 1, true);
+      const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
       expect(lockedItem.isLocked()).toBe(true);
     });
 
@@ -20,14 +20,14 @@ describe('Locked Items', () => {
     });
 
     test('should create unlocked items explicitly', () => {
-      const unlockedItem = new Item('steampunkGlasses', 1, false);
+      const unlockedItem = new Item('steampunkGlasses', 1, { locked: false });
       expect(unlockedItem.isLocked()).toBe(false);
     });
   });
 
   describe('Wearing locked items', () => {
     test('should allow wearing locked items', () => {
-      const lockedItem = new Item('steampunkGlasses', 1, true);
+      const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
       player.addItem(lockedItem);
       
       const result = player.wearItem(lockedItem);
@@ -36,8 +36,8 @@ describe('Locked Items', () => {
     });
 
     test('should prevent wearing other items when locked item is worn', () => {
-      const lockedItem = new Item('steampunkGlasses', 1, true);
-      const otherItem = new Item('blindfold', 1, false);
+      const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
+      const otherItem = new Item('blindfold', 1, { locked: false });
       
       // Add both items to inventory
       player.addItem(lockedItem);
@@ -52,7 +52,7 @@ describe('Locked Items', () => {
       // This should throw an exception because the locked item cannot be removed
       expect(() => {
         player.wearItem(otherItem);
-      }).toThrow('Cannot remove locked item: Steampunk Glasses');
+      }).toThrow('Cannot remove locked item: steampunk glasses');
       
       // The locked item should still be worn
       expect(player.isWearingItem('eyes-outer')).toBe(true);
@@ -69,20 +69,20 @@ describe('Locked Items', () => {
 
   describe('Removing locked items', () => {
     test('should prevent removing locked worn items', () => {
-      const lockedItem = new Item('steampunkGlasses', 1, true);
+      const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
       player.addItem(lockedItem);
       player.wearItem(lockedItem);
       
       expect(() => {
         player.removeWornItem('eyes-outer');
-      }).toThrow('Cannot remove locked item: Steampunk Glasses');
+      }).toThrow('Cannot remove locked item: steampunk glasses');
       
       // Item should still be worn
       expect(player.isWearingItem('eyes-outer')).toBe(true);
     });
 
     test('should allow removing unlocked worn items', () => {
-      const unlockedItem = new Item('steampunkGlasses', 1, false);
+      const unlockedItem = new Item('steampunkGlasses', 1, { locked: false });
       player.addItem(unlockedItem);
       player.wearItem(unlockedItem);
       
@@ -92,7 +92,7 @@ describe('Locked Items', () => {
     });
 
     test('should allow removing locked inventory items', () => {
-      const lockedItem = new Item('steampunkGlasses', 1, true);
+      const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
       player.addItem(lockedItem);
       
       const removedItem = player.removeItem(0);
@@ -101,7 +101,7 @@ describe('Locked Items', () => {
     });
 
     test('should allow removing unlocked inventory items', () => {
-      const unlockedItem = new Item('steampunkGlasses', 1, false);
+      const unlockedItem = new Item('steampunkGlasses', 1, { locked: false });
       player.addItem(unlockedItem);
       
       const removedItem = player.removeItem(0);
@@ -112,8 +112,8 @@ describe('Locked Items', () => {
 
   describe('Outfit management with locked items', () => {
     test('should allow wearing outfit with locked items', () => {
-      const lockedItem = new Item('steampunkGlasses', 1, true);
-      const unlockedItem = new Item('longCoat', 1, false);
+      const lockedItem = new Item('steampunkGlasses', 1, { locked: true });
+      const unlockedItem = new Item('longCoat', 1, { locked: false });
       
       player.addItem(lockedItem);
       player.addItem(unlockedItem);
