@@ -1,25 +1,24 @@
 import { useState } from 'react';
+import Game from '../classes/Game';
 import Item from '../classes/Item';
 import InventorySlot from './InventorySlot';
 import ItemDetails from './ItemDetails';
 
 interface InventoryProps {
-  items?: Item[];
+  game: Game;
+  onUpdate: () => void;
   onSlotClick?: (index: number, item: Item | null) => void;
   selectedSlot?: number;
-  onDropItem?: (index: number, item: Item) => void;
-  onUseItem?: (index: number, item: Item) => void;
-  onWearItem?: (index: number, item: Item) => void;
 }
 
 export default function Inventory({ 
-  items = [], 
+  game,
+  onUpdate,
   onSlotClick,
-  selectedSlot = -1,
-  onDropItem,
-  onUseItem,
-  onWearItem
+  selectedSlot = -1
 }: InventoryProps) {
+  const player = game.getPlayer();
+  const items = player.getInventory();
   const MIN_SLOTS = 20;
   const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
   
@@ -43,21 +42,67 @@ export default function Inventory({
   };
 
   const handleDropItem = () => {
-    if (selectedItemIndex >= 0 && selectedItemIndex < items.length && onDropItem) {
-      onDropItem(selectedItemIndex, items[selectedItemIndex]);
-      setSelectedItemIndex(-1); // Deselect after dropping
-    }
-  };
-
-  const handleUseItem = () => {
-    if (selectedItemIndex >= 0 && selectedItemIndex < items.length && onUseItem) {
-      onUseItem(selectedItemIndex, items[selectedItemIndex]);
+    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
+      const item = items[selectedItemIndex];
+      if (game.dropItem(player, item)) {
+        game.addMessage(`Dropped ${item.getName()}`, 'success');
+        onUpdate();
+      } else {
+        game.addMessage('Failed to drop item', 'error');
+      }
+      setSelectedItemIndex(-1);
     }
   };
 
   const handleWearItem = () => {
-    if (selectedItemIndex >= 0 && selectedItemIndex < items.length && onWearItem) {
-      onWearItem(selectedItemIndex, items[selectedItemIndex]);
+    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
+      const item = items[selectedItemIndex];
+      if (player.wearItem(item)) {
+        player.removeItem(selectedItemIndex);
+        game.addMessage(`Wore ${item.getName()}`, 'success');
+        onUpdate();
+      } else {
+        game.addMessage(`Cannot wear ${item.getName()}`, 'error');
+      }
+    }
+  };
+
+  const handleUseItem = () => {
+    if (selectedItemIndex >= 0 && selectedItemIndex < items.length) {
+      const item = items[selectedItemIndex];
+      switch (item.getId()) {
+        case 'healthPotion':
+          player.heal(50);
+          if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+          } else {
+            player.removeItem(selectedItemIndex);
+          }
+          game.addMessage('Healed 50 HP', 'success');
+          break;
+        case 'manaPotion':
+          // Add mana restoration logic here when implemented
+          if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+          } else {
+            player.removeItem(selectedItemIndex);
+          }
+          game.addMessage('Restored 30 MP', 'success');
+          break;
+        case 'bread':
+          player.heal(10);
+          if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+          } else {
+            player.removeItem(selectedItemIndex);
+          }
+          game.addMessage('Healed 10 HP', 'success');
+          break;
+        default:
+          game.addMessage(`Used ${item.getName()}`, 'info');
+          break;
+      }
+      onUpdate();
     }
   };
 

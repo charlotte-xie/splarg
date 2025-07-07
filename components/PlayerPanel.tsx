@@ -129,12 +129,10 @@ export default function PlayerPanel({
       icon: 'money_bag',
       label: 'Inventory',
       content: <Inventory
-        items={player.getInventory()}
+        game={game}
+        onUpdate={onUpdate}
         selectedSlot={selectedInventorySlot}
         onSlotClick={handleInventorySlotClick}
-        onWearItem={handleWearItem}
-        onDropItem={handleDropItem}
-        onUseItem={handleUseItem}
       />
     },
     {
