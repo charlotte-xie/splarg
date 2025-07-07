@@ -32,10 +32,16 @@ export default function MessagePanel({ game, onUpdate }: MessagePanelProps) {
   return (
     <div className="control-panel" style={{ maxHeight: '30vh', flex:1 , display: 'flex', flexDirection: 'column' }}>
       {/* Fixed Header */}
-      <div className="control-panel-messages-header">
-        <h5>
-          Message Log
-        </h5>
+      <div className="control-panel-header">
+        <h4>
+          Messages
+        </h4>
+        <Button
+          onClick={handleClearMessages}
+          size="small"
+        >
+          Clear
+        </Button>
       </div>
       
       {/* Scrollable Messages Section */}
@@ -46,18 +52,6 @@ export default function MessagePanel({ game, onUpdate }: MessagePanelProps) {
           </p>
         ))}
         <div ref={messagesEndRef} />
-      </div>
-      
-      {/* Fixed Footer */}
-      
-      <div className="control-panel-messages-footer">
-        <Button
-          onClick={handleClearMessages}
-          variant="secondary"
-          size="small"
-        >
-          Clear Log
-        </Button>
       </div>
     </div>
   );

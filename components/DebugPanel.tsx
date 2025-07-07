@@ -55,7 +55,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   };
 
   return (
-    <div className="control-panel" style={{height:"100%"}}>
+    <div className="control-panel" style={{height:"100%", flex: "1"}}>
       <h4>
         Debug Controls
       </h4>

@@ -84,7 +84,7 @@ h5 {
 
 .game-screen {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100vh;
   padding: 20px;
   gap: 10px;
@@ -94,7 +94,7 @@ h5 {
 .game-content {
   display: flex;
   gap: 16px;
-  flex: 1;
+  flex: 3;
   min-height: 0;
   height: 100%;
 }
@@ -111,7 +111,7 @@ h5 {
   background: linear-gradient(120deg, var(--leather) 60%, var(--iron) 100%);
   border-radius: 12px;
   padding: 10px;
-  flex: auto;
+  flex: 0;
   box-shadow: 0 4px 16px 0 rgba(68, 44, 15, 0.25);
   border: 2px solid var(--brass);
   display: flex;
@@ -324,7 +324,7 @@ h5 {
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(0.5fr, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: var(--grid-gap); 
   justify-content: center; /* Pushes extra space to the edges */
   width: 100%; /* Full container width */
@@ -384,10 +384,13 @@ h5 {
   overflow-y: auto;
 }
 
-.control-panel-messages-footer {
-  margin-top: 8px;
-  text-align: right;
-  flex-shrink: 0;
+.control-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  margin-bottom: var(--grid-gap);
+  flex-direction: row;
 }
 
 .control-panel p {
