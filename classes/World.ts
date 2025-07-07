@@ -1,5 +1,6 @@
 import Area, { AREA_TYPES } from './Area';
-import Tile, { TILE_TYPES, TileType } from './Tile';
+import Tile from './Tile';
+import { TILE_TYPES, TileType } from './TileType';
 
 interface GameMap {
   areas: { [key: string]: Area };
