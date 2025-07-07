@@ -1,3 +1,4 @@
+import Entity from '../classes/Entity';
 import Game from '../classes/Game';
 import Item from '../classes/Item';
 import { ITEM_TYPES } from '../classes/ItemType';
@@ -12,7 +13,7 @@ describe('Game.dropItem', () => {
     player = game.getPlayer();
     player.inventory = [];
     // Place player at a known position
-    player.setPosition(2, 2);
+    player.setPosition({ x: 2, y: 2 });
   });
 
   test('should drop the whole stack on the player\'s current tile', () => {
@@ -44,5 +45,43 @@ describe('Game.dropItem', () => {
     const dropped = tile.items.find(i => i.getId() === item.getId() && i !== item);
     expect(dropped).toBeDefined();
     expect(dropped?.getQuantity()).toBe(1);
+  });
+});
+
+describe('Game.getEntity', () => {
+  let game: Game;
+
+  beforeEach(() => {
+    game = new Game();
+  });
+
+  test('should return player when getting entity with ID 0', () => {
+    const entity = game.getEntity(0);
+    expect(entity).toBe(game.getPlayer());
+  });
+
+  test('should return player when getting entity with player object', () => {
+    const player = game.getPlayer();
+    const entity = game.getEntity(player);
+    expect(entity).toBe(player);
+  });
+
+  test('should return null for non-existent entity ID', () => {
+    const entity = game.getEntity(-999);
+    expect(entity).toBeNull();
+  });
+
+  test('should return null for entity not in map', () => {
+    const fakeEntity = new Entity();
+    fakeEntity.setId(-998);
+    const entity = game.getEntity(fakeEntity);
+    expect(entity).toBeNull();
+  });
+
+  test('should maintain player ID 0 invariant after updatePlayer', () => {
+    const newPlayer = new Player();
+    game.updatePlayer(newPlayer);
+    expect(game.getEntity(0)).toBe(newPlayer);
+    expect(game.getEntity(0)).toBe(game.getPlayer());
   });
 }); 

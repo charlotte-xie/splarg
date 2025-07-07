@@ -1,7 +1,9 @@
 import Area from './Area';
+import Entity from './Entity';
 import Item from './Item';
 import Player from './Player';
 import Tile from './Tile';
+import type { Position } from './World';
 import World from './World';
 
 interface GameSettings {
@@ -64,6 +66,8 @@ export default class Game {
   public events: GameEvent[];
   public listeners: Map<string, GameEventCallback[]>;
   public messages: GameMessage[];
+  public entities: Map<number, Entity>;
+  public entityIdCounter: number;
 
   constructor() {
     this.status = 'ready';
@@ -85,8 +89,12 @@ export default class Game {
     this.score = 0;
     this.time = 0;
     this.lastSaveTime = null;
+    this.entities = new Map();
+    this.entityIdCounter = 1;
     // Ensure player starts on a walkable tile
     this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
+    // Add player to entities map with ID 0
+    this.entities.set(0, this.player);
     this.events = [];
     this.listeners = new Map();
     this.messages = [];
@@ -181,8 +189,7 @@ export default class Game {
       this.addMessage("Blocked by " +(targetTile?targetTile.getDescription():"the void"))
       return false;
     }
-    this.player.position.x = newX;
-    this.player.position.y = newY;
+    this.addEntity(this.player, {areaId: currentArea.id, x:newX,y:newY});
     currentArea.visited = true;
     this.triggerEvent({ 
       type: 'playerMoved', 
@@ -209,11 +216,12 @@ export default class Game {
 
   updatePlayer(player: Player): void {
     this.player = player;
-    player.game=this;
+    // Ensure player is always in entities map with ID 0
+    this.entities.set(0, player);
     this.triggerEvent({ 
       type: 'playerUpdated', 
       timestamp: this.time,
-      data: player 
+      data: { player }
     });
   }
 
@@ -435,5 +443,32 @@ export default class Game {
 
   timeLapse(amount: number) {
     this.time += amount;
+  }
+
+  addEntity(entity: Entity, position?: Position): number {
+    const entityId = entity.getId();
+    this.removeEntity(entityId); /* remove first if already there */
+    if (position) {
+      entity.setPosition(position);
+    }
+    this.entities.set(entityId, entity);
+    return entityId;
+  }
+
+  /* Remove entity from game. Will be in detached state. Returns true if Entity actually removed */
+  removeEntity(entityID: Entity | number): boolean {
+    const entity : Entity | null = entityID instanceof Entity ? entityID : (this.entities.get(entityID) || null); 
+    if (entity) {
+      return this.entities.delete(entity.getId());
+    }
+    return false;
+  }
+
+  getEntity(idOrEntity: number | Entity): Entity | null {
+    if (typeof idOrEntity === 'number') {
+      return this.entities.get(idOrEntity) || null;
+    } else {
+      return this.entities.get(idOrEntity.getId()) || null;
+    }
   }
 } 

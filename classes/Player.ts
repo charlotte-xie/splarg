@@ -12,6 +12,7 @@ export default class Player extends Being {
     super();
     this.outfits = new Map();
     this.game = null;
+    this.setId(0);
   }
 
   static defaultStats(): BeingStats {
