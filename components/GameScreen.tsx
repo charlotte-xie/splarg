@@ -26,17 +26,18 @@ export default function GameScreen() {
       'playerMoved', 'areaChanged', 'playerStatsUpdated', 
       'scoreAdded', 'gameSaved', 'gameLoaded'
     ];
+    const rerender = () => updateGame(game);
     eventTypes.forEach(eventType => {
-      game.addEventListener(eventType, () => updateGame(game));
+      game.addEventListener(eventType, rerender);
     });
     game.startGame();
     return () => {
       eventTypes.forEach(eventType => {
-        game.removeEventListener(eventType, () => updateGame(game));
+        game.removeEventListener(eventType, rerender);
       }); 
       game.destroy();
     };
-  }, []);
+  }, [version]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {

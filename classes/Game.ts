@@ -138,21 +138,6 @@ export default class Game {
     });
   }
 
-  // Game State Management
-  getState(): any {
-    // Return a snapshot of the game state for React or serialization
-    return JSON.parse(JSON.stringify({
-      status: this.status,
-      player: this.player,
-      world: this.world,
-      settings: this.settings,
-      progress: this.progress,
-      score: this.score,
-      time: this.time,
-      lastSaveTime: this.lastSaveTime
-    }));
-  }
-
   getPlayer(): Player {
     return this.player;
   }
