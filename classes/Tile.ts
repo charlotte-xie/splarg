@@ -4,10 +4,12 @@ import { TILE_TYPES, TileType } from './TileType';
 export default class Tile {
   public type: TileType;
   public items: Item[];
+  public entities: Set<number>;
 
   constructor(type: TileType) {
     this.type = type;
     this.items = [];
+    this.entities = new Set();
   }
 
   isWalkable(): boolean {
@@ -44,26 +46,32 @@ export default class Tile {
   }
 
   toJSON() {
-    if (!this.items || this.items.length === 0) {
+    // Compact: [typeId, items?, entities?]
+    const hasItems = this.items && this.items.length > 0;
+    const hasEntities = this.entities && this.entities.size > 0;
+    if (!hasItems && !hasEntities) {
       return this.type.id;
     }
-    return [this.type.id, this.items.map(item => item.toJSON())];
+    const arr = [this.type.id, this.items, this.entities];
+    return arr;
   }
 
   static fromJSON(obj: any): Tile {
     if (typeof obj === 'string') {
-      // Just a type id, no items
+      // Just a type id, no items, no entities
       return new Tile(TILE_TYPES[obj]);
     } else if (Array.isArray(obj)) {
-      const [typeId, itemsArr] = obj;
-      const tile = new Tile(TILE_TYPES[typeId]);
-      tile.items = (itemsArr || []).map((itemObj: any) => Item.fromJSON(itemObj));
+      const [typeId, itemsArr, entitiesArr] = obj;
+      const tile = new Tile(TILE_TYPES[String(typeId)]);
+      if (Array.isArray(itemsArr)) {
+        tile.items = itemsArr.map((itemObj: any) => Item.fromJSON(itemObj));
+      }
+      if (Array.isArray(entitiesArr)) {
+        tile.entities = new Set(entitiesArr);
+      }
       return tile;
     } else {
-      // fallback for old format
-      const tile = new Tile(TILE_TYPES[obj.type]);
-      tile.items = (obj.items || []).map((itemObj: any) => Item.fromJSON(itemObj));
-      return tile;
+      throw new Error('Invalid tile JSON format');
     }
   }
 } 
