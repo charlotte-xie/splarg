@@ -51,6 +51,16 @@ export default function TileMap({ game, onUpdate, version }: TileMapProps) {
         ctx.fillText(symbol, sx, sy);
       });
     }
+
+    // Draw entities on this tile
+    if (tile.entities && tile.entities.size > 0) {
+      for (const entityId of tile.entities) {
+        const entity = game.entities.get(entityId);
+        if (entity) {
+          drawEntity(ctx, entity, x, y);
+        }
+      }
+    }
   };
 
   const drawBlackTile = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
@@ -60,26 +70,37 @@ export default function TileMap({ game, onUpdate, version }: TileMapProps) {
     ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
   };
 
-  const drawPlayer = (ctx: CanvasRenderingContext2D, playerPosition: any) => {
-    if (!playerPosition) return;
-
-    const playerX = playerPosition.x * TILE_SIZE + TILE_SIZE / 2;
-    const playerY = playerPosition.y * TILE_SIZE + TILE_SIZE / 2;
-
-    // Player glow effect
-    ctx.shadowColor = '#ffd700';
-    ctx.shadowBlur = 10;
-    ctx.fillStyle = '#ffd700';
+  const drawEntity = (ctx: CanvasRenderingContext2D, entity: any, x: number, y: number) => {
+    const tileX = x * TILE_SIZE;
+    const tileY = y * TILE_SIZE;
+    // Draw a colored circle for the entity
+    ctx.save();
     ctx.beginPath();
-    ctx.arc(playerX, playerY, TILE_SIZE / 2 - 2, 0, 2 * Math.PI);
+    ctx.arc(tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2, TILE_SIZE / 2.5, 0, 2 * Math.PI);
+    if (entity.klass === 'Player' || entity.klass === undefined) {
+      ctx.fillStyle = '#ffd700'; // gold for player
+    } else if (entity.klass === 'Mob') {
+      ctx.fillStyle = '#6b6bff'; // blue for mobs
+    } else {
+      ctx.fillStyle = '#aaa'; // gray for others
+    }
+    ctx.globalAlpha = 0.85;
     ctx.fill();
-
-    // Player center
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = '#ff6b6b';
-    ctx.beginPath();
-    ctx.arc(playerX, playerY, TILE_SIZE / 3, 0, 2 * Math.PI);
-    ctx.fill();
+    ctx.globalAlpha = 1.0;
+    ctx.strokeStyle = '#fff44';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Draw a symbol or first letter
+    ctx.fillStyle = '#222';
+    ctx.font = 'bold 16px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    let symbol = '?';
+    if (entity.klass === 'Player' || entity.klass === undefined) symbol = '@';
+    else if (entity.klass === 'Mob') symbol = 'M';
+    else if (entity.klass === 'NPC') symbol = 'N';
+    ctx.fillText(symbol, tileX + TILE_SIZE / 2, tileY + TILE_SIZE / 2);
+    ctx.restore();
   };
 
   const drawHoveredTile = (ctx: CanvasRenderingContext2D, hoveredTile: any) => {
@@ -120,7 +141,6 @@ export default function TileMap({ game, onUpdate, version }: TileMapProps) {
         }
       }
     }
-    drawPlayer(ctx, playerPosition);
     if (!eyesRestricted) {
       drawHoveredTile(ctx, hoveredTile);
     }
