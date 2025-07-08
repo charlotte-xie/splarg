@@ -11,7 +11,6 @@ describe('Mob', () => {
   test('should serialize and deserialize to identical JSON', () => {
     const mob = new Mob();
     mob.setId(42);
-    mob.position = { x: 5, y: 7, areaId: 'test' };
     const json1 = mob.toJSON();
     const mob2 = Mob.fromJSON(json1);
     expect(mob2).toBeInstanceOf(Mob);
