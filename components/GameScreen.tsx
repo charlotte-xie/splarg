@@ -80,7 +80,7 @@ export default function GameScreen() {
         case 'R':
           if (event.ctrlKey) {
             event.preventDefault();
-            game.resetGame();
+            game.initialise();
           }
           break;
         case 's':
@@ -100,11 +100,6 @@ export default function GameScreen() {
       document.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, []);
-
-  const handleAreaChange = (areaId: string) => {
-    gameRef.current.changeArea(areaId);
-    updateGame(game);
-  };
 
   const game = gameRef.current;
 

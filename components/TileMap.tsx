@@ -14,7 +14,7 @@ export default function TileMap({ game, onUpdate, version }: TileMapProps) {
   const [hoveredTile, setHoveredTile] = useState<{tile: any, x: number, y: number} | null>(null);
 
   const player = game.getPlayer();
-  const area = game.world.getCurrentArea();
+  const area = game.getCurrentArea();
   const playerPosition = player.position;
 
   const drawTile = (ctx: CanvasRenderingContext2D, tile: Tile, x: number, y: number) => {

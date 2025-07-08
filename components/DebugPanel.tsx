@@ -1,7 +1,6 @@
 import Game from '../classes/Game';
 import Item, { createRandomItem } from '../classes/Item';
 import { ITEM_TYPES } from '../classes/ItemType';
-import Player from '../classes/Player';
 import Button from './Button';
 
 interface DebugPanelProps {
@@ -31,9 +30,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   };
 
   const handleResetPlayer = () => {
-    const newPlayer = new Player();
-    game.addPlayerDefaults(newPlayer);
-    game.updatePlayer(newPlayer);
+    game.initialise();
     onGameUpdate(game);
   };
 
@@ -77,6 +74,13 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
 
   const handleRestoreGame = () => {
     onGameUpdate(Game.loadGame());
+  };
+
+  const handleShowPlayerJSON = () => {
+    const player = game.getPlayer();
+    const playerJSON = player.toJSON();
+    console.log('Player JSON:', playerJSON);
+    alert(JSON.stringify(playerJSON, null, 2));
   };
 
   return (
@@ -132,6 +136,12 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
           onClick={handleRestoreGame}
         >
           Restore Game
+        </Button>
+        
+        <Button
+          onClick={handleShowPlayerJSON}
+        >
+          Show Player JSON
         </Button>
       </div>
 

@@ -91,23 +91,42 @@ export default class Game {
     this.lastSaveTime = null;
     this.entities = new Map();
     this.entityIdCounter = 1;
-    // Ensure player starts on a walkable tile
-    // Add player to entities map with ID 0
-    this.entities.set(0, this.player);
+    
     this.events = [];
     this.listeners = new Map();
     this.messages = [];
   }
 
   initialise(): Game {
-    this.updatePlayer( new Player());
-    this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
+    this.status = 'ready';
+    this.score = 0;
+    this.progress = {
+      totalPlayTime: 0,
+      areasDiscovered: 1,
+      enemiesDefeated: 0,
+      itemsCollected: 0,
+      questsCompleted: 0
+    };
+    this.time = 0;
+    this.world = new World();
+    this.world.initializeAreas();
+    
+    // Clear entities map and reset counter
+    this.entities.clear();
+    this.entityIdCounter = 1;
+    
+    // Set player to initial position in grasslands area and ensure it's walkable
+    this.player=new Player();
+    const initialPosition = { areaId: 'grasslands', x: 3, y: 3 };
+    const walkablePosition = this.world.ensurePlayerOnWalkableTile(initialPosition);
 
-    this.addEntity(this.player,this.player.position);
-    this.time=0;
+    // Add player to entities map with ID 0 and add to area
+    this.addEntity(this.player, walkablePosition);
+
     this.addPlayerDefaults(this.player);
     this.setupEventListeners();
-    return this
+    this.triggerEvent({ type: 'gameReset', timestamp: this.time });
+    return this;
   }
 
   setupEventListeners(): void {
@@ -131,7 +150,7 @@ export default class Game {
     return JSON.parse(JSON.stringify({
       status: this.status,
       player: this.player,
-      gameMap: this.world.gameMap,
+      world: this.world,
       settings: this.settings,
       progress: this.progress,
       score: this.score,
@@ -145,11 +164,10 @@ export default class Game {
   }
 
   getCurrentArea(): Area {
-    return this.world.getCurrentArea();
-  }
-
-  getPlayerArea(): Area {
-    return this.world.getPlayerArea();
+    if (!this.player.position.areaId) {
+      throw new Error('Player has no areaId');
+    }
+    return this.world.getArea(this.player.position.areaId);
   }
 
   startGame(): void {
@@ -158,28 +176,18 @@ export default class Game {
   }
 
   resetGame(): void {
-    this.status = 'ready';
     this.player = new Player();
-    this.score = 0;
-    this.progress = {
-      totalPlayTime: 0,
-      areasDiscovered: 1,
-      enemiesDefeated: 0,
-      itemsCollected: 0,
-      questsCompleted: 0
-    };
-    this.time = 0;
-    this.world = new World();
-    this.player.position = this.world.ensurePlayerOnWalkableTile(this.player.position);
-    this.addPlayerDefaults(this.player);
-    this.triggerEvent({ type: 'gameReset', timestamp: this.time });
+    this.initialise();
   }
 
   movePlayer(dx: number, dy: number): boolean {
     if (this.status !== 'playing') {
       return false;
     }
-    const currentArea = this.world.getCurrentArea();
+    if (!this.player.position.areaId) {
+      return false;
+    }
+    const currentArea = this.getCurrentArea();
     const newX = this.player.position.x + dx;
     const newY = this.player.position.y + dy;
     if (newX < 0 || newX >= currentArea.type.width || newY < 0 || newY >= currentArea.type.height) {
@@ -201,25 +209,11 @@ export default class Game {
     return true;
   }
 
-  changeArea(areaId: string): boolean {
-    try {
-      const { from, to } = this.world.changeArea(areaId);
-      this.triggerEvent({ 
-        type: 'areaChanged', 
-        timestamp: this.time,
-        data: { from, to }
-      });
-      return true;
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-  }
-
   updatePlayer(player: Player): void {
+    // Ensure player has ID 0
+    player.setId(0);
     this.player = player;
-    // Ensure player is always in entities map with ID 0
-    this.entities.set(0, player);
+    this.addEntity(this.player);
     this.triggerEvent({ 
       type: 'playerUpdated', 
       timestamp: this.time,
@@ -330,15 +324,6 @@ export default class Game {
       return loaded;
   }
 
-  // Utility Methods
-  getTileAt(x: number, y: number): any {
-    return this.world.getTileAt(x, y);
-  }
-
-  isPositionWalkable(x: number, y: number): boolean {
-    return this.world.isPositionWalkable(x, y);
-  }
-
   getAvailableAreas(): any[] {
     return this.world.getAvailableAreas();
   }
@@ -389,11 +374,11 @@ export default class Game {
     createExampleItems().forEach((item: any) => player.addItem(item));
     // Add default outfit items
     const defaultOutfitItems = [
-      new Item(ITEM_TYPES.leatherCorset, 1),
-      new Item(ITEM_TYPES.longSkirt, 1),
+      new Item(ITEM_TYPES.socks, 1),
       new Item(ITEM_TYPES.bra, 1),
       new Item(ITEM_TYPES.plainPanties, 1),
-      new Item(ITEM_TYPES.socks, 1),
+      new Item(ITEM_TYPES.leatherCorset, 1),
+      new Item(ITEM_TYPES.longSkirt, 1),
       new Item(ITEM_TYPES.boots, 1)
     ];
     defaultOutfitItems.forEach(item => {
@@ -404,9 +389,8 @@ export default class Game {
   }
 
   getPlayerTile(): Tile | null {
-    const area = this.getPlayerArea();
     const pos = this.player.position;
-    return area.getTile(pos.x, pos.y);
+    return this.getCurrentArea().getTile(pos.x, pos.y);
   }
 
   dropItem(player: Player, item: Item, number?: number): boolean {
@@ -479,7 +463,7 @@ export default class Game {
     
     // Add entity to the area's entities list if position has areaId
     if (entity.position.areaId) {
-      const area = this.world.gameMap.areas[entity.position.areaId];
+      const area = this.world.areas.get(entity.position.areaId);
       if (area) {
         area.entities.add(entityId);
       }

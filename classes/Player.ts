@@ -30,7 +30,7 @@ export default class Player extends Being {
   }
 
   static defaultPosition(): Position {
-    return { x: 3, y: 3 };
+    return { areaId: 'grasslands', x: 3, y: 3 };
   }
 
   getItemsWornByItem(item: Item): string[] {

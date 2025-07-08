@@ -2,24 +2,13 @@ import Area, { AREA_TYPES } from './Area';
 import Tile from './Tile';
 import { TILE_TYPES, TileType } from './TileType';
 
-interface GameMap {
-  areas: { [key: string]: Area };
-  currentAreaId: string;
-  playerAreaId: string;
-}
-
 export type Position = { x: number; y: number; areaId?: string };
 
 export default class World {
-  public gameMap: GameMap;
+  public areas: Map<string, Area>;
 
   constructor() {
-    this.gameMap = {
-      areas: {},
-      currentAreaId: 'grasslands',
-      playerAreaId: 'grasslands',
-    };
-    this.initializeAreas();
+    this.areas = new Map();
   }
 
   initializeAreas(): void {
@@ -29,13 +18,16 @@ export default class World {
     this.createArea('water', AREA_TYPES.WATER);
     this.createArea('cave', AREA_TYPES.CAVE);
     // Only grasslands is discovered/visited at start
-    this.gameMap.areas['grasslands'].visited = true;
-    this.gameMap.areas['grasslands'].discovered = true;
+    const grasslandsArea = this.areas.get('grasslands');
+    if (grasslandsArea) {
+      grasslandsArea.visited = true;
+      grasslandsArea.discovered = true;
+    }
   }
 
   createArea(areaId: string, areaType: any): void {
     const tiles = this.generateAreaTiles(areaType);
-    this.gameMap.areas[areaId] = new Area(areaId, areaType, tiles);
+    this.areas.set(areaId, new Area(areaId, areaType, tiles));
   }
 
   generateAreaTiles(areaType: any): Tile[][] {
@@ -117,59 +109,29 @@ export default class World {
     return TILE_TYPES.grass;
   }
 
-  getCurrentArea(): Area {
-    return this.gameMap.areas[this.gameMap.currentAreaId];
-  }
-
-  getPlayerArea(): Area {
-    return this.gameMap.areas[this.gameMap.playerAreaId];
-  }
-
   getArea(areaId: string): Area {
-    const area = this.gameMap.areas[areaId];
+    const area = this.areas.get(areaId);
     if (!area) {
       throw new Error(`Area ${areaId} does not exist`);
     }
     return area;
   }
 
-  changeArea(areaId: string): { from: string; to: string } {
-    if (!this.gameMap.areas[areaId]) {
-      throw new Error(`Area ${areaId} does not exist`);
-    }
-    const oldAreaId = this.gameMap.currentAreaId;
-    this.gameMap.currentAreaId = areaId;
-    this.gameMap.playerAreaId = areaId;
-    this.gameMap.areas[areaId].discovered = true;
-    this.gameMap.areas[areaId].visited = true;
-    return { from: oldAreaId, to: areaId };
-  }
-
-  getTileAt(x: number, y: number): any {
-    const currentArea = this.getCurrentArea();
-    return currentArea.getTile(x, y);
-  }
-
-  isPositionWalkable(x: number, y: number): boolean {
-    const currentArea = this.getCurrentArea();
-    return currentArea.isWalkable(x, y);
-  }
-
   getAvailableAreas(): string[] {
-    return Object.values(this.gameMap.areas)
+    return Array.from(this.areas.values())
       .filter((area: any) => area.discovered)
       .map((area: any) => area.id);
   }
 
   ensurePlayerOnWalkableTile(playerPosition: Position): Position {
-    const currentArea = this.getCurrentArea();
-    if (!currentArea) return playerPosition;
+    if (!playerPosition.areaId) return playerPosition;
+    const currentArea = this.getArea(playerPosition.areaId);
     const currentTile = currentArea.getTile(playerPosition.x, playerPosition.y);
     if (currentTile && currentTile.isWalkable()) {
       return playerPosition;
     }
-    for (let y = 1; y < currentArea.height - 1; y++) {
-      for (let x = 1; x < currentArea.width - 1; x++) {
+    for (let y = 1; y < currentArea.type.height - 1; y++) {
+      for (let x = 1; x < currentArea.type.width - 1; x++) {
         const tile = currentArea.getTile(x, y);
         if (tile && tile.isWalkable()) {
           return { areaId: currentArea.id, x, y };
@@ -181,21 +143,13 @@ export default class World {
 
   toJSON() {
     return {
-      gameMap: {
-        areas: Object.fromEntries(Object.entries(this.gameMap.areas).map(([id, area]) => [id, area.toJSON()])),
-        currentAreaId: this.gameMap.currentAreaId,
-        playerAreaId: this.gameMap.playerAreaId
-      }
+      areas: Object.fromEntries(Array.from(this.areas.entries()).map(([id, area]) => [id, area.toJSON()]))
     };
   }
 
   static fromJSON(obj: any): World {
     const world = new World();
-    world.gameMap.areas = Object.fromEntries(
-      Object.entries(obj.gameMap.areas).map(([id, areaObj]) => [id, Area.fromJSON(areaObj)])
-    );
-    world.gameMap.currentAreaId = obj.gameMap.currentAreaId;
-    world.gameMap.playerAreaId = obj.gameMap.playerAreaId;
+    world.areas = new Map(Object.entries(obj.areas).map(([id, areaObj]) => [id, Area.fromJSON(areaObj)]));
     return world;
   }
 }

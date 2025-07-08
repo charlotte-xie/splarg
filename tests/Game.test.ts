@@ -9,11 +9,11 @@ describe('Game.dropItem', () => {
   let player: Player;
 
   beforeEach(() => {
-    game = new Game();
+    game = new Game().initialise();
     player = game.getPlayer();
     player.inventory = [];
     // Place player at a known position
-    player.setPosition({ x: 2, y: 2 });
+    player.setPosition({ x: 2, y: 2, areaId: 'grasslands' });
   });
 
   test('should drop the whole stack on the player\'s current tile', () => {
@@ -52,7 +52,7 @@ describe('Game.getEntity', () => {
   let game: Game;
 
   beforeEach(() => {
-    game = new Game();
+    game = new Game().initialise();
   });
 
   test('should return player when getting entity with ID 0', () => {
@@ -80,6 +80,7 @@ describe('Game.getEntity', () => {
 
   test('should maintain player ID 0 invariant after updatePlayer', () => {
     const newPlayer = new Player();
+    newPlayer.setPosition(game.player.position)
     game.updatePlayer(newPlayer);
     expect(game.getEntity(0)).toBe(newPlayer);
     expect(game.getEntity(0)).toBe(game.getPlayer());
@@ -90,7 +91,7 @@ describe('Game serialization', () => {
   let game: Game;
 
   beforeEach(() => {
-    game = new Game();
+    game = new Game().initialise();
   });
 
   test('should serialize and deserialize entities map', () => {
@@ -100,8 +101,8 @@ describe('Game serialization', () => {
     const entity2 = new Entity();
     entity2.setId(2);
     
-    game.addEntity(entity1, { x: 5, y: 5 });
-    game.addEntity(entity2, { x: 10, y: 10 });
+    game.addEntity(entity1, { x: 5, y: 5, areaId: 'grasslands' });
+    game.addEntity(entity2, { x: 10, y: 10, areaId: 'grasslands' });
 
     const json = game.toJSON();
     expect(json.entities).toBeDefined();
@@ -149,5 +150,10 @@ describe('Game serialization', () => {
     
     // Compare the two serializations
     expect(secondJson).toEqual(firstJson);
+
+    const thirdJson = game.toJSON();
+    
+    // Compare the two serializations
+    expect(thirdJson).toEqual(firstJson);
   });
 }); 

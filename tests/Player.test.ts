@@ -421,12 +421,14 @@ describe('Player serialization', () => {
 
 describe('Game.dropItem', () => {
   test('should remove item from inventory and add to current tile', () => {
-    const game = new Game();
+    const game = new Game().initialise();
+    expect(game.getCurrentArea().id).toBe('grasslands');
     const player = game.getPlayer();
+    game.addEntity(player);
     const item = new Item(ITEM_TYPES.ironSword, 1);
     player.addItem(item);
     const pos = { ...player.position };
-    const area = game.getPlayerArea();
+    const area = game.getCurrentArea();
     const tile = area.getTile(pos.x, pos.y);
     expect(tile).not.toBeNull();
     if (!tile) throw new Error('Tile is null');

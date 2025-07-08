@@ -67,10 +67,9 @@ export class AreaType {
   public height: number;
   public background: string;
   public music: string;
-  public enemies: string[];
   public items: string[];
 
-  constructor({ id, name, description, width, height, background, music, enemies, items }: any) {
+  constructor({ id, name, description, width, height, background, music, items }: any) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -78,7 +77,6 @@ export class AreaType {
     this.height = height;
     this.background = background;
     this.music = music;
-    this.enemies = enemies;
     this.items = items;
   }
 }
