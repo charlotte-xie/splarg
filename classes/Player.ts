@@ -1,4 +1,5 @@
 import { Being, BeingStats } from './Being';
+import { EntityClass } from './Entity';
 import Game from './Game';
 import Item from './Item';
 import { Position } from './World';
@@ -9,7 +10,7 @@ export default class Player extends Being {
   public game: Game | null;
 
   constructor() {
-    super();
+    super(EntityClass.PLAYER);
     this.outfits = new Map();
     this.game = null;
     this.setId(0);

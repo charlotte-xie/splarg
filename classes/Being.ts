@@ -1,4 +1,4 @@
-import Entity from './Entity';
+import Entity, { EntityClass } from './Entity';
 import Item from './Item';
 
 export interface BeingStats {
@@ -16,8 +16,8 @@ export class Being extends Entity {
   public inventory: Item[];
   public wornItems: Map<string, Item>;
 
-  constructor() {
-    super();
+  constructor(klass: EntityClass) {
+    super(klass);
     this.stats = {};
     this.inventory = [];
     this.wornItems = new Map();
@@ -157,7 +157,8 @@ export class Being extends Entity {
   }
 
   static fromJSON(obj: any): Being {
-    const being = Object.assign(new Being(), super.fromJSON(obj));
+    const base=super.fromJSON(obj);
+    const being = Object.assign(new Being(base.klass), base);
     being.stats = obj.stats;
     being.inventory = (obj.inventory || []).map((itemObj: any) => Item.fromJSON(itemObj));
     being.wornItems = new Map((obj.wornItems || []).map(([k, v]: [string, any]) => [k, Item.fromJSON(v)]));
