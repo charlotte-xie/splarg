@@ -377,7 +377,7 @@ describe('Game Save/Load', () => {
 
   test('should save and restore game state', () => {
     var game = new Game().initialise();
-    const player = game.getPlayer();
+    const player = game.player;
     game.movePlayer(1,1);
     player.stats.health = 42;
     const gold=new Item(ITEM_TYPES.goldCoin,123);
@@ -389,7 +389,7 @@ describe('Game Save/Load', () => {
     player.stats.gold = 0
     // Restore
     game=Game.loadGame();  
-    const restoredPlayer = game.getPlayer();
+    const restoredPlayer = game.player;
     expect(restoredPlayer).toBeInstanceOf(Player);
     expect(restoredPlayer.getInventory().find(item => item.getId() == gold.getId())?.getQuantity()).toBeGreaterThanOrEqual(123);
     expect(restoredPlayer.position).toEqual(player.position);
@@ -398,7 +398,7 @@ describe('Game Save/Load', () => {
 
 describe('Player serialization', () => {
   test('should serialize and deserialize with worn and inventory items', () => {
-    const player = new Game().getPlayer();
+    const player = new Game().player;
     const sword = new Item(ITEM_TYPES.ironSword, 1);
     const boots = new Item(ITEM_TYPES.boots, 1);
     player.addItem(sword);
@@ -424,7 +424,7 @@ describe('Game.dropItem', () => {
   test('should remove item from inventory and add to current tile', () => {
     const game = new Game().initialise();
     expect(game.getCurrentArea().id).toBe('grasslands');
-    const player = game.getPlayer();
+    const player = game.player;
     game.addEntity(player);
     const item = new Item(ITEM_TYPES.ironSword, 1);
     player.addItem(item);
@@ -442,7 +442,7 @@ describe('Game.dropItem', () => {
 
   test('should return false if item not in inventory', () => {
     const game = new Game();
-    const player = game.getPlayer();
+    const player = game.player;
     const item = new Item(ITEM_TYPES.ironSword, 1);
     const result = game.dropItem(player, item);
     expect(result).toBe(false);
@@ -458,7 +458,7 @@ describe('Player Entity ID', () => {
 
 describe('Player serialization identity and round-trip', () => {
   test('should serialize and deserialize to Player and match JSON', () => {
-    const player = new Game().getPlayer();
+    const player = new Game().player;
     const sword = new Item(ITEM_TYPES.ironSword, 1);
     const boots = new Item(ITEM_TYPES.boots, 1);
     player.addItem(sword);

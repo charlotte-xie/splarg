@@ -57,7 +57,7 @@ type GameMessage = {
  */
 export default class Game {
   public status: GameStatus;
-  public player: Player;
+  protected _player: Player;
   public world: World;
   public settings: GameSettings;
   public progress: GameProgress;
@@ -72,7 +72,7 @@ export default class Game {
 
   constructor() {
     this.status = 'ready';
-    this.player = new Player();
+    this._player = new Player();
     this.world = new World();
     this.settings = {
       soundEnabled: true,
@@ -109,15 +109,15 @@ export default class Game {
       questsCompleted: 0
     };
     this.entities.clear();
-    this.player=new Player();
-    this.addEntity(this.player);
+    this._player=new Player();
+    this.addEntity(this._player);
     this.entityIdCounter = 1;
 
     this.time = 0;
     this.world = new World();
     this.world.initializeAreas(this, mode);
 
-    this.addPlayerDefaults(this.player);
+    this.addPlayerDefaults(this._player);
     this.setupEventListeners();
     this.triggerEvent({ type: 'gameReset', timestamp: this.time });
     return this;
@@ -138,15 +138,15 @@ export default class Game {
     });
   }
 
-  getPlayer(): Player {
-    return this.player;
+  get player(): Player {
+    return this._player;
   }
 
   getCurrentArea(): Area {
-    if (!this.player.position.areaId) {
+    if (!this._player.position.areaId) {
       throw new Error('Player has no areaId');
     }
-    return this.world.getArea(this.player.position.areaId);
+    return this.world.getArea(this._player.position.areaId);
   }
 
   startGame(): void {
@@ -158,12 +158,12 @@ export default class Game {
     if (this.status !== 'playing') {
       return false;
     }
-    if (!this.player.position.areaId) {
+    if (!this._player.position.areaId) {
       throw new Error("Player not in any area?");
     }
     const currentArea = this.getCurrentArea();
-    const newX = this.player.position.x + dx;
-    const newY = this.player.position.y + dy;
+    const newX = this._player.position.x + dx;
+    const newY = this._player.position.y + dy;
     if (newX < 0 || newX >= currentArea.type.width || newY < 0 || newY >= currentArea.type.height) {
       // TODO: move to new area
       return false;
@@ -173,7 +173,7 @@ export default class Game {
       this.addMessage("Blocked by " +(targetTile?targetTile.getDescription():"the void"))
       return false;
     }
-    this.addEntity(this.player, {areaId: currentArea.id, x:newX,y:newY});
+    this.addEntity(this._player, {areaId: currentArea.id, x:newX,y:newY});
     currentArea.visited = true;
     this.triggerEvent({ 
       type: 'playerMoved', 
@@ -186,8 +186,8 @@ export default class Game {
   updatePlayer(player: Player): void {
     // Ensure player has ID 0
     player.setId(0);
-    this.player = player;
-    this.addEntity(this.player);
+    this._player = player;
+    this.addEntity(this._player);
     this.triggerEvent({ 
       type: 'playerUpdated', 
       timestamp: this.time,
@@ -252,7 +252,7 @@ export default class Game {
   toJSON() {
     return {
       status: this.status,
-      player: this.player.toJSON(),
+      player: this._player.toJSON(),
       world: this.world.toJSON(),
       settings: this.settings,
       progress: this.progress,
@@ -370,7 +370,7 @@ export default class Game {
   }
 
   getPlayerTile(): Tile | null {
-    const pos = this.player.position;
+    const pos = this._player.position;
     return this.getCurrentArea().getTile(pos.x, pos.y);
   }
 
@@ -449,7 +449,7 @@ export default class Game {
     }
     // If it is the player, update the Game'player field
     if (entityId == 0) {
-      this.player = entity as Player;
+      this._player = entity as Player;
     }
 
     // Add entity to the area's entities list if position has areaId

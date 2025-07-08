@@ -13,7 +13,7 @@ export default function TileMap({ game, onUpdate, version }: TileMapProps) {
   const TILE_SIZE = 32;
   const [hoveredTile, setHoveredTile] = useState<{tile: any, x: number, y: number} | null>(null);
 
-  const player = game.getPlayer();
+  const player = game.player;
   const area = game.getCurrentArea();
   const playerPosition = player.position;
 

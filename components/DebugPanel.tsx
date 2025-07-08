@@ -10,21 +10,21 @@ interface DebugPanelProps {
 
 export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   const handleAddRandomItem = () => {
-    const player = game.getPlayer();
+    const player = game.player;
     const randomItem = createRandomItem();
     player.addItem(randomItem);
     onGameUpdate(game);
   };
 
   const handleAddGold = () => {
-    const player = game.getPlayer();
+    const player = game.player;
     const goldItem = new Item(ITEM_TYPES.goldCoin, 100);
     player.addItem(goldItem);
     onGameUpdate(game);
   };
 
   const handleHealPlayer = () => {
-    const player = game.getPlayer();
+    const player = game.player;
     // player.heal(50);
     onGameUpdate(game);
   };
@@ -35,7 +35,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   };
 
   const handleLockAllWornItems = () => {
-    const player = game.getPlayer();
+    const player = game.player;
     const wornItems = player.getWornItems();
     
     // Get unique worn items (since items can span multiple locations)
@@ -53,7 +53,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   };
 
   const handleUnlockAllWornItems = () => {
-    const player = game.getPlayer();
+    const player = game.player;
     const wornItems = player.getWornItems();
     // Get unique worn items (since items can span multiple locations)
     const uniqueWornItems = new Set<Item>();
@@ -77,7 +77,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
   };
 
   const handleShowPlayerJSON = () => {
-    const player = game.getPlayer();
+    const player = game.player;
     const playerJSON = player.toJSON();
     console.log('Player JSON:', playerJSON);
     alert(JSON.stringify(playerJSON, null, 2));
@@ -150,8 +150,8 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         <div><b>Last Save:</b> {game.lastSaveTime ? new Date(game.lastSaveTime).toLocaleString() : 'Never'}</div>
         <div><b>Score:</b> {game.score}</div>
         <div><b>Game Time:</b> {game.time}</div>
-        <div><b>Inventory:</b> {game.getPlayer().getInventory().length} items</div>
-        <div><b>Player Pos:</b> {JSON.stringify(game.getPlayer().position)}</div>
+        <div><b>Inventory:</b> {game.player.getInventory().length} items</div>
+        <div><b>Player Pos:</b> {JSON.stringify(game.player.position)}</div>
         <div><b>Entity Count:</b> {game.entities.size}</div>
         <div><b>Entities in Area:</b> {game.getCurrentArea().entities.size}</div>
       </div>

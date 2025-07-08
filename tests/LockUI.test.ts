@@ -6,7 +6,7 @@ describe('Lock UI Functionality', () => {
   let player: Player;
 
   beforeEach(() => {
-    player = new Game().getPlayer();
+    player = new Game().player;
   });
 
   test('should correctly identify locked items', () => {

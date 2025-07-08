@@ -5,7 +5,7 @@ import Player from '../classes/Player';
 
 // Test helper to create a Player without default items
 function createTestPlayer(): Player {
-  const player = new Game().getPlayer();
+  const player = new Game().player;
   player.inventory = []; // Clear default items
   return player;
 }

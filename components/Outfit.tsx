@@ -21,7 +21,7 @@ export default function Outfit({
   selectedSlot,
   onSlotClick
 }: OutfitProps) {
-  const player = game.getPlayer();
+  const player = game.player;
   const wornItems = player.getWornItems();
 
   // Use all wear types from the Item class

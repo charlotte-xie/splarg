@@ -18,7 +18,7 @@ export default function PlayerPanel({
   game,
   onUpdate
 }: PlayerPanelProps) {
-  const player = game.getPlayer();
+  const player = game.player;
   const [selectedInventorySlot, setSelectedInventorySlot] = useState<number | undefined>(undefined);
   const [selectedOutfitSlot, setSelectedOutfitSlot] = useState<string | undefined>(undefined);
 

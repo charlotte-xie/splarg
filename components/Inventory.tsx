@@ -17,7 +17,7 @@ export default function Inventory({
   onSlotClick,
   selectedSlot = -1
 }: InventoryProps) {
-  const player = game.getPlayer();
+  const player = game.player;
   const items = player.getInventory();
   const MIN_SLOTS = 30;
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);

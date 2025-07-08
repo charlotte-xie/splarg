@@ -10,7 +10,7 @@ describe('Game.dropItem', () => {
 
   beforeEach(() => {
     game = new Game().initialise();
-    player = game.getPlayer();
+    player = game.player;
     player.inventory = [];
     // Place player at a known position
     player.setPosition({ x: 2, y: 2, areaId: 'grasslands' });
@@ -57,11 +57,11 @@ describe('Game.getEntity', () => {
 
   test('should return player when getting entity with ID 0', () => {
     const entity = game.getEntity(0);
-    expect(entity).toBe(game.getPlayer());
+    expect(entity).toBe(game.player);
   });
 
   test('should return player when getting entity with player object', () => {
-    const player = game.getPlayer();
+    const player = game.player;
     const entity = game.getEntity(player);
     expect(entity).toBe(player);
   });
@@ -101,7 +101,7 @@ describe('Game serialization', () => {
     expect(json.entities.length).toBe(currentNum+2); // player (0) + 2 entities
 
     const deserialized = Game.fromJSON(json);
-    expect(deserialized.getEntity(0)).toBe(deserialized.getPlayer());
+    expect(deserialized.getEntity(0)).toBe(deserialized.player);
     expect(deserialized.getEntity(1)).toBeDefined();
     expect(deserialized.getEntity(2)).toBeDefined();
   });
@@ -111,8 +111,8 @@ describe('Game serialization', () => {
     const deserialized = Game.fromJSON(json);
     
     // Player should be the same instance as entity 0
-    expect(deserialized.getEntity(0)).toBe(deserialized.getPlayer());
-    expect(deserialized.getEntity(0)).toBe(deserialized.getPlayer());
+    expect(deserialized.getEntity(0)).toBe(deserialized.player);
+    expect(deserialized.getEntity(0)).toBe(deserialized.player);
   });
 
   test('should preserve entity positions after deserialization', () => {
@@ -132,7 +132,7 @@ describe('Game serialization', () => {
     // Create and initialize game
     const game = new Game();
     game.initialise();
-    const pt = game.getCurrentArea().getTileFor(game.getPlayer());
+    const pt = game.getCurrentArea().getTileFor(game.player);
     if (!pt) throw new Error('Tile is null');
     expect(pt.entities.size).toBe(1);
     
@@ -157,7 +157,7 @@ describe('Game contructor', () => {
 
   test('game construction', () => {
     let game= new Game();
-    const player = game.getPlayer();
+    const player = game.player;
 
     expect(game.entityIdCounter).toBe(1);
     expect(player.position.areaId).toBeUndefined();
@@ -168,7 +168,7 @@ describe('Game initial state', () => {
   let game= new Game().initialise();
 
   test('should have current area matching player position and correct entity counts', () => {
-    const player = game.getPlayer();
+    const player = game.player;
     const currentArea = game.getCurrentArea();
     expect(currentArea.id).toBe(player.position.areaId);
     // Current area should have 2 entities (player + mob)
