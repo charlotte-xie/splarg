@@ -11,7 +11,7 @@ export default class World {
     this.areas = new Map();
   }
 
-  initializeAreas(): void {
+  initializeAreas(mode?: string): void {
     this.createArea('grasslands', AREA_TYPES.GRASSLANDS);
     this.createArea('forest', AREA_TYPES.FOREST);
     this.createArea('desert', AREA_TYPES.DESERT);

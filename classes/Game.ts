@@ -97,7 +97,7 @@ export default class Game {
     this.messages = [];
   }
 
-  initialise(): Game {
+  initialise(mode?: string): Game {
     this.status = 'ready';
     this.score = 0;
     this.progress = {
@@ -109,7 +109,7 @@ export default class Game {
     };
     this.time = 0;
     this.world = new World();
-    this.world.initializeAreas();
+    this.world.initializeAreas(mode);
     
     // Clear entities map and reset counter
     this.entities.clear();
