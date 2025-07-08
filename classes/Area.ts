@@ -110,6 +110,11 @@ export default class Area {
     return this.tiles[y][x];
   }
 
+  getTileFor(posOrEntity: { x: number; y: number } | { position: { x: number; y: number } }): Tile | null {
+    const pos = 'position' in posOrEntity ? posOrEntity.position : posOrEntity;
+    return this.getTile(pos.x, pos.y);
+  }
+
   isWalkable(x: number, y: number): boolean {
     const tile = this.getTile(x, y);
     if (!tile) return false;

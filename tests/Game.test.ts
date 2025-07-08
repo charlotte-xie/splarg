@@ -1,7 +1,7 @@
-import Entity from '../classes/Entity';
 import Game from '../classes/Game';
 import Item from '../classes/Item';
 import { ITEM_TYPES } from '../classes/ItemType';
+import Mob from '../classes/Mob';
 import Player from '../classes/Player';
 
 describe('Game.dropItem', () => {
@@ -72,7 +72,7 @@ describe('Game.getEntity', () => {
   });
 
   test('should return null for entity not in map', () => {
-    const fakeEntity = new Entity();
+    const fakeEntity = new Mob();
     fakeEntity.setId(-998);
     const entity = game.getEntity(fakeEntity);
     expect(entity).toBeNull();
@@ -96,9 +96,9 @@ describe('Game serialization', () => {
 
   test('should serialize and deserialize entities map', () => {
     // Add some test entities
-    const entity1 = new Entity();
+    const entity1 = new Mob();
     entity1.setId(1);
-    const entity2 = new Entity();
+    const entity2 = new Mob();
     entity2.setId(2);
     
     game.addEntity(entity1, { x: 5, y: 5, areaId: 'grasslands' });
@@ -124,7 +124,7 @@ describe('Game serialization', () => {
   });
 
   test('should preserve entity positions after deserialization', () => {
-    const entity = new Entity();
+    const entity = new Mob();
     entity.setId(5);
     game.addEntity(entity, { x: 15, y: 20, areaId: 'grasslands' });
 
@@ -140,6 +140,9 @@ describe('Game serialization', () => {
     // Create and initialize game
     const game = new Game();
     game.initialise();
+    const pt = game.getCurrentArea().getTileFor(game.getPlayer());
+    if (!pt) throw new Error('Tile is null');
+    expect(pt.entities.size).toBe(1);
     
     // First serialization
     const firstJson = game.toJSON();

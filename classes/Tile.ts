@@ -46,14 +46,19 @@ export default class Tile {
   }
 
   toJSON() {
-    // Compact: [typeId, items?, entities?]
     const hasItems = this.items && this.items.length > 0;
     const hasEntities = this.entities && this.entities.size > 0;
     if (!hasItems && !hasEntities) {
       return this.type.id;
     }
-    const arr = [this.type.id, this.items, this.entities];
-    return arr;
+    if (hasItems && !hasEntities) {
+      return [this.type.id, this.items.map(item => item.toJSON())];
+    }
+    if (hasItems && hasEntities) {
+      return [this.type.id, this.items.map(item => item.toJSON()), Array.from(this.entities)];
+    }
+    // !hasItems && hasEntities
+    return [this.type.id, [], Array.from(this.entities)];
   }
 
   static fromJSON(obj: any): Tile {
@@ -63,10 +68,10 @@ export default class Tile {
     } else if (Array.isArray(obj)) {
       const [typeId, itemsArr, entitiesArr] = obj;
       const tile = new Tile(TILE_TYPES[String(typeId)]);
-      if (Array.isArray(itemsArr)) {
+      if (Array.isArray(itemsArr) && itemsArr.length > 0) {
         tile.items = itemsArr.map((itemObj: any) => Item.fromJSON(itemObj));
       }
-      if (Array.isArray(entitiesArr)) {
+      if (Array.isArray(entitiesArr) && entitiesArr.length > 0) {
         tile.entities = new Set(entitiesArr);
       }
       return tile;

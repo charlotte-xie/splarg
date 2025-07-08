@@ -466,6 +466,11 @@ export default class Game {
       const area = this.world.areas.get(entity.position.areaId);
       if (area) {
         area.entities.add(entityId);
+        // Add to tile's entities set
+        const tile = area.getTile(entity.position.x, entity.position.y);
+        if (tile) {
+          tile.entities.add(entityId);
+        }
       }
     } else {
       throw new Error("Entity has no areaId");
@@ -483,7 +488,13 @@ export default class Game {
       
       // Remove entity from its area
       if (entity.position.areaId) {
-        this.world.getArea(entity.position.areaId).entities.delete(entityId);
+        const area = this.world.getArea(entity.position.areaId);
+        area.entities.delete(entityId);
+        // Remove from tile's entities set
+        const tile = area.getTile(entity.position.x, entity.position.y);
+        if (tile) {
+          tile.entities.delete(entityId);
+        }
       }
       
       return removed;
