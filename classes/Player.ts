@@ -1,18 +1,14 @@
 import { Being, BeingStats } from './Being';
 import { EntityClass } from './Entity';
-import Game from './Game';
 import Item from './Item';
-import { Position } from './World';
 
 // --- Player class ---
 export default class Player extends Being {
   public outfits: Map<string, string[]>; // "OutfitName" -> [list of item ids]
-  public game: Game | null;
 
   constructor() {
     super(EntityClass.PLAYER);
     this.outfits = new Map();
-    this.game = null;
     this.setId(0);
   }
 
@@ -28,10 +24,6 @@ export default class Player extends Being {
       speed: 8,
       gold: 0
     };
-  }
-
-  static defaultPosition(): Position {
-    return { areaId: 'grasslands', x: 3, y: 3 };
   }
 
   getItemsWornByItem(item: Item): string[] {

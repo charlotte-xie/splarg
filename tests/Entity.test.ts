@@ -1,8 +1,9 @@
 import Entity from '../classes/Entity';
+import Mob from '../classes/Mob';
 
 describe('Entity serialization', () => {
   test('should serialize and deserialize position correctly', () => {
-    const entity = new Entity();
+    const entity = new Mob();
     entity.setPosition({ x: 5, y: 7 });
     entity.position.areaId = 'test-area';
 

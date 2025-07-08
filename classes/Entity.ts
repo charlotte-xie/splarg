@@ -14,6 +14,7 @@ export default class Entity {
   constructor(klass: EntityClass) {
     this.position = { x: 0, y: 0 };
     this.klass=klass;
+    this.id = -1;
   }
 
   setPosition(position: Position): void {
@@ -34,14 +35,15 @@ export default class Entity {
   toJSON() {
     return {
       position: this.position,
-      id: this.id
+      id: this.id,
+      klass: this.klass
     };
   }
 
   static fromJSON(obj: any): Entity {
-    const entity = new Entity(obj.klass);
+    const entity = new Entity(obj.klass || EntityClass.NPC);
     entity.position = obj.position;
-    entity.id = obj.id;
+    entity.setId(obj.id);
     return entity;
   }
 } 

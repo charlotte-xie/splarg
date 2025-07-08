@@ -10,7 +10,7 @@ export default class Mob extends Being {
     const base = super.toJSON();
     return {
       ...base,
-      class: 'Mob',
+      klass: EntityClass.MOB,
     };
   }
 

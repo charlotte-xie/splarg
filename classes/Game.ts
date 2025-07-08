@@ -1,6 +1,7 @@
 import Area from './Area';
-import Entity from './Entity';
+import Entity, { EntityClass } from './Entity';
 import Item from './Item';
+import Mob from './Mob';
 import Player from './Player';
 import Tile from './Tile';
 import type { Position } from './World';
@@ -107,21 +108,14 @@ export default class Game {
       itemsCollected: 0,
       questsCompleted: 0
     };
+    this.entities.clear();
+    this.player=new Player();
+    this.addEntity(this.player);
+    this.entityIdCounter = 1;
+
     this.time = 0;
     this.world = new World();
-    this.world.initializeAreas(mode);
-    
-    // Clear entities map and reset counter
-    this.entities.clear();
-    this.entityIdCounter = 1;
-    
-    // Set player to initial position in grasslands area and ensure it's walkable
-    this.player=new Player();
-    const initialPosition = { areaId: 'grasslands', x: 3, y: 3 };
-    const walkablePosition = this.world.ensurePlayerOnWalkableTile(initialPosition);
-
-    // Add player to entities map with ID 0 and add to area
-    this.addEntity(this.player, walkablePosition);
+    this.world.initializeAreas(this, mode);
 
     this.addPlayerDefaults(this.player);
     this.setupEventListeners();
@@ -175,17 +169,12 @@ export default class Game {
     this.triggerEvent({ type: 'gameStarted', timestamp: this.time });
   }
 
-  resetGame(): void {
-    this.player = new Player();
-    this.initialise();
-  }
-
   movePlayer(dx: number, dy: number): boolean {
     if (this.status !== 'playing') {
       return false;
     }
     if (!this.player.position.areaId) {
-      return false;
+      throw new Error("Player not in any area?");
     }
     const currentArea = this.getCurrentArea();
     const newX = this.player.position.x + dx;
@@ -253,6 +242,27 @@ export default class Game {
     }
   }
 
+  
+  saveGame(): void {
+    try {
+      this.lastSaveTime = Date.now();
+      const saveData = JSON.stringify(this.toJSON());
+      localStorage.setItem('splarg_save', saveData);
+      this.triggerEvent({ type: 'gameSaved', timestamp: Date.now() });
+    } catch (e) {
+      console.error('Failed to save game:', e);
+    }
+  }
+
+  static loadGame(): Game {
+      const saveData = localStorage.getItem('splarg_save');
+      if (!saveData) throw new Error("No save data found");
+      const parsed = JSON.parse(saveData);
+      const loaded = Game.fromJSON(parsed);
+      loaded.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
+      return loaded;
+  }
+
   // Save/Load System
   toJSON() {
     return {
@@ -287,15 +297,10 @@ export default class Game {
     if (obj.entities) {
       obj.entities.forEach(([id, entityObj]: [number, any]) => {
         highestID=Math.max(highestID,id);
-        if (id === 0) {
-          // Player entity - load as Player
-          const player = Player.fromJSON(entityObj);
-          game.entities.set(0, player);
-          game.player = player;
-        } else {
-          // Other entities - load as Entity
-          const entity = Entity.fromJSON(entityObj);
-          game.entities.set(id, entity);
+        const entity = Game.entityFromJSON(entityObj);
+        game.entities.set(id, entity);
+        if (id==0) {
+          game.updatePlayer(entity as Player);
         }
       });
     }
@@ -304,25 +309,16 @@ export default class Game {
     return game;
   }
 
-  saveGame(): void {
-    try {
-      this.lastSaveTime = Date.now();
-      const saveData = JSON.stringify(this.toJSON());
-      localStorage.setItem('splarg_save', saveData);
-      this.triggerEvent({ type: 'gameSaved', timestamp: Date.now() });
-    } catch (e) {
-      console.error('Failed to save game:', e);
+  static entityFromJSON(obj: any): Entity {
+    if (obj.klass == EntityClass.PLAYER) {
+      return Player.fromJSON(obj) as Player;
+    } else if (obj.klass == EntityClass.MOB) {
+      return Mob.fromJSON(obj) as Mob;
+    } else {
+      return Entity.fromJSON(obj) as Entity;
     }
   }
 
-  static loadGame(): Game {
-      const saveData = localStorage.getItem('splarg_save');
-      if (!saveData) throw new Error("No save data found");
-      const parsed = JSON.parse(saveData);
-      const loaded = Game.fromJSON(parsed);
-      loaded.triggerEvent({ type: 'gameLoaded', timestamp: Date.now() });
-      return loaded;
-  }
 
   getAvailableAreas(): any[] {
     return this.world.getAvailableAreas();
@@ -454,13 +450,23 @@ export default class Game {
   }
 
   addEntity(entity: Entity, position?: Position): number {
-    const entityId = entity.getId();
-    this.removeEntity(entityId); /* remove first if already there */
+    let entityId = entity.getId();
+    // If entity has no ID or ID is -1, assign a new one
+    if (entityId === -1) {
+      entityId = this.entityIdCounter++;
+      entity.setId(entityId);
+    } else {
+      this.removeEntity(entityId); /* remove first if already there */
+    }
+    this.entities.set(entityId, entity);
     if (position) {
       entity.setPosition(position);
     }
-    this.entities.set(entityId, entity);
-    
+    // If it is the player, update the Game'player field
+    if (entityId == 0) {
+      this.player = entity as Player;
+    }
+
     // Add entity to the area's entities list if position has areaId
     if (entity.position.areaId) {
       const area = this.world.areas.get(entity.position.areaId);
@@ -472,19 +478,16 @@ export default class Game {
           tile.entities.add(entityId);
         }
       }
-    } else {
-      throw new Error("Entity has no areaId");
-    }
+    } 
     
     return entityId;
   }
 
-  /* Remove entity from game. Will be in detached state. Returns true if Entity actually removed */
+  /* Remove entity from game. Will be in detached state. Returns true if Entity was already present */
   removeEntity(entityID: Entity | number): boolean {
     const entity : Entity | null = entityID instanceof Entity ? entityID : (this.entities.get(entityID) || null); 
     if (entity) {
       const entityId = entity.getId();
-      const removed = this.entities.delete(entityId);
       
       // Remove entity from its area
       if (entity.position.areaId) {
@@ -496,8 +499,10 @@ export default class Game {
           tile.entities.delete(entityId);
         }
       }
+
+      this.entities.delete(entityId);
       
-      return removed;
+      return true;
     }
     return false;
   }

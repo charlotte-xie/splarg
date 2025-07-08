@@ -111,7 +111,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         <Button
           onClick={handleResetPlayer}
         >
-          Reset Player
+          Reset Game
         </Button>
         
         <Button

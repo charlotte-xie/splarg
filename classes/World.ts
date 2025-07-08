@@ -1,4 +1,6 @@
 import Area, { AREA_TYPES } from './Area';
+import type Game from './Game';
+import Mob from './Mob';
 import Tile from './Tile';
 import { TILE_TYPES, TileType } from './TileType';
 
@@ -11,12 +13,13 @@ export default class World {
     this.areas = new Map();
   }
 
-  initializeAreas(mode?: string): void {
-    this.createArea('grasslands', AREA_TYPES.GRASSLANDS);
-    this.createArea('forest', AREA_TYPES.FOREST);
-    this.createArea('desert', AREA_TYPES.DESERT);
-    this.createArea('water', AREA_TYPES.WATER);
-    this.createArea('cave', AREA_TYPES.CAVE);
+  initializeAreas(game: Game, mode?: string): void {
+    this.createArea('grasslands', AREA_TYPES.GRASSLANDS, game);
+    game.addEntity(game.player, { areaId: 'grasslands', x: 3, y: 3 });
+    this.createArea('forest', AREA_TYPES.FOREST, game);
+    this.createArea('desert', AREA_TYPES.DESERT, game);
+    this.createArea('water', AREA_TYPES.WATER, game);
+    this.createArea('cave', AREA_TYPES.CAVE, game);
     // Only grasslands is discovered/visited at start
     const grasslandsArea = this.areas.get('grasslands');
     if (grasslandsArea) {
@@ -25,9 +28,22 @@ export default class World {
     }
   }
 
-  createArea(areaId: string, areaType: any): void {
+  createArea(areaId: string, areaType: any, game: Game): void {
     const tiles = this.generateAreaTiles(areaType);
-    this.areas.set(areaId, new Area(areaId, areaType, tiles));
+    const area = new Area(areaId, areaType, tiles);
+    this.areas.set(areaId, area);
+    // Add a Mob to a random walkable tile
+    let placed = false;
+    for (let tries = 0; tries < 100 && !placed; tries++) {
+      const x = 1 + Math.floor(Math.random() * (area.type.width - 2));
+      const y = 1 + Math.floor(Math.random() * (area.type.height - 2));
+      const tile = area.getTile(x, y);
+      if (tile && tile.isWalkable() && tile.entities.size === 0) {
+        const mob = new Mob();
+        game.addEntity(mob, { areaId, x, y });
+        placed = true;
+      }
+    }
   }
 
   generateAreaTiles(areaType: any): Tile[][] {

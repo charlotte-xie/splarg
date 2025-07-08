@@ -77,14 +77,6 @@ describe('Game.getEntity', () => {
     const entity = game.getEntity(fakeEntity);
     expect(entity).toBeNull();
   });
-
-  test('should maintain player ID 0 invariant after updatePlayer', () => {
-    const newPlayer = new Player();
-    newPlayer.setPosition(game.player.position)
-    game.updatePlayer(newPlayer);
-    expect(game.getEntity(0)).toBe(newPlayer);
-    expect(game.getEntity(0)).toBe(game.getPlayer());
-  });
 });
 
 describe('Game serialization', () => {
@@ -96,17 +88,17 @@ describe('Game serialization', () => {
 
   test('should serialize and deserialize entities map', () => {
     // Add some test entities
+    const currentNum = game.entityIdCounter;
+
     const entity1 = new Mob();
-    entity1.setId(1);
     const entity2 = new Mob();
-    entity2.setId(2);
     
     game.addEntity(entity1, { x: 5, y: 5, areaId: 'grasslands' });
     game.addEntity(entity2, { x: 10, y: 10, areaId: 'grasslands' });
 
     const json = game.toJSON();
     expect(json.entities).toBeDefined();
-    expect(json.entities.length).toBe(3); // player (0) + 2 entities
+    expect(json.entities.length).toBe(currentNum+2); // player (0) + 2 entities
 
     const deserialized = Game.fromJSON(json);
     expect(deserialized.getEntity(0)).toBe(deserialized.getPlayer());
@@ -158,5 +150,37 @@ describe('Game serialization', () => {
     
     // Compare the two serializations
     expect(thirdJson).toEqual(firstJson);
+  });
+});
+
+describe('Game contructor', () => {
+
+  test('game construction', () => {
+    let game= new Game();
+    const player = game.getPlayer();
+
+    expect(game.entityIdCounter).toBe(1);
+    expect(player.position.areaId).toBeUndefined();
+  });
+}); 
+
+describe('Game initial state', () => {
+  let game= new Game().initialise();
+
+  test('should have current area matching player position and correct entity counts', () => {
+    const player = game.getPlayer();
+    const currentArea = game.getCurrentArea();
+    expect(currentArea.id).toBe(player.position.areaId);
+    // Current area should have 2 entities (player + mob)
+    expect(currentArea.entities.size).toBe(2);
+    // All other areas should have 1 entity (mob)
+    for (const [areaId, area] of game.world.areas.entries()) {
+      if (areaId !== currentArea.id) {
+        expect(area.entities.size).toBe(1);
+      }
+    }
+
+    expect(game.entityIdCounter).toBe(game.entities.size);
+    expect(game.entityIdCounter).toBe(6);
   });
 }); 

@@ -5,9 +5,8 @@ import Player from '../classes/Player';
 
 // Test helper to create a Player without default items
 function createTestPlayer(): Player {
-  const player = new Game().getPlayer();
-  player.inventory = []; // Clear default items
-  return player;
+  const player = new Player();
+  return player
 }
 
 describe('Player Wear/Remove Behavior', () => {
@@ -97,6 +96,7 @@ describe('Player Wear/Remove Behavior', () => {
     });
 
     test('should handle partial overlap correctly', () => {
+      const player=new Player();
       const vest = new Item(ITEM_TYPES.vest); // chest, belly (inner)
       const longCoat = new Item(ITEM_TYPES.longCoat); // chest, belly, arm (outer)
       const gloves = new Item(ITEM_TYPES.gloves); // hand (outer)
@@ -388,9 +388,10 @@ describe('Game Save/Load', () => {
     player.stats.health = 1;
     player.stats.gold = 0
     // Restore
-    game=Game.loadGame();
+    game=Game.loadGame();  
     const restoredPlayer = game.getPlayer();
-    expect(restoredPlayer.getInventory().find(item => item.getId() === 'goldCoin')?.getQuantity()).toBeGreaterThanOrEqual(123);
+    expect(restoredPlayer).toBeInstanceOf(Player);
+    expect(restoredPlayer.getInventory().find(item => item.getId() == gold.getId())?.getQuantity()).toBeGreaterThanOrEqual(123);
     expect(restoredPlayer.position).toEqual(player.position);
   });
 });
@@ -452,5 +453,22 @@ describe('Player Entity ID', () => {
   test('should have ID 0', () => {
     const player = new Player();
     expect(player.getId()).toBe(0);
+  });
+});
+
+describe('Player serialization identity and round-trip', () => {
+  test('should serialize and deserialize to Player and match JSON', () => {
+    const player = new Game().getPlayer();
+    const sword = new Item(ITEM_TYPES.ironSword, 1);
+    const boots = new Item(ITEM_TYPES.boots, 1);
+    player.addItem(sword);
+    player.addItem(boots);
+    player.wearItem(boots);
+
+    const json1 = player.toJSON();
+    const restored = Player.fromJSON(json1);
+    expect(restored).toBeInstanceOf(Player);
+    const json2 = restored.toJSON();
+    expect(json2).toEqual(json1);
   });
 }); 
