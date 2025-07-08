@@ -9,7 +9,7 @@ export default class Player extends Being {
   constructor() {
     super(EntityClass.PLAYER);
     this.outfits = new Map();
-    this.setId(0);
+    this.id=0;
   }
 
   static defaultStats(): BeingStats {

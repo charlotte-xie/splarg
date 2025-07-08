@@ -452,7 +452,7 @@ describe('Game.dropItem', () => {
 describe('Player Entity ID', () => {
   test('should have ID 0', () => {
     const player = new Player();
-    expect(player.getId()).toBe(0);
+    expect(player.id).toBe(0);
   });
 });
 

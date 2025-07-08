@@ -73,7 +73,7 @@ describe('Game.getEntity', () => {
 
   test('should return null for entity not in map', () => {
     const fakeEntity = new Mob();
-    fakeEntity.setId(-998);
+    fakeEntity.id=-998;
     const entity = game.getEntity(fakeEntity);
     expect(entity).toBeNull();
   });
@@ -117,7 +117,7 @@ describe('Game serialization', () => {
 
   test('should preserve entity positions after deserialization', () => {
     const entity = new Mob();
-    entity.setId(5);
+    entity.id=5;
     game.addEntity(entity, { x: 15, y: 20, areaId: 'grasslands' });
 
     const json = game.toJSON();

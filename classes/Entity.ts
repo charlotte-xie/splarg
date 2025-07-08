@@ -8,13 +8,13 @@ export enum EntityClass {
 
 export default class Entity {
   protected _position: Position;
-  private id: number | null = null;
+  protected _id: number | null = null;
   public klass: EntityClass;
 
   constructor(klass: EntityClass) {
     this._position = { x: 0, y: 0 };
     this.klass=klass;
-    this.id = -1;
+    this._id = -1;
   }
 
   setPosition(position: Position): void {
@@ -25,21 +25,21 @@ export default class Entity {
     return this._position;
   }
 
-  setId(id: number): void {
-    this.id = id;
-  }
-
-  getId(): number {
-    if (this.id === null) {
+  get id(): number {
+    if (this._id === null) {
       throw new Error('Entity ID not set');
     }
-    return this.id;
+    return this._id;
+  }
+
+  set id(value: number) {
+    this._id = value;
   }
 
   toJSON() {
     return {
       position: this._position,
-      id: this.id,
+      id: this._id,
       klass: this.klass
     };
   }
@@ -47,7 +47,7 @@ export default class Entity {
   static fromJSON(obj: any): Entity {
     const entity = new Entity(obj.klass || EntityClass.NPC);
     entity._position = obj.position;
-    entity.setId(obj.id);
+    entity._id = obj.id;
     return entity;
   }
 } 

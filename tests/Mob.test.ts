@@ -4,13 +4,13 @@ import Mob from '../classes/Mob';
 describe('Mob', () => {
   test('should have an ID of -1 and klass of EntityClass.MOB when newly created', () => {
     const mob = new Mob();
-    expect(mob.getId()).toBe(-1);
+    expect(mob.id).toBe(-1);
     expect(mob.klass).toBe(EntityClass.MOB);
   });
 
   test('should serialize and deserialize to identical JSON', () => {
     const mob = new Mob();
-    mob.setId(42);
+    mob.id=42;
     const json1 = mob.toJSON();
     const mob2 = Mob.fromJSON(json1);
     expect(mob2).toBeInstanceOf(Mob);

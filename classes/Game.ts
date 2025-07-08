@@ -185,7 +185,7 @@ export default class Game {
 
   updatePlayer(player: Player): void {
     // Ensure player has ID 0
-    player.setId(0);
+    player.id=0;
     this._player = player;
     this.addEntity(this._player);
     this.triggerEvent({ 
@@ -435,11 +435,11 @@ export default class Game {
   }
 
   addEntity(entity: Entity, position?: Position): number {
-    let entityId = entity.getId();
+    let entityId = entity.id;
     // If entity has no ID or ID is -1, assign a new one
     if (entityId === -1) {
       entityId = this.entityIdCounter++;
-      entity.setId(entityId);
+      entity.id=entityId;
     } else {
       this.removeEntity(entityId); /* remove first if already there */
     }
@@ -472,7 +472,7 @@ export default class Game {
   removeEntity(entityID: Entity | number): boolean {
     const entity : Entity | null = entityID instanceof Entity ? entityID : (this.entities.get(entityID) || null); 
     if (entity) {
-      const entityId = entity.getId();
+      const entityId = entity.id;
       
       // Remove entity from its area
       if (entity.position.areaId) {
@@ -496,7 +496,7 @@ export default class Game {
     if (typeof idOrEntity === 'number') {
       return this.entities.get(idOrEntity) || null;
     } else {
-      return this.entities.get(idOrEntity.getId()) || null;
+      return this.entities.get(idOrEntity.id) || null;
     }
   }
 } 
