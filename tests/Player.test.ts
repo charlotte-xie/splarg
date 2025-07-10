@@ -378,7 +378,7 @@ describe('Game Save/Load', () => {
   test('should save and restore game state', () => {
     var game = new Game().initialise();
     const player = game.player;
-    game.movePlayer(1,1);
+    game.doPlayerMove(1,1);
     player.stats.health = 42;
     const gold=new Item(ITEM_TYPES.goldCoin,123);
     player.addItem(gold);

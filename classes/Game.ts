@@ -29,7 +29,7 @@ type GameEvent = {
   timestamp: number;
   data?: any;
 };
-
+ 
 type GameEventCallback = (event: GameEvent) => void;
 
 type GameMessage = {
@@ -154,13 +154,38 @@ export default class Game {
     this.triggerEvent({ type: 'gameStarted', timestamp: this.time });
   }
 
-  movePlayer(dx: number, dy: number): boolean {
+  timeLapse(amount: number) {
+    this.player.time += amount;
+  }
+
+  timeUpdate() : boolean {
+    const step=this.player.time-this.time;
+    if (step<=0) return false;
+
+    this.advanceTime(step);
+    return true;
+  }
+
+  /**
+   * Advance game time by the given amount.
+   * @param step - The amount of time to advance.
+   */
+  advanceTime(step: number): void {
+    this.time += step;
+    const currentArea = this.getCurrentArea();
+    // currentArea.doTimeStep(step);
+  }
+  
+  doPlayerMove(dx: number, dy: number): boolean {
     if (this.status !== 'playing') {
       return false;
     }
     if (!this._player.position.areaId) {
       throw new Error("Player not in any area?");
     }
+
+    this.timeLapse(100);
+
     const currentArea = this.getCurrentArea();
     const newX = this._player.position.x + dx;
     const newY = this._player.position.y + dy;
@@ -430,10 +455,10 @@ export default class Game {
     }
   }
 
-  timeLapse(amount: number) {
-    this.time += amount;
-  }
 
+  /* Add entity to game or moves existing entity to new position. 
+  Any entity movement should go through this method to ensure data structures / indexes are correctly updated.
+  Returns entity ID */
   addEntity(entity: Entity, position?: Position): number {
     let entityId = entity.id;
     // If entity has no ID or ID is -1, assign a new one

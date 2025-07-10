@@ -10,11 +10,13 @@ export default class Entity {
   protected _position: Position;
   protected _id: number | null = null;
   public klass: EntityClass;
+  private _time: number = 0;
 
   constructor(klass: EntityClass) {
     this._position = { x: 0, y: 0 };
     this.klass=klass;
     this._id = -1;
+    this._time = 0;
   }
 
   setPosition(position: Position): void {
@@ -36,11 +38,20 @@ export default class Entity {
     this._id = value;
   }
 
+  get time(): number {
+    return this._time;
+  }
+
+  set time(value: number) {
+    this._time = value;
+  }
+
   toJSON() {
     return {
       position: this._position,
       id: this._id,
-      klass: this.klass
+      klass: this.klass,
+      time: this._time
     };
   }
 
@@ -48,6 +59,7 @@ export default class Entity {
     const entity = new Entity(obj.klass || EntityClass.NPC);
     entity._position = obj.position;
     entity._id = obj.id;
+    entity._time = obj.time ?? 0;
     return entity;
   }
 } 

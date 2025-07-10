@@ -15,6 +15,7 @@ export default function GameScreen() {
   // Utility to trigger a re-render after mutating the game
   const updateGame = (game: Game) => {
     gameRef.current = game;
+    game.timeUpdate();
     setVersion(v => v + 1);
   }
 
@@ -51,31 +52,31 @@ export default function GameScreen() {
       switch (event.key) {
         case '8':
         case 'ArrowUp':
-          game.movePlayer(0, -1);
+          game.doPlayerMove(0, -1);
           break;
         case '2':
         case 'ArrowDown':
-          game.movePlayer(0, 1);
+          game.doPlayerMove(0, 1);
           break;
         case '4':
         case 'ArrowLeft':
-          game.movePlayer(-1, 0);
+          game.doPlayerMove(-1, 0);
           break;
         case '6':
         case 'ArrowRight':
-          game.movePlayer(1, 0);
+          game.doPlayerMove(1, 0);
           break;
         case '7':
-          game.movePlayer(-1, -1);
+          game.doPlayerMove(-1, -1);
           break;
         case '9':
-          game.movePlayer(1, -1);
+          game.doPlayerMove(1, -1);
           break;
         case '1':
-          game.movePlayer(-1, 1);
+          game.doPlayerMove(-1, 1);
           break;
         case '3':
-          game.movePlayer(1, 1);
+          game.doPlayerMove(1, 1);
           break;
         case 'r':
         case 'R':

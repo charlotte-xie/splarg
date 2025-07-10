@@ -150,6 +150,7 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
         <div><b>Last Save:</b> {game.lastSaveTime ? new Date(game.lastSaveTime).toLocaleString() : 'Never'}</div>
         <div><b>Score:</b> {game.score}</div>
         <div><b>Game Time:</b> {game.time}</div>
+        <div><b>Player Time:</b> {game.player.time}</div>
         <div><b>Inventory:</b> {game.player.getInventory().length} items</div>
         <div><b>Player Pos:</b> {JSON.stringify(game.player.position)}</div>
         <div><b>Entity Count:</b> {game.entities.size}</div>
