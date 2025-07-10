@@ -3,12 +3,14 @@ import { doMobAction as aiDoMobAction } from './AI';
 import { Being } from './Being';
 import { EntityClass } from './Entity';
 
+const MAX_ACTION_TIME=1000;
+
 export default class Mob extends Being {
-  public aiState: AIState;
+  public ai: AIState;
 
   constructor() {
     super(EntityClass.MOB);
-    this.aiState = { type: 'Wandering' };
+    this.ai = { type: 'Wandering' };
   }
 
   toJSON() {
@@ -16,11 +18,13 @@ export default class Mob extends Being {
     return {
       ...base,
       klass: EntityClass.MOB,
+      ai: this.ai
     };
   }
 
   static fromJSON(obj: any): Mob {
     const mob = Object.assign(new Mob(), super.fromJSON(obj));
+    mob.ai = obj.ai;
     return mob;
   }
 
@@ -34,6 +38,13 @@ export default class Mob extends Being {
   }
 
   advanceTime(game: import('./Game').default): void {
+    // limit maximum time to MAX_ACTION_TIME
+    if (game.time > this.time+MAX_ACTION_TIME) {
+      this.time=game.time-MAX_ACTION_TIME;
+      return;
+    }
+
+    // loop until action time used
     while (game.time > this.time) {
       const used = this.doMobAction(game);
       if (used > 0) {
