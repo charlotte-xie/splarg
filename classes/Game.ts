@@ -173,7 +173,7 @@ export default class Game {
   advanceTime(step: number): void {
     this.time += step;
     const currentArea = this.getCurrentArea();
-    // currentArea.doTimeStep(step);
+    currentArea.advanceTime(this);
   }
   
   doPlayerMove(dx: number, dy: number): boolean {

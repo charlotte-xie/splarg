@@ -159,4 +159,16 @@ export default class Area {
     area.entities = new Set(obj.entities || []);
     return area;
   }
+
+  advanceTime(game: import('./Game').default): void {
+    for (const entityId of this.entities) {
+      const entity = game.getEntity(entityId);
+      if (!entity) continue;
+      if (entity.isPlayer()) continue;
+      const step = game.time - entity.time;
+      if (step > 0) {
+        entity.advanceTime(game);
+      }
+    }
+  }
 } 

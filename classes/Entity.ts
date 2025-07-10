@@ -46,6 +46,15 @@ export default class Entity {
     this._time = value;
   }
 
+  /**
+   * Advance time for this entity
+   * @param game 
+   */
+  advanceTime(game: import('./Game').default): void {
+    // Generic Entity does nothing, just waits
+    this.time=game.time;
+  }
+
   toJSON() {
     return {
       position: this._position,
@@ -61,5 +70,10 @@ export default class Entity {
     entity._id = obj.id;
     entity._time = obj.time ?? 0;
     return entity;
+  }
+
+  
+  isPlayer(): boolean {
+    return false;
   }
 } 

@@ -165,7 +165,4 @@ export class Being extends Entity {
     return being;
   }
 
-  isPlayer(): boolean {
-    return false;
-  }
 } 
