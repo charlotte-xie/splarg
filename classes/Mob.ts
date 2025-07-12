@@ -10,7 +10,7 @@ export default class Mob extends Being {
     super(EntityClass.MOB);
     this.ai = { 
       type: 'Wandering',
-      script: ['ai-move', 'wander']
+      script: ['ai-random',['ai-move','wander'],['ai-move','chase',0]]
     };
   }
 
