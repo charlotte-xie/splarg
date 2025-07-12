@@ -43,14 +43,14 @@ export default class Mob extends Being {
    * @param game 
    * @param timeStep - The amount of time to advance
    */
-  doAction(game: import('./Game').default, timeStep: number): void {
+  doAction(game: import('./Game').default): void {
+    var time = this.time;
+    
     // loop until action time used
-    while (timeStep > 0) {
-      const used = this.doMobAction(game);
-      if (used > 0) {
-        this.time += used;
-        timeStep -= used;
-      } else {
+    while (time < game.time) {
+      this.doMobAction(game);
+      const used=this.time-time;
+      if (used <=0) {
         // Mob decided to do nothing, or there was a logic error. Either way, time should be up to the present and exit loop
         this.time = game.time;
         break;

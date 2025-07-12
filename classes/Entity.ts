@@ -47,36 +47,10 @@ export default class Entity {
   }
 
   /**
-   * Advance time for this entity
-   * @param game 
-   */
-  advanceTime(game: import('./Game').default): void {
-    // Set this entity as active
-    game.activeEntity = this.id;
-    
-    // Calculate how much time to advance
-    const timeStep = game.time - this.time;
-    
-    // Call the entity's action method
-    try {
-      this.doAction(game, timeStep);
-    } catch (error) {
-      console.error(`Error in entity ${this.id} (${this.klass}) action:`, error);
-    }
-
-    // Ensure entity time is up to date
-    this.time = game.time;
-
-    // Reset active entity back to player
-    game.activeEntity = 0;
-  }
-
-  /**
    * Perform an action for this entity
    * @param game 
-   * @param timeStep - The amount of time to advance
    */
-  doAction(game: import('./Game').default, timeStep: number): void {
+  doAction(game: import('./Game').default): void {
     // Generic Entity does nothing
   }
 

@@ -2,7 +2,7 @@
 
 import type Game from './Game';
 import Mob from './Mob';
-import { registerScript, runEntityScript } from './Script';
+import { registerScript, runScript } from './Script';
 
 // Pure data type for AI state
 export type AIState = {
@@ -27,7 +27,7 @@ function wanderAction(g: Game, entity: any): number {
   const newY = y + dy;
   
   const blocker = area.getBlocker(newX, newY, g);
-  if (blocker) return 0; // Blocked, can't move
+  if (blocker) return 50; // Blocked, can't move 
   
   g.addEntity(entity, { areaId, x: newX, y: newY });
   return 100;
@@ -35,20 +35,15 @@ function wanderAction(g: Game, entity: any): number {
 
 // AI-move script that handles different AI movement actions
 function aiMoveScript(g: Game, ...args: any[]) {
-  if (args.length < 2) {
-    throw new Error('ai-move requires entity ID and action type');
+  if (args.length < 1) {
+    throw new Error('ai-move requires action type');
   }
   
-  const entityId = args[0];
-  const actionType = args[1];
+  const actionType = args[0];
   
-  if (typeof entityId !== 'number') {
-    throw new Error('ai-move first arg must be entity ID (number)');
-  }
-  
-  const entity = g.getEntity(entityId);
+  const entity = g.getEntity(g.activeEntity);
   if (!entity) {
-    throw new Error(`Entity with ID ${entityId} not found`);
+    throw new Error(`Active entity with ID ${g.activeEntity} not found`);
   }
   
   if (actionType === 'wander') {
@@ -64,7 +59,7 @@ registerScript('ai-move', aiMoveScript);
 export function doMobAction(game: Game, mob: Mob): number {
   // If AIState has a script, run it
   if (mob.ai.script) {
-    return runEntityScript(game, mob, mob.ai.script) || 0;
+    return runScript(game, mob.ai.script) || 0;
   }
   
   // Fallback to old switch-based logic

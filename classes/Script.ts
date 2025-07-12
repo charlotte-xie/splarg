@@ -13,8 +13,8 @@ export type EntityScript = (g: Game, e: Entity, ...args: any[]) => any;
 
 // Exported global scripts record, initialized with an example script
 export const scripts: Record<string, Script> = {
-  example: (g: Game, ...args: any[]) => {
-    console.log('Example script called with game:', g, 'and args:', args);
+  logExample: (g: Game, ...args: any[]) => {
+    console.log('Example logging script called with args:', args);
     return 'example result';
   }
 };
@@ -38,45 +38,25 @@ export function runScript(game: Game, args: any[]): any {
   const firstArg = args[0];
   const restArgs = args.slice(1);
 
-  if (typeof firstArg === 'number') {
-    // First arg is a number - get entity by ID
-    const entity = game.getEntity(firstArg);
-    if (!entity) {
-      console.warn(`Entity with ID ${firstArg} not found`);
-      return;
-    }
-    return entity;
-  } else if (typeof firstArg === 'string') {
+  if (typeof firstArg === 'string') {
     // First arg is a string - run script by name
     const script = getScript(firstArg);
     if (!script) {
-      console.warn(`Script '${firstArg}' not found`);
-      return;
+      throw new Error(`Script not found: ${firstArg}`);
     }
     return script(game, ...restArgs);
-  } else {
-    throw new Error('First argument must be a number (entity ID) or string (script name)');
-  }
-}
-
-// Run a script for a specific entity, automatically passing the entity ID
-export function runEntityScript(game: Game, entity: Entity, scriptArgs: any[]): any {
-  if (scriptArgs.length === 0) {
-    throw new Error('runEntityScript called with no script args');
-  }
-
-  const firstArg = scriptArgs[0];
-  const restArgs = scriptArgs.slice(1);
-
-  if (typeof firstArg === 'string') {
-    // First arg is a script name - run it with entity ID prepended
-    const script = getScript(firstArg);
-    if (!script) {
-      console.warn(`Script '${firstArg}' not found`);
-      return;
+  } else if (Array.isArray(firstArg)) {
+    // First arg is an array - run it as a script and recursively call runScript with the result
+    const result = runScript(game, firstArg);
+    if (restArgs.length > 0) {
+      // If there are more args, recursively call runScript with the result and remaining args
+      return runScript(game, [result, ...restArgs]);
     }
-    return script(game, entity.id, ...restArgs);
+    return result;
+  } else if (typeof firstArg === 'function') {
+    // First arg is a function - run it as a script
+    return firstArg(game, ...restArgs);
   } else {
-    throw new Error('First argument must be a string (script name)');
+    throw new Error('First argument must be a string (script name), array (script), or function');
   }
 } 
