@@ -25,9 +25,9 @@ function wanderAction(g: Game, entity: any): number {
   
   const newX = x + dx;
   const newY = y + dy;
-  const tile = area.getTile(newX, newY);
   
-  if (!tile || !tile.isWalkable()) return 0;
+  const blocker = area.getBlocker(newX, newY, g);
+  if (blocker) return 0; // Blocked, can't move
   
   g.addEntity(entity, { areaId, x: newX, y: newY });
   return 100;
@@ -89,8 +89,10 @@ function wanderingAction(game: Game, mob: Mob): number {
   if (dx === 0 && dy === 0) return 0;
   const newX = x + dx;
   const newY = y + dy;
-  const tile = area.getTile(newX, newY);
-  if (!tile || !tile.isWalkable()) return 0;
+  
+  const blocker = area.getBlocker(newX, newY, game);
+  if (blocker) return 50; // a small wait, indecision choosing direction
+  
   game.addEntity(mob, { areaId, x: newX, y: newY });
   return 100;
 }

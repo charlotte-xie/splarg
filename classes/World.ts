@@ -37,8 +37,8 @@ export default class World {
     for (let tries = 0; tries < 100 && !placed; tries++) {
       const x = 1 + Math.floor(Math.random() * (area.type.width - 2));
       const y = 1 + Math.floor(Math.random() * (area.type.height - 2));
-      const tile = area.getTile(x, y);
-      if (tile && tile.isWalkable() && tile.entities.size === 0) {
+      const blocker = area.getBlocker(x, y, game);
+      if (!blocker) {
         const mob = new Mob();
         game.addEntity(mob, { areaId, x, y });
         placed = true;
@@ -142,14 +142,12 @@ export default class World {
   ensurePlayerOnWalkableTile(playerPosition: Position): Position {
     if (!playerPosition.areaId) return playerPosition;
     const currentArea = this.getArea(playerPosition.areaId);
-    const currentTile = currentArea.getTile(playerPosition.x, playerPosition.y);
-    if (currentTile && currentTile.isWalkable()) {
+    if (currentArea.isWalkable(playerPosition.x, playerPosition.y)) {
       return playerPosition;
     }
     for (let y = 1; y < currentArea.type.height - 1; y++) {
       for (let x = 1; x < currentArea.type.width - 1; x++) {
-        const tile = currentArea.getTile(x, y);
-        if (tile && tile.isWalkable()) {
+        if (currentArea.isWalkable(x, y)) {
           return { areaId: currentArea.id, x, y };
         }
       }

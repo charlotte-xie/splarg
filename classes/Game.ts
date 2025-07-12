@@ -196,11 +196,13 @@ export default class Game {
       // TODO: move to new area
       return false;
     }
-    const targetTile = currentArea.getTile(newX, newY);
-    if (!targetTile || !targetTile.isWalkable()) {
-      this.addMessage("Blocked by " +(targetTile?targetTile.getDescription():"the void"))
+    
+    const blocker = currentArea.getBlocker(newX, newY, this);
+    if (blocker) {
+      this.addMessage(`Blocked by ${blocker}`);
       return false;
     }
+    
     this.addEntity(this._player, {areaId: currentArea.id, x:newX,y:newY});
     currentArea.visited = true;
     this.triggerEvent({ 
