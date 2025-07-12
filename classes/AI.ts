@@ -12,7 +12,7 @@ export type AIState = {
 };
 
 // Wandering movement logic
-function wanderAction(g: Game, entity: any): number {
+function wanderAction(g: Game, entity: any) {
   const areaId = entity.position.areaId;
   if (!areaId) return 0;
   
@@ -26,20 +26,21 @@ function wanderAction(g: Game, entity: any): number {
   const newX = x + dx;
   const newY = y + dy;
   
+  entity.time+=100;
+
   const blocker = area.getBlocker(newX, newY, g);
-  if (blocker) return 50; // Blocked, can't move 
+  if (blocker) return; // Blocked, can't move 
   
   g.addEntity(entity, { areaId, x: newX, y: newY });
-  return 100;
 }
 
 // AI-move script that handles different AI movement actions
 function aiMoveScript(g: Game, ...args: any[]) {
-  if (args.length < 1) {
-    throw new Error('ai-move requires action type');
+  if (args.length < 2) {
+    throw new Error('ai-move requires action type is script '+args);
   }
   
-  const actionType = args[0];
+  const actionType = args[1];
   
   const entity = g.getEntity(g.activeEntity);
   if (!entity) {
@@ -47,7 +48,8 @@ function aiMoveScript(g: Game, ...args: any[]) {
   }
   
   if (actionType === 'wander') {
-    return wanderAction(g, entity);
+    wanderAction(g, entity);
+    return args;
   }
   
   throw new Error(`Unknown ai-move action type: ${actionType}`);
@@ -56,45 +58,24 @@ function aiMoveScript(g: Game, ...args: any[]) {
 // Register AI scripts
 registerScript('ai-move', aiMoveScript);
 
-export function doMobAction(game: Game, mob: Mob): number {
+export function doMobAction(game: Game, mob: Mob) {
   // If AIState has a script, run it
   if (mob.ai.script) {
-    return runScript(game, mob.ai.script) || 0;
-  }
+    // AI script should return an upadtes cript, possibly the same
+    mob.ai.script= runScript(game, mob.ai.script);
+  } else {
   
-  // Fallback to old switch-based logic
-  switch (mob.ai.type) {
-    case 'Wandering':
-      return wanderingAction(game, mob);
-    case 'AttackPlayer':
-      return attackPlayerAction(game, mob);
-    default:
-      return 0;
+    // Fallback to old switch-based logic
+    switch (mob.ai.type) {
+      case 'Wandering':
+        return wanderAction(game, mob);
+      case 'AttackPlayer':
+        return attackPlayerAction(game, mob);
+    }
   }
 } 
 
-// Wandering AI logic (legacy)
-function wanderingAction(game: Game, mob: Mob): number {
-  const areaId = mob.position.areaId;
-  if (!areaId) return 0;
-  const area = game.world.getArea(areaId);
-  const { x, y } = mob.position;
-  const dx = Math.floor(Math.random() * 3) - 1;
-  const dy = Math.floor(Math.random() * 3) - 1;
-  if (dx === 0 && dy === 0) return 0;
-  const newX = x + dx;
-  const newY = y + dy;
-  
-  const blocker = area.getBlocker(newX, newY, game);
-  if (blocker) return 50; // a small wait, indecision choosing direction
-  
-  game.addEntity(mob, { areaId, x: newX, y: newY });
-  return 100;
-}
-
 // AttackPlayer AI logic (placeholder)
-function attackPlayerAction(game: Game, mob: Mob): number {
+function attackPlayerAction(game: Game, mob: Mob) {
   // TODO: Implement logic to move toward or attack the player
-  // For now, just wait
-  return 0;
 }

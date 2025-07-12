@@ -30,15 +30,6 @@ export default class Mob extends Being {
   }
 
   /**
-   * Take an individual Mob action
-   * @param game 
-   * @returns time used
-   */
-  doMobAction(game: import('./Game').default): number {
-    return aiDoMobAction(game, this);
-  }
-
-  /**
    * Perform actions for this mob
    * @param game 
    * @param timeStep - The amount of time to advance
@@ -48,13 +39,14 @@ export default class Mob extends Being {
     
     // loop until action time used
     while (time < game.time) {
-      this.doMobAction(game);
+      aiDoMobAction(game,this);
       const used=this.time-time;
       if (used <=0) {
         // Mob decided to do nothing, or there was a logic error. Either way, time should be up to the present and exit loop
-        this.time = game.time;
+        this.time = Math.max(this.time,game.time);
         break;
       }
+      time=this.time; // update time for current activity
     }
   }
 } 

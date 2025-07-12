@@ -36,7 +36,6 @@ export function runScript(game: Game, args: any[]): any {
   }
 
   const firstArg = args[0];
-  const restArgs = args.slice(1);
 
   if (typeof firstArg === 'string') {
     // First arg is a string - run script by name
@@ -44,19 +43,8 @@ export function runScript(game: Game, args: any[]): any {
     if (!script) {
       throw new Error(`Script not found: ${firstArg}`);
     }
-    return script(game, ...restArgs);
-  } else if (Array.isArray(firstArg)) {
-    // First arg is an array - run it as a script and recursively call runScript with the result
-    const result = runScript(game, firstArg);
-    if (restArgs.length > 0) {
-      // If there are more args, recursively call runScript with the result and remaining args
-      return runScript(game, [result, ...restArgs]);
-    }
-    return result;
-  } else if (typeof firstArg === 'function') {
-    // First arg is a function - run it as a script
-    return firstArg(game, ...restArgs);
+    return script(game, ...args);
   } else {
-    throw new Error('First argument must be a string (script name), array (script), or function');
+    throw new Error('First argument must be a string (script name) but was '+typeof firstArg);
   }
 } 
