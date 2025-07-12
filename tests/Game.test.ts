@@ -134,7 +134,7 @@ describe('Game serialization', () => {
     game.initialise();
     const pt = game.getCurrentArea().getTileFor(game.player);
     if (!pt) throw new Error('Tile is null');
-    expect(pt.entities.size).toBe(1);
+    expect(pt.entities.length).toBe(1);
     
     // First serialization
     const firstJson = game.toJSON();

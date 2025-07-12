@@ -129,9 +129,9 @@ export default class Area {
     if (!tile.type.walkable) return tile.type.description;
     
     // Check if there are any entities blocking the tile (only if game is provided)
-    if (game && tile.entities.size > 0) {
+    if (game && tile.entities.length > 0) {
       // Get the first entity (we could enhance this to return multiple blockers)
-      const entityId = Array.from(tile.entities)[0];
+      const entityId = tile.entities[0];
       const entity = game.getEntity(entityId);
       if (entity) {
         return entity.klass.toLowerCase(); // Return entity type as blocker

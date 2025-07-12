@@ -53,7 +53,7 @@ export default function TileMap({ game, onUpdate, version }: TileMapProps) {
     }
 
     // Draw entities on this tile
-    if (tile.entities && tile.entities.size > 0) {
+    if (tile.entities && tile.entities.length > 0) {
       for (const entityId of tile.entities) {
         const entity = game.entities.get(entityId);
         if (entity) {
@@ -188,11 +188,11 @@ export default function TileMap({ game, onUpdate, version }: TileMapProps) {
           <p>Type: {hoveredTile.tile.name}</p>
           <p>Walkable: {hoveredTile.tile.walkable ? 'Yes' : 'No'}</p>
           <p>Description: {hoveredTile.tile.description}</p>
-          {hoveredTile.tile.entities && hoveredTile.tile.entities.size > 0 && (
+          {hoveredTile.tile.entities && hoveredTile.tile.entities.length > 0 && (
             <div>
               <b>Entities:</b>
               <ul style={{margin:0,paddingLeft:18}}>
-                {[...hoveredTile.tile.entities].map(entityId => {
+                {hoveredTile.tile.entities.map((entityId: number) => {
                   const entity = game.entities.get(entityId);
                   if (!entity) return null;
                   let label = '';

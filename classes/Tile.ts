@@ -4,12 +4,12 @@ import { TILE_TYPES, TileType } from './TileType';
 export default class Tile {
   public type: TileType;
   public items: Item[];
-  public entities: Set<number>;
+  public entities: number[];
 
   constructor(type: TileType) {
     this.type = type;
     this.items = [];
-    this.entities = new Set();
+    this.entities = [];
   }
 
   isWalkable(): boolean {
@@ -47,7 +47,7 @@ export default class Tile {
 
   toJSON() {
     const hasItems = this.items && this.items.length > 0;
-    const hasEntities = this.entities && this.entities.size > 0;
+    const hasEntities = this.entities && this.entities.length > 0;
     if (!hasItems && !hasEntities) {
       return this.type.id;
     }
@@ -55,10 +55,10 @@ export default class Tile {
       return [this.type.id, this.items.map(item => item.toJSON())];
     }
     if (hasItems && hasEntities) {
-      return [this.type.id, this.items.map(item => item.toJSON()), Array.from(this.entities)];
+      return [this.type.id, this.items.map(item => item.toJSON()), this.entities];
     }
     // !hasItems && hasEntities
-    return [this.type.id, [], Array.from(this.entities)];
+    return [this.type.id, [], this.entities];
   }
 
   static fromJSON(obj: any): Tile {
@@ -72,7 +72,7 @@ export default class Tile {
         tile.items = itemsArr.map((itemObj: any) => Item.fromJSON(itemObj));
       }
       if (Array.isArray(entitiesArr) && entitiesArr.length > 0) {
-        tile.entities = new Set(entitiesArr);
+        tile.entities = entitiesArr;
       }
       return tile;
     } else {

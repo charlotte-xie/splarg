@@ -489,10 +489,12 @@ export default class Game {
       const area = this.world.areas.get(entity.position.areaId);
       if (area) {
         area.entities.add(entityId);
-        // Add to tile's entities set
+        // Add to tile's entities array
         const tile = area.getTile(entity.position.x, entity.position.y);
         if (tile) {
-          tile.entities.add(entityId);
+          if (!tile.entities.includes(entityId)) {
+            tile.entities.push(entityId);
+          }
         }
       }
     } 
@@ -510,10 +512,13 @@ export default class Game {
       if (entity.position.areaId) {
         const area = this.world.getArea(entity.position.areaId);
         area.entities.delete(entityId);
-        // Remove from tile's entities set
+        // Remove from tile's entities array
         const tile = area.getTile(entity.position.x, entity.position.y);
         if (tile) {
-          tile.entities.delete(entityId);
+          const index = tile.entities.indexOf(entityId);
+          if (index > -1) {
+            tile.entities.splice(index, 1);
+          }
         }
       }
 
