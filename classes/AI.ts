@@ -10,6 +10,8 @@
 
 import type Game from './Game';
 import Mob from './Mob';
+import type { PathFindTarget } from './PathFind';
+import { findPath } from './PathFind';
 import { registerScript, runScript } from './Script';
 
 // Pure data type for AI state
@@ -30,7 +32,7 @@ function moveAction(g: Game, entity: any, targetX: number, targetY: number): boo
   const dx = Math.sign(targetX - x);
   const dy = Math.sign(targetY - y);
   
-  if (dx === 0 && dy === 0) return false; // No movement needed
+  if (dx === 0 && dy === 0) return true; // Successful, but no movement needed
   
   const area = g.world.getArea(areaId);
   const newX = x + dx;
@@ -68,10 +70,6 @@ registerScript('ai-approach', (g: Game, ...args: any[]) => {
   const [_, targetEntityId, maxDistance = 1] = args;
   
   const entity = g.getActiveEntity();
-  if (!entity) {
-    throw new Error(`Active entity not found`);
-  }
-  
   const targetEntity = g.getEntity(targetEntityId);
   if (!targetEntity) {
     throw new Error(`Target entity with ID ${targetEntityId} not found`);
@@ -152,6 +150,7 @@ registerScript('ai-plan', (g: Game, ...args: any[]) => {
 });
 
 // ["ai-path" [x1 y1] [x2 y2] [x3 y3] ...] moves to each destination in sequence
+// returns null if stopped at any point
 registerScript('ai-path', (g: Game, ...args: any[]) => {
   if (args.length < 2) {
     // if no destination, the path is complete
@@ -199,6 +198,48 @@ registerScript('ai-path', (g: Game, ...args: any[]) => {
   
   // Still moving towards destination, continue with same path
   return args;
+});
+
+// ["ai-pathfind" target proximity plan?] uses pathfinding to generate and execute path plans
+registerScript('ai-pathfind', (g: Game, ...args: any[]) => {
+  if (args.length < 2) {
+    throw new Error('ai-pathfind requires target and proximity');
+  }
+  
+  const entity = g.getActiveEntity();
+  const areaId=entity.getAreaId();
+  
+  const [target, proximity, plan] = args;
+
+  // If we have a plan, try to execute it
+  if (plan) {
+    const planResult = runScript(g, plan);
+    
+    // If plan succeeds (returns non-null), continue with the updated plan
+    if (planResult !== null) {
+      return ['ai-pathfind', target, proximity, planResult];
+    }
+    // If plan fails fall through to generate new plan
+  }
+  
+  // No plan or plan failed - generate new plan using pathfinding
+  const currentPos = {
+    x: entity.position.x,
+    y: entity.position.y,
+    areaId: areaId
+  };
+  
+  const path = findPath(g, currentPos, target as PathFindTarget, proximity);
+  
+  if (path.length === 0) {
+    return null; // Already at target or pathfinding failed
+  }
+  
+  // Create ai-path script with the found path
+  const pathScript = ['ai-path', ...path];
+  
+  // Return the script with the new plan
+  return ['ai-pathfind', target, proximity, pathScript];
 });
 
 // ["ai-random" script1 script2 script3 ...] selects a random script from those specified each time it is run.

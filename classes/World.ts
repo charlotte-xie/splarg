@@ -1,10 +1,12 @@
-import Area, { AREA_TYPES } from './Area';
+import Area, { AREA_TYPES, AreaID } from './Area';
 import type Game from './Game';
 import Mob from './Mob';
 import Tile from './Tile';
 import { TILE_TYPES, TileType } from './TileType';
 
-export type Position = { x: number; y: number; areaId?: string };
+export type Position = { x: number; y: number; areaId?: AreaID };
+export type Direction = [dx: number, dy: number];
+export type Coord = [x: number, y: number];
 
 export default class World {
   public areas: Map<string, Area>;
@@ -125,7 +127,7 @@ export default class World {
     return TILE_TYPES.grass;
   }
 
-  getArea(areaId: string): Area {
+  getArea(areaId: AreaID): Area {
     const area = this.areas.get(areaId);
     if (!area) {
       throw new Error(`Area ${areaId} does not exist`);

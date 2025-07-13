@@ -146,10 +146,7 @@ export default class Game {
   }
 
   getCurrentArea(): Area {
-    if (!this._player.position.areaId) {
-      throw new Error('Player has no areaId');
-    }
-    return this.world.getArea(this._player.position.areaId);
+    return this.world.getArea(this._player.getAreaId());
   }
 
   startGame(): void {
@@ -537,7 +534,12 @@ export default class Game {
     }
   }
 
-  getActiveEntity(): Entity | null {
-    return this.entities.get(this.activeEntityID) || null;
+  getActiveEntity(): Entity {
+
+    const entity=this.entities.get(this.activeEntityID);
+    if (!entity) {
+      throw new Error(`Active entity with ID ${this.activeEntityID} not found`);
+    }
+    return entity;
   }
 } 

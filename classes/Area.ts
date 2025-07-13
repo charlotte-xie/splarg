@@ -1,5 +1,7 @@
 import Tile from './Tile';
 
+export type AreaID=string;
+
 // AreaType definition and AREA_TYPES constant
 export const AREA_TYPES = {
   GRASSLANDS: {
@@ -60,7 +62,7 @@ export const AREA_TYPES = {
 };
 
 export class AreaType {
-  public id: string;
+  public id: AreaID;
   public name: string;
   public description: string;
   public width: number;

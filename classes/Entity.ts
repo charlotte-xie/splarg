@@ -1,4 +1,7 @@
+import { AreaID } from './Area';
 import type { Position } from './World';
+
+export type EntityID = number;
 
 export enum EntityClass {
   PLAYER = 'Player',
@@ -44,6 +47,13 @@ export default class Entity {
 
   set time(value: number) {
     this._time = value;
+  }
+
+  getAreaId(): AreaID {
+    if (!this._position.areaId) {
+      throw new Error('Entity has no area ID');
+    }
+    return this._position.areaId;
   }
 
   /**
