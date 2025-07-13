@@ -1,10 +1,12 @@
 // AI.ts
 
-// AI scripts follow a pattern of returning:
+// Plan scripts follow a pattern of returning:
 // - the continuation script if still active - can be regarded as a "true" result
-// - null if the action is complete or failed
+// - true if the script succeeded
+// - false if the script failed with no point retrying (abandoned)
+// - null if the script failed but might work later
 //
-// Goal scripts are intented to generate a plan
+// Goal scripts are used to generate a plan
 // - A concrete ai-script if a plan is created
 // - null if no sensible plan can be generated
 
@@ -20,6 +22,9 @@ export type AIState = {
   script?: any[]; // Array of script arguments for runEntityScript
   // Add more AI types and properties as needed
 };
+
+export type Plan = [string, ...any[]];
+export type PlanResult = true | false | null | Plan;
 
 // Generic movement logic. Returns true if movement succeeded
 function moveAction(g: Game, entity: any, targetX: number, targetY: number): boolean {
@@ -116,24 +121,24 @@ registerScript('goals', (g: Game, ...args: any[]) => {
   return null;
 });
 
-// ["ai-plan" goal plan?] executes plan if it exists, falls back to goal to produce a new plan if plan fails
-registerScript('ai-plan', (g: Game, ...args: any[]) => {
+// ["plan" goal plan?] executes plan if it exists, falls back to goal to produce a new plan if plan fails
+registerScript('plan', (g: Game, ...args: any[]) => {
   if (args.length < 2) {
-    throw new Error('ai-plan requires at least a goal script');
+    throw new Error('plan requires at least a goal script');
   }
   
   const goal = args[1];
-  const plan = args[2]; // Optional plan
+  const plan = args[2]; // Optional existing planplan
   
   // If we have a plan, try to execute it
   if (plan) {
     const planResult = runScript(g, plan);
     
-    // If plan succeeds (returns non-null), continue with the same plan
-    if (planResult !== null) {
-      return ['ai-plan', goal, planResult];
+    // If doesn't terminate, continue with the same plan, or treturn true to indicate success
+    if (planResult) {
+      if (planResult==true) return true;
+      return ['plan', goal, planResult];
     }
-    
     // If plan fails (returns null), fall through to generate new plan
   }
   
@@ -184,12 +189,12 @@ registerScript('ai-path', (g: Game, ...args: any[]) => {
   const currentX = entity.position.x;
   const currentY = entity.position.y;
   
-  if (Math.abs(currentX - targetX) <= 1 && Math.abs(currentY - targetY) <= 1) {
+  if (Math.abs(currentX - targetX)==0 && Math.abs(currentY - targetY)==0) {
     // Reached the destination, remove it from the path
     const remainingDestinations = args.slice(2);
     
     if (remainingDestinations.length === 0) {
-      return null; // Path complete
+      return true; // Path complete
     }
     
     // Return new path script with first destination removed

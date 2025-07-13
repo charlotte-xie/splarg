@@ -19,7 +19,7 @@ export default function Avatar({
   return (
     <div 
       style={{ 
-        width: '250px', 
+        width: '180px', 
         aspectRatio: '1 / 1',
         display: 'flex',
         alignItems: 'center',
