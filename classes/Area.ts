@@ -188,9 +188,9 @@ export default class Area {
       if (entity.isPlayer()) continue;
       const step = game.time - entity.time;
       if (step > 0) {
-        game.activeEntity = entityId;
+        game.activeEntityID = entityId;
         entity.doAction(game);
-        game.activeEntity = 0;
+        game.activeEntityID = 0;
       }
     }
   }

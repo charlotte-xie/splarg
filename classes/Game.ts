@@ -69,7 +69,7 @@ export default class Game {
   public messages: GameMessage[];
   public entities: Map<number, Entity>;
   public entityIdCounter: number;
-  public activeEntity: number; // ID of the currently active entity (0 = player)
+  public activeEntityID: number; // ID of the currently active entity (0 = player)
 
   constructor() {
     this.status = 'ready';
@@ -93,7 +93,7 @@ export default class Game {
     this.lastSaveTime = null;
     this.entities = new Map();
     this.entityIdCounter = 1;
-    this.activeEntity = 0; // Player is initially active
+    this.activeEntityID = 0; // Player is initially active
     
     this.events = [];
     this.listeners = new Map();
@@ -114,7 +114,7 @@ export default class Game {
     this._player=new Player();
     this.addEntity(this._player);
     this.entityIdCounter = 1;
-    this.activeEntity = 0; // Reset to player
+    this.activeEntityID = 0; // Reset to player
 
     this.time = 0;
     this.world = new World();
@@ -292,7 +292,7 @@ export default class Game {
       messages: this.messages,
       entities: Array.from(this.entities.entries()).map(([id, entity]) => [id, entity.toJSON()]),
       entityIdCounter: this.entityIdCounter,
-      activeEntity: this.activeEntity
+      activeEntity: this.activeEntityID
     };
   }
 
@@ -306,7 +306,7 @@ export default class Game {
     game.time = obj.time;
     game.lastSaveTime = obj.lastSaveTime;
     game.messages = obj.messages || [];
-    game.activeEntity = obj.activeEntity || 0;
+    game.activeEntityID = obj.activeEntity || 0;
     
     // Load entities map first
     var highestID=0;
@@ -535,5 +535,9 @@ export default class Game {
     } else {
       return this.entities.get(idOrEntity.id) || null;
     }
+  }
+
+  getActiveEntity(): Entity | null {
+    return this.entities.get(this.activeEntityID) || null;
   }
 } 
