@@ -1,12 +1,15 @@
 import Item from './Item';
+import Thing from './Thing';
 import { TILE_TYPES, TileType } from './TileType';
+import Utils from './Utils';
 
-export default class Tile {
+export default class Tile extends Thing {
   public type: TileType;
   public items: Item[];
   public entities: number[];
 
   constructor(type: TileType) {
+    super();
     this.type = type;
     this.items = [];
     this.entities = [];
@@ -30,6 +33,20 @@ export default class Tile {
 
   getDescription(): string {
     return this.type.description;
+  }
+
+  getName(): string {
+    return this.type.name;
+  }
+
+  getAName(): string {
+    const name = this.getName();
+    const article = Utils.startsWithVowelSound(name) ? 'an' : 'a';
+    return `${article} ${name}`;
+  }
+
+  getTheName(): string {
+    return `the ${this.type.name}`;
   }
 
   addItem(item: Item): void {

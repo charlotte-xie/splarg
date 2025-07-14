@@ -16,6 +16,7 @@ export interface Option {
   label: string;
   hoverText: string;
   disabled?: boolean;
+  compelled?: string | null; // when non-null the palyer is compelled to take this option (or another compelled option, if any)
 }
 
 export class Activity {

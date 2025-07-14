@@ -1,3 +1,4 @@
+import Item from '../classes/Item';
 import { ItemType, WEAR_LAYERS, WEAR_TYPES } from '../classes/ItemType';
 
 describe('ItemType Defaults', () => {
@@ -94,5 +95,55 @@ describe('ItemType Defaults', () => {
     });
     expect(stackableWearable.stackable).toBe(true);
     expect(stackableWearable.wearable).toBe(true);
+  });
+});
+
+describe('Item Name Methods', () => {
+  test('should return correct basic name', () => {
+    const potion = new Item('healthPotion', 1);
+    const sword = new Item('ironSword', 1);
+    
+    expect(potion.getName()).toBe('health potion');
+    expect(sword.getName()).toBe('iron sword');
+  });
+
+  test('should return correct indefinite article names', () => {
+    const potion = new Item('healthPotion', 1);
+    const sword = new Item('ironSword', 1);
+    const manaPotion = new Item('manaPotion', 1);
+    
+    expect(potion.getAName()).toBe('a health potion');
+    expect(sword.getAName()).toBe('an iron sword');
+    expect(manaPotion.getAName()).toBe('a mana potion');
+  });
+
+  test('should return correct definite article names', () => {
+    const potion = new Item('healthPotion', 1);
+    const sword = new Item('ironSword', 1);
+    
+    expect(potion.getTheName()).toBe('the health potion');
+    expect(sword.getTheName()).toBe('the iron sword');
+  });
+
+  test('should handle multiple items correctly', () => {
+    const potions = new Item('healthPotion', 3);
+    const swords = new Item('ironSword', 2);
+    
+    expect(potions.getAName()).toBe('3 health potion');
+    expect(swords.getAName()).toBe('2 iron sword');
+    expect(potions.getTheName()).toBe('the 3 health potion');
+    expect(swords.getTheName()).toBe('the 2 iron sword');
+  });
+
+  test('should handle vowel sound exceptions', () => {
+    const university = new ItemType({
+      id: 'university',
+      name: 'University',
+      description: 'A university',
+      symbol: '🏛️'
+    });
+    const item = new Item(university, 1);
+    
+    expect(item.getAName()).toBe('a University'); // 'u' sounds like 'y'
   });
 }); 

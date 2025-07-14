@@ -1,4 +1,6 @@
 import { AreaID } from './Area';
+import Thing from './Thing';
+import Utils from './Utils';
 import type { Position } from './World';
 
 export type EntityID = number;
@@ -9,15 +11,16 @@ export enum EntityClass {
   MOB = 'Mob'
 }
 
-export default class Entity {
+export default class Entity extends Thing {
   protected _position: Position;
   protected _id: number | null = null;
   public klass: EntityClass;
   private _time: number = 0;
 
   constructor(klass: EntityClass) {
+    super();
     this._position = { x: 0, y: 0 };
-    this.klass=klass;
+    this.klass = klass;
     this._id = -1;
     this._time = 0;
   }
@@ -66,6 +69,7 @@ export default class Entity {
 
   toJSON() {
     return {
+      ...super.toJSON(),
       position: this._position,
       id: this._id,
       klass: this.klass,
@@ -81,8 +85,21 @@ export default class Entity {
     return entity;
   }
 
-  
   isPlayer(): boolean {
     return false;
+  }
+
+  getName(): string {
+    return this.klass;
+  }
+
+  getAName(): string {
+    const name = this.getName();
+    const article = Utils.startsWithVowelSound(name) ? 'an' : 'a';
+    return `${article} ${name}`;
+  }
+
+  getTheName(): string {
+    return `the ${this.klass}`;
   }
 } 

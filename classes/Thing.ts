@@ -1,0 +1,31 @@
+// Thing.ts
+
+export default abstract class Thing {
+  constructor() {
+    // Base constructor
+  }
+
+  /**
+   * Get the base name name of the thing
+   */
+  abstract getName(): string;
+
+  /**
+   * Get the indefinite name of the thing, e.g. a tree
+   */
+  abstract getAName(): string;
+
+  /**
+   * Get the definite name of the thing, e.g. the tree
+   */
+  abstract getTheName(): string;
+
+  toJSON() {
+    // Base implementation resturns an empty map. Subclasses should call this and add their own properties.
+    return {};
+  }
+
+  static fromJSON(obj: any): Thing {
+    throw new Error('fromJSON must be implemented by subclasses');
+  }
+} 

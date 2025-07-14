@@ -70,6 +70,7 @@ export default class Game {
   public entities: Map<number, Entity>;
   public entityIdCounter: number;
   public activeEntityID: number; // ID of the currently active entity (0 = player)
+  public compelled: string | null;
 
   constructor() {
     this.status = 'ready';
@@ -94,6 +95,7 @@ export default class Game {
     this.entities = new Map();
     this.entityIdCounter = 1;
     this.activeEntityID = 0; // Player is initially active
+    this.compelled = null;
     
     this.events = [];
     this.listeners = new Map();

@@ -1,11 +1,14 @@
 import { ITEM_TYPES, ItemType, WearLayer, WearType, createWearLocations } from './ItemType';
+import Thing from './Thing';
+import Utils from './Utils';
 
-export default class Item {
+export default class Item extends Thing {
   public number: number;
   public type: ItemType;
   public props: Record<string, any>;
 
   constructor(typeOrId: ItemType | string, quantity: number = 1, props: Record<string, any> = {}) {
+    super();
     // If first parameter is a string, look up the item type
     if (typeof typeOrId === 'string') {
       const itemType = ITEM_TYPES[typeOrId];
@@ -101,8 +104,25 @@ export default class Item {
     return this.number > 1;
   }
 
+  getAName(): string {
+    if (this.number > 1) {
+      return `${this.number} ${this.getName()}`;
+    }
+    const name = this.getName();
+    const article = Utils.startsWithVowelSound(name) ? 'an' : 'a';
+    return `${article} ${name}`;
+  }
+
+  getTheName(): string {
+    if (this.number > 1) {
+      return `the ${this.number} ${this.type.name}`;
+    }
+    return `the ${this.type.name}`;
+  }
+
   toJSON() {
     return {
+      ...super.toJSON(),
       type: this.type.id,
       number: this.number,
       props: this.props

@@ -291,4 +291,21 @@ describe('Mob AI Behavior', () => {
       findPath(game, startPos, targetPos, 0);
     }).toThrow('Start and target positions must be in the same area');
   });
+});
+
+describe('Mob Name Methods', () => {
+  test('should return correct basic name', () => {
+    const mob = new Mob();
+    expect(mob.getName()).toBe('Mob');
+  });
+
+  test('should return correct indefinite article name', () => {
+    const mob = new Mob();
+    expect(mob.getAName()).toBe('a Mob');
+  });
+
+  test('should return correct definite article name', () => {
+    const mob = new Mob();
+    expect(mob.getTheName()).toBe('the Mob');
+  });
 }); 
