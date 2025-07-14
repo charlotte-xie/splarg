@@ -51,8 +51,9 @@ export class ItemType {
   public locations?: WearType[];
   public restricted?: boolean;
   public allowsAccess: boolean;
+  public pluralName?: string;
 
-  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false, allowsAccess = true }: {
+  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false, allowsAccess = true, pluralName }: {
     id: string;
     name: string;
     description: string;
@@ -63,6 +64,7 @@ export class ItemType {
     locations?: WearType[];
     restricted?: boolean;
     allowsAccess?: boolean;
+    pluralName?: string;
   }) {
     this.id = id;
     this.name = name;
@@ -76,6 +78,7 @@ export class ItemType {
     this.locations = locations;
     this.restricted = restricted;
     this.allowsAccess = allowsAccess;
+    this.pluralName = pluralName;
   }
 
   // Add a use method for item-specific logic
@@ -123,6 +126,13 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'mana potion',
     description: 'A blue potion that restores 30 mana points when consumed.',
     symbol: '🔮'
+  }),
+  die: new ItemType({
+    id: 'die',
+    name: 'die',
+    description: 'A six-sided die for games of chance.',
+    symbol: '🎲',
+    pluralName: 'dice'
   }),
   ironSword: new ItemType({
     id: 'ironSword',

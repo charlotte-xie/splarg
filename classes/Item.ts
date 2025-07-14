@@ -106,7 +106,8 @@ export default class Item extends Thing {
 
   getAName(): string {
     if (this.number > 1) {
-      return `${this.number} ${this.getName()}`;
+      const pluralName = this.type.pluralName || `${this.getName()}s`;
+      return `${this.number} ${pluralName}`;
     }
     const name = this.getName();
     const article = Utils.startsWithVowelSound(name) ? 'an' : 'a';
@@ -115,9 +116,10 @@ export default class Item extends Thing {
 
   getTheName(): string {
     if (this.number > 1) {
-      return `the ${this.number} ${this.type.name}`;
+      const pluralName = this.type.pluralName || `${this.getName()}s`;
+      return `the ${this.number} ${pluralName}`;
     }
-    return `the ${this.type.name}`;
+    return `the ${this.getName()}`;
   }
 
   toJSON() {

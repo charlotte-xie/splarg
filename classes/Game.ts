@@ -440,7 +440,7 @@ export default class Game {
       const tile = this.getPlayerTile();
       if (tile) {
         tile.addItem(item);
-        this.addMessage(`Dropped ${item.getName()}`, 'success');
+        this.addMessage(`Dropped ${item.getAName()}`, 'success');
         return true;
       }
       this.addMessage('Failed to drop item', 'error');

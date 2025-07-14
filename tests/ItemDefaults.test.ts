@@ -129,10 +129,10 @@ describe('Item Name Methods', () => {
     const potions = new Item('healthPotion', 3);
     const swords = new Item('ironSword', 2);
     
-    expect(potions.getAName()).toBe('3 health potion');
-    expect(swords.getAName()).toBe('2 iron sword');
-    expect(potions.getTheName()).toBe('the 3 health potion');
-    expect(swords.getTheName()).toBe('the 2 iron sword');
+    expect(potions.getAName()).toBe('3 health potions');
+    expect(swords.getAName()).toBe('2 iron swords');
+    expect(potions.getTheName()).toBe('the 3 health potions');
+    expect(swords.getTheName()).toBe('the 2 iron swords');
   });
 
   test('should handle vowel sound exceptions', () => {
@@ -145,5 +145,13 @@ describe('Item Name Methods', () => {
     const item = new Item(university, 1);
     
     expect(item.getAName()).toBe('a University'); // 'u' sounds like 'y'
+  });
+
+  test('should handle custom plural names', () => {
+    const die = new Item('die', 5);
+    const sword = new Item('ironSword', 3);
+    
+    expect(die.getAName()).toBe('5 dice'); // Custom plural
+    expect(sword.getAName()).toBe('3 iron swords'); // Default plural (adds 's')
   });
 }); 
