@@ -195,7 +195,20 @@ export default class Game {
     
     const blocker = currentArea.getBlocker(newX, newY, this);
     if (blocker) {
-      this.addMessage(`Blocked by ${blocker}`);
+      // Try to find if this is an entity blocker and use getTheName()
+      const tile = currentArea.getTile(newX, newY);
+      let blockerMessage = blocker;
+      if (tile && tile.entities.length > 0) {
+        const entityId = tile.entities[0];
+        const entity = this.getEntity(entityId);
+        if (entity) {
+          blockerMessage = entity.getTheName();
+        }
+      } else if (tile) {
+        // Use tile description for tile blockers to be more descriptive
+        blockerMessage = `the ${tile.type.description}`;
+      }
+      this.addMessage(`Blocked by ${blockerMessage}`);
       return false;
     }
     

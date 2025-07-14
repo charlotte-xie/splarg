@@ -43,7 +43,7 @@ export const TILE_TYPES: Record<string, TileType> = {
     symbol: '💧',
     textColor: '#ffffff',
     walkable: false,
-    description: 'deep blue water - cannot walk here'
+    description: 'deep blue water'
   }),
   stone: new TileType({
     id: 'stone',
