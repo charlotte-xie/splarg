@@ -32,7 +32,8 @@ export function getScript(name: string): Script | undefined {
 // Run a script with game and args
 export function runScript(game: Game, args: any[]): any {
   if (args.length === 0) {
-    throw new Error('runScript called with no args');
+    // This is an AI SUCCESS, just returns SUCCESS indefinitely
+    return args;
   }
 
   const firstArg = args[0];
@@ -45,6 +46,6 @@ export function runScript(game: Game, args: any[]): any {
     }
     return script(game, ...args);
   } else {
-    throw new Error('First argument must be a string (script name) but was '+typeof firstArg);
+    throw new Error('First argument must be a string (script name) but was '+typeof firstArg+' in '+ args+ ":"+typeof args);
   }
 } 

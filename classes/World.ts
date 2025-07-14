@@ -16,17 +16,21 @@ export default class World {
   }
 
   initializeAreas(game: Game, mode?: string): void {
-    this.createArea('grasslands', AREA_TYPES.GRASSLANDS, game);
-    game.addEntity(game.player, { areaId: 'grasslands', x: 3, y: 3 });
-    this.createArea('forest', AREA_TYPES.FOREST, game);
-    this.createArea('desert', AREA_TYPES.DESERT, game);
-    this.createArea('water', AREA_TYPES.WATER, game);
-    this.createArea('cave', AREA_TYPES.CAVE, game);
-    // Only grasslands is discovered/visited at start
-    const grasslandsArea = this.areas.get('grasslands');
-    if (grasslandsArea) {
-      grasslandsArea.visited = true;
-      grasslandsArea.discovered = true;
+    if (mode === 'test') {
+      // Test mode: single 13x13 area with player at 7,7
+      this.createTestArea(game);
+      game.addEntity(game.player, { areaId: 'test', x: 7, y: 7 });
+      const testArea = this.areas.get('test');
+    } else {
+      // Normal mode: create all areas
+      this.createArea('grasslands', AREA_TYPES.GRASSLANDS, game);
+      game.addEntity(game.player, { areaId: 'grasslands', x: 3, y: 3 });
+      this.createArea('forest', AREA_TYPES.FOREST, game);
+      this.createArea('desert', AREA_TYPES.DESERT, game);
+      this.createArea('water', AREA_TYPES.WATER, game);
+      this.createArea('cave', AREA_TYPES.CAVE, game);
+      // Only grasslands is discovered/visited at start
+      const grasslandsArea = this.areas.get('grasslands');
     }
   }
 
@@ -48,6 +52,23 @@ export default class World {
     }
   }
 
+  createTestArea(game: Game): void {
+    const testAreaType = {
+      id: 'test',
+      name: 'Test Area',
+      description: 'A simple test area for development',
+      width: 13,
+      height: 13,
+      background: 'linear-gradient(135deg, #4a5568 0%, #2d3748 100%)',
+      music: 'test_theme',
+      items: []
+    };
+    
+    const tiles = this.generateTestAreaTiles(testAreaType);
+    const area = new Area('test', testAreaType, tiles);
+    this.areas.set('test', area);
+  }
+
   generateAreaTiles(areaType: any): Tile[][] {
     const tiles: Tile[][] = [];
     const { width, height } = areaType;
@@ -55,6 +76,18 @@ export default class World {
       tiles[y] = [];
       for (let x = 0; x < width; x++) {
         tiles[y][x] = this.getTileForArea(areaType, x, y, width, height);
+      }
+    }
+    return tiles;
+  }
+
+  generateTestAreaTiles(areaType: any): Tile[][] {
+    const tiles: Tile[][] = [];
+    const { width, height } = areaType;
+    for (let y = 0; y < height; y++) {
+      tiles[y] = [];
+      for (let x = 0; x < width; x++) {
+        tiles[y][x] = this.getTestTile(x, y, width, height);
       }
     }
     return tiles;
@@ -84,6 +117,16 @@ export default class World {
         default:
           tileType = TILE_TYPES.grass;
       }
+    }
+    return new Tile(tileType);
+  }
+
+  getTestTile(x: number, y: number, width: number, height: number): Tile {
+    let tileType;
+    if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+      tileType = TILE_TYPES.stone; // Border walls
+    } else {
+      tileType = TILE_TYPES.grass; // Simple grass floor
     }
     return new Tile(tileType);
   }

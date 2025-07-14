@@ -2,10 +2,15 @@
 
 import type { EntityID } from './Entity';
 import type Game from './Game';
-import type { Position } from './World';
+import type { Coord, Position } from './World';
 
 // PathFindTarget can be an EntityID, Position, or [x, y] array
-export type PathFindTarget = EntityID | Position | [number, number];
+export type PathFindTarget = EntityID | Position | Coord;
+
+// Common distance function (Chebyshev distance)
+function distance(a: { x: number; y: number }, b: { x: number; y: number }): number {
+  return Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
+}
 
 // A* pathfinding node
 interface PathNode {
@@ -59,15 +64,23 @@ export function resolveTarget(
   }
 }
 
+// Direction offsets for 8-directional movement (including diagonals)
+const directions = [
+  [-1, -1], [-1, 0], [-1, 1],
+  [0, -1],           [0, 1],
+  [1, -1],  [1, 0],  [1, 1]
+];
+
 // A* pathfinding function
 export function findPath(
   game: Game, 
-  startPos: { x: number; y: number; areaId: string }, 
+  startPos: Position, 
   target: PathFindTarget, 
   proximity: number = 0
-): [number, number][] {
+): Coord[] {
+  const areaID = startPos.areaId || game.getCurrentArea().id;
   // Resolve target to position
-  const targetPos = resolveTarget(game, target, startPos.areaId);
+  const targetPos = resolveTarget(game, target, areaID);
   
   // Check if areas match
   if (startPos.areaId !== targetPos.areaId) {
@@ -80,16 +93,12 @@ export function findPath(
   }
   
   // Check if already within proximity
-  const distance = Math.max(
-    Math.abs(startPos.x - targetPos.x),
-    Math.abs(startPos.y - targetPos.y)
-  );
-  if (distance <= proximity) {
+  if (distance(startPos, targetPos) <= proximity) {
     return []; // Already close enough
   }
   
   // Initialize open and closed sets
-  const openSet: PathNode[] = [];
+  const openSet: Map<string, PathNode> = new Map();
   const closedSet = new Set<string>();
   
   // Create start node
@@ -97,41 +106,30 @@ export function findPath(
     x: startPos.x,
     y: startPos.y,
     g: 0,
-    h: Math.max(Math.abs(startPos.x - targetPos.x), Math.abs(startPos.y - targetPos.y)),
+    h: distance(startPos, targetPos),
     f: 0,
     parent: null
   };
   startNode.f = startNode.g + startNode.h;
-  
-  openSet.push(startNode);
-  
-  // Direction offsets for 8-directional movement (including diagonals)
-  const directions = [
-    [-1, -1], [-1, 0], [-1, 1],
-    [0, -1],           [0, 1],
-    [1, -1],  [1, 0],  [1, 1]
-  ];
+  openSet.set(`${startNode.x},${startNode.y}`, startNode);
   
   let closestNode: PathNode = startNode;
-  let closestDistance = distance;
+  let closestDistance = distance(startPos, targetPos);
   
-  while (openSet.length > 0) {
+  while (openSet.size > 0) {
     // Find node with lowest f cost
-    let currentIndex = 0;
-    for (let i = 1; i < openSet.length; i++) {
-      if (openSet[i].f < openSet[currentIndex].f) {
-        currentIndex = i;
+    let current: PathNode | null = null;
+    let currentKey: string | null = null;
+    for (const [key, node] of openSet.entries()) {
+      if (!current || node.f < current.f) {
+        current = node;
+        currentKey = key;
       }
     }
-    
-    const current = openSet[currentIndex];
+    if (!current || !currentKey) break;
     
     // Check if we've reached the target (within proximity)
-    const currentDistance = Math.max(
-      Math.abs(current.x - targetPos.x),
-      Math.abs(current.y - targetPos.y)
-    );
-    
+    const currentDistance = distance(current, targetPos);
     if (currentDistance <= proximity) {
       // Reconstruct path
       return reconstructPath(current);
@@ -144,8 +142,8 @@ export function findPath(
     }
     
     // Move current node from open to closed set
-    openSet.splice(currentIndex, 1);
-    closedSet.add(`${current.x},${current.y}`);
+    openSet.delete(currentKey);
+    closedSet.add(currentKey);
     
     // Check all neighbors
     for (const [dx, dy] of directions) {
@@ -180,21 +178,19 @@ export function findPath(
       const movementCost = (dx !== 0 && dy !== 0) ? 1.4 : 1.0;
       const tentativeG = current.g + movementCost;
       
-      // Check if this path to neighbor is better than any previous one
-      let neighbor = openSet.find(node => node.x === neighborX && node.y === neighborY);
-      
+      let neighbor = openSet.get(neighborKey);
       if (!neighbor) {
         // New node
         neighbor = {
           x: neighborX,
           y: neighborY,
           g: tentativeG,
-          h: Math.max(Math.abs(neighborX - targetPos.x), Math.abs(neighborY - targetPos.y)),
+          h: distance({ x: neighborX, y: neighborY }, targetPos),
           f: 0,
           parent: current
         };
         neighbor.f = neighbor.g + neighbor.h;
-        openSet.push(neighbor);
+        openSet.set(neighborKey, neighbor);
       } else if (tentativeG < neighbor.g) {
         // Better path found
         neighbor.g = tentativeG;

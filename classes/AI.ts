@@ -2,7 +2,7 @@
 
 // Plan scripts follow a pattern of returning:
 // - the continuation script if still active - can be regarded as a "true" result
-// - true if the script succeeded
+// - [] if the script succeeded
 // - false if the script failed with no point retrying (abandoned)
 // - null if the script failed but might work later
 //
@@ -19,15 +19,21 @@ import { registerScript, runScript } from './Script';
 // Pure data type for AI state
 export type AIState = {
   type: string;
-  script?: any[]; // Array of script arguments for runEntityScript
+  script?: any; // Array of script arguments for runEntityScript
   // Add more AI types and properties as needed
 };
 
+export const SUCCESS=[]; // Result if action completed successfully
+export const FAILURE=false; // Result if action failed
+export const CANCEL=null; // Result if action was cancelled. Possiblt to retry
+
 export type Plan = [string, ...any[]];
-export type PlanResult = true | false | null | Plan;
+export type PlanResult = typeof SUCCESS | typeof FAILURE | typeof CANCEL | Plan;
+
+
 
 // Generic movement logic. Returns true if movement succeeded
-function moveAction(g: Game, entity: any, targetX: number, targetY: number): boolean {
+function moveAction(g: Game, entity: any, targetX: number, targetY: number): PlanResult {
   const areaId = entity.position.areaId;
   if (!areaId) return false;
   
@@ -37,7 +43,7 @@ function moveAction(g: Game, entity: any, targetX: number, targetY: number): boo
   const dx = Math.sign(targetX - x);
   const dy = Math.sign(targetY - y);
   
-  if (dx === 0 && dy === 0) return true; // Successful, but no movement needed
+  if (dx === 0 && dy === 0) return SUCCESS; // Successful, but no movement needed
   
   const area = g.world.getArea(areaId);
   const newX = x + dx;
@@ -46,10 +52,10 @@ function moveAction(g: Game, entity: any, targetX: number, targetY: number): boo
   entity.time += 100;
   
   const blocker = area.getBlocker(newX, newY, g);
-  if (blocker) return false; // Blocked, can't move
+  if (blocker) return FAILURE; // Blocked, can't move
   
   g.addEntity(entity, { areaId, x: newX, y: newY });
-  return true;
+  return SUCCESS;
 }
 
 
@@ -67,6 +73,7 @@ registerScript('ai-wander', (g: Game, ...args: any[]) => {
   return args; // Continue wandering
 });
 
+// Script to approach a target entity to within a given distance. Quick, doesn't use pathfinding
 registerScript('ai-approach', (g: Game, ...args: any[]) => {
   if (args.length < 1) {
     throw new Error('ai-approach requires target entity ID at least');
@@ -86,7 +93,7 @@ registerScript('ai-approach', (g: Game, ...args: any[]) => {
   
   // Check if we're already within max distance on both axes
   if (Math.abs(dx) <= maxDistance && Math.abs(dy) <= maxDistance) {
-    return null; // Approach complete
+    return SUCCESS; // Approach complete
   }
   
   // Calculate movement direction towards target
@@ -95,15 +102,15 @@ registerScript('ai-approach', (g: Game, ...args: any[]) => {
   
   // Move towards target (use dx or dy, preferring horizontal movement if both are non-zero)
   const  moved=moveAction(g, entity, entity.position.x + moveX, entity.position.y + moveY);
-  if (!moved) return false;
+  if (!moved) return FAILURE;
   
   return args; // Return full script args including script name
 });
 
-// ["goals" script1 script2 script3 ...] executes scripts in turn, returning the first one that returns a non-null script
+// ["goals" goal1 goal2 goal3 ...] executes goals in turn, returning the first one that returns a plan script
 registerScript('goals', (g: Game, ...args: any[]) => {
   if (args.length < 2) {
-    throw new Error('goals requires at least one script to try');
+    return FAILURE; // definitely no goals that can succeed here....
   }
   
   // Try each script in order (skip the first arg which is 'goals')
@@ -112,13 +119,14 @@ registerScript('goals', (g: Game, ...args: any[]) => {
     const result = runScript(g, scriptToTry);
     
     // If the script returns a non-null result, return that result
-    if (result !== null) {
+    if (!result) {
+      if (result==SUCCESS) continue; // No point planning something that will automatically succeed!
       return result;
     }
   }
   
-  // If none of the scripts produced a result, return null
-  return null;
+  // If none of the scripts produced a result, return CANCEL. Assume possible that goals may be retried.
+  return CANCEL;
 });
 
 // ["plan" goal plan?] executes plan if it exists, falls back to goal to produce a new plan if plan fails
@@ -136,22 +144,22 @@ registerScript('plan', (g: Game, ...args: any[]) => {
     
     // If doesn't terminate, continue with the same plan, or treturn true to indicate success
     if (planResult) {
-      if (planResult==true) return true;
+      if (planResult==SUCCESS) return SUCCESS;
       return ['plan', goal, planResult];
     }
-    // If plan fails (returns null), fall through to generate new plan
+    // If current plan fails (returns null or false), fall through to generate new plan
   }
   
   // No plan or plan failed - generate new plan from goal
   const newPlan = runScript(g, goal);
   
-  // If goal doesn't produce a plan, return null
-  if (newPlan === null) {
-    return null;
+  // If goal doesn't produce a plan, return CANCEL
+  if (!newPlan) {
+    return CANCEL;
   }
   
   // Return the script with the new plan
-  return ['ai-plan', goal, newPlan];
+  return ['plan', goal, newPlan];
 });
 
 // ["ai-path" [x1 y1] [x2 y2] [x3 y3] ...] moves to each destination in sequence
@@ -182,7 +190,7 @@ registerScript('ai-path', (g: Game, ...args: any[]) => {
   const moved = moveAction(g, entity, entity.position.x + dx, entity.position.y + dy);
   
   if (!moved) {
-    return null; // Movement failed
+    return FAILURE; // Movement failed. We need a new / plan / path
   }
   
   // Check if we've reached the destination (within 1 tile)
@@ -194,7 +202,7 @@ registerScript('ai-path', (g: Game, ...args: any[]) => {
     const remainingDestinations = args.slice(2);
     
     if (remainingDestinations.length === 0) {
-      return true; // Path complete
+      return SUCCESS; // Path complete
     }
     
     // Return new path script with first destination removed
@@ -206,6 +214,8 @@ registerScript('ai-path', (g: Game, ...args: any[]) => {
 });
 
 // ["ai-pathfind" target proximity plan?] uses pathfinding to generate and execute path plans
+// - returns a pathfind with a plan while continuing
+// - returns null if a valid path could not be found
 registerScript('ai-pathfind', (g: Game, ...args: any[]) => {
   if (args.length < 2) {
     throw new Error('ai-pathfind requires target and proximity');
@@ -214,7 +224,7 @@ registerScript('ai-pathfind', (g: Game, ...args: any[]) => {
   const entity = g.getActiveEntity();
   const areaId=entity.getAreaId();
   
-  const [target, proximity, plan] = args;
+  const [_, target, proximity=0, plan=null] = args;
 
   // If we have a plan, try to execute it
   if (plan) {
@@ -228,11 +238,7 @@ registerScript('ai-pathfind', (g: Game, ...args: any[]) => {
   }
   
   // No plan or plan failed - generate new plan using pathfinding
-  const currentPos = {
-    x: entity.position.x,
-    y: entity.position.y,
-    areaId: areaId
-  };
+  const currentPos = entity.position;
   
   const path = findPath(g, currentPos, target as PathFindTarget, proximity);
   
@@ -265,12 +271,15 @@ registerScript('ai-random', (g: Game, ...args: any[]) => {
 
 export function doMobAction(game: Game, mob: Mob) {
   // If AIState has a script, run it
-  if (mob.ai.script) {
-    // AI script should return an upadtes cript, possibly the same
-    mob.ai.script= runScript(game, mob.ai.script);
-  } else {
-    throw new Error("No AI script in Entity: "+mob.toJSON())
-  }
+  if (Array.isArray(mob.ai.script)) {
+    // AI script should return an upadted script, possibly the same
+    const result= runScript(game, mob.ai.script);
+    if (Array.isArray(result)) {
+      mob.ai.script= result;
+    } else {
+      mob.ai.script= null;
+    }
+  } 
 } 
 
 // AttackPlayer AI logic (placeholder)

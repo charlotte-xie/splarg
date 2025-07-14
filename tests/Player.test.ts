@@ -422,8 +422,8 @@ describe('Player serialization', () => {
 
 describe('Game.dropItem', () => {
   test('should remove item from inventory and add to current tile', () => {
-    const game = new Game().initialise();
-    expect(game.getCurrentArea().id).toBe('grasslands');
+    const game = new Game().initialise("test");
+    expect(game.getCurrentArea().id).toBe('test');
     const player = game.player;
     game.addEntity(player);
     const item = new Item(ITEM_TYPES.ironSword, 1);
