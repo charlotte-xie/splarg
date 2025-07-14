@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Game from '../classes/Game';
+import ActivityPanel from './ActivityPanel';
 import DebugPanel from './DebugPanel';
 import GameWindow from './GameWindow';
 import MessagePanel from './MessagePanel';
@@ -125,10 +126,16 @@ export default function GameScreen() {
           </GameWindow>
           <MessagePanel game={game} onUpdate={()=>updateGame(game)} />
         </div>
-        <DebugPanel
-          game={game}
-          onGameUpdate={updateGame}
-        />
+        <div className="side-panels">
+          <ActivityPanel
+            game={game}
+            onGameUpdate={updateGame}
+          />
+          <DebugPanel
+            game={game}
+            onGameUpdate={updateGame}
+          />
+        </div>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ interface ButtonProps {
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   className?: string;
+  title?: string;
 }
 
 export default function Button({ 
@@ -13,13 +14,15 @@ export default function Button({
   onClick, 
   size = 'medium',
   disabled = false,
-  className = ''
+  className = '',
+  title
 }: ButtonProps) {
   return (
     <button
       className={`game-button game-button--${size} ${className}`}
       onClick={onClick}
       disabled={disabled}
+      title={title}
     >
       {children}
     </button>

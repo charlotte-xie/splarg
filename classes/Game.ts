@@ -154,9 +154,6 @@ export default class Game {
     this.triggerEvent({ type: 'gameStarted', timestamp: this.time });
   }
 
-  timeLapse(amount: number) {
-    this.player.time += amount;
-  }
 
   timeUpdate() : boolean {
     const step=this.player.time-this.time;
@@ -184,7 +181,7 @@ export default class Game {
       throw new Error("Player not in any area?");
     }
 
-    this.timeLapse(100);
+    this.player.time+=100;
 
     const currentArea = this.getCurrentArea();
     const newX = this._player.position.x + dx;

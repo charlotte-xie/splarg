@@ -99,6 +99,17 @@ h5 {
   height: 100%;
 }
 
+/* Add this for vertical stacking of ActivityPanel and DebugPanel */
+.side-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 220px;
+  max-width: 320px;
+  height: 100%;
+}
+
 .game-main {
   display: flex;
   flex-direction: column;
