@@ -23,7 +23,20 @@ export default abstract class Thing {
   /**
    * Get the possessive name of the thing, e.g. "your sword" or "Aldric Smythe's trenchcoat"
    */
-  abstract getPossessiveName(entity: import('./Entity').default): string;
+  getPossessiveName(entity: Thing): string {
+    if (entity.isPlayer()) {
+      return `your ${this.getName()}`;
+    }
+    return `${entity.getTheName()}'s ${this.getName()}`;
+  }
+
+  /**
+   * Check if the entity is a player
+   * @returns true if the entity is a player, false otherwise
+   */
+  isPlayer(): boolean {
+    return false;
+  }
 
   toJSON() {
     // Base implementation resturns an empty map. Subclasses should call this and add their own properties.

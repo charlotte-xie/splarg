@@ -85,9 +85,7 @@ export default class Entity extends Thing {
     return entity;
   }
 
-  isPlayer(): boolean {
-    return false;
-  }
+
 
   getName(): string {
     return this.klass;
@@ -103,10 +101,5 @@ export default class Entity extends Thing {
     return `the ${this.getName()}`;
   }
 
-  getPossessiveName(entity: Entity): string {
-    if (entity.isPlayer()) {
-      return `your ${this.getName()}`;
-    }
-    return `${entity.getTheName()}'s ${this.getName()}`;
-  }
+ 
 } 
