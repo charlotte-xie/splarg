@@ -1,5 +1,5 @@
 import Item from '../classes/Item';
-import { ItemType, WEAR_LAYERS, WEAR_TYPES } from '../classes/ItemType';
+import { ITEM_TYPES, ItemType, WEAR_LAYERS, WEAR_TYPES } from '../classes/ItemType';
 
 // General tests it Item class
 
@@ -176,5 +176,15 @@ describe('Item Name Methods', () => {
     expect(sword.getPossessiveName(mob)).toBe("Mob's iron sword");
     expect(swords.getPossessiveName(mob)).toBe("Mob's 3 iron swords");
     expect(die.getPossessiveName(mob)).toBe("Mob's 2 dice");
+  });
+});
+
+describe('Item Colour Assignment', () => {
+  test('should assign a random colour from ItemType.colours if not provided', () => {
+    const item = new Item('bra');
+    expect(item.props.colour).toBeDefined();
+    // Get allowed colours from the ItemType
+    const allowed = ITEM_TYPES['bra'].colours;
+    expect(allowed).toContain(item.props.colour);
   });
 }); 

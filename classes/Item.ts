@@ -21,20 +21,31 @@ export default class Item extends Thing {
     }
     this.number = Math.max(1, quantity);
     this.props = { ...props };
+    // Assign a random colour if not already set and ItemType has colours
+    if (!('colour' in this.props) && this.type.colours && this.type.colours.length > 0) {
+      const idx = Math.floor(Math.random() * this.type.colours.length);
+      this.props.colour = this.type.colours[idx];
+    }
   }
 
   canStack(other?: Item): boolean {
     if (other) {
       return (
         this.type.stackable === true &&
-        other.type.id === this.type.id
+        other.type.id === this.type.id &&
+        Utils.deepEqual(this.props, other.props)
       );
     }
     return !!this.type.stackable;
   }
 
   getName(): string {
-    return this.type.name;
+    var name= this.type.name;
+    const colour=this.props.colour;
+    if (colour)   {
+      name= colour + " " + name;
+    }
+    return name;
   }
 
   getDescription(): string {

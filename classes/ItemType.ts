@@ -52,8 +52,9 @@ export class ItemType {
   public restricted?: boolean;
   public allowsAccess: boolean;
   public pluralName?: string;
+  public colours?: string[];
 
-  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false, allowsAccess = true, pluralName }: {
+  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false, allowsAccess = true, pluralName, colours }: {
     id: string;
     name: string;
     description: string;
@@ -65,6 +66,7 @@ export class ItemType {
     restricted?: boolean;
     allowsAccess?: boolean;
     pluralName?: string;
+    colours?: string[];
   }) {
     this.id = id;
     this.name = name;
@@ -79,6 +81,7 @@ export class ItemType {
     this.restricted = restricted;
     this.allowsAccess = allowsAccess;
     this.pluralName = pluralName;
+    this.colours = colours;
   }
 
   // Add a use method for item-specific logic
@@ -243,6 +246,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'bra',
     description: 'A simple, comfortable bra.',
     symbol: '👙',
+    colours: ['red', 'white', 'black', "blue"],
     layer: WEAR_LAYERS.under,
     locations: [WEAR_TYPES.chest]
   }),
