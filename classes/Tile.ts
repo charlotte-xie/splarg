@@ -44,7 +44,7 @@ export default class Tile extends Thing {
   }
 
   getColour(): string {
-    return this.type.color;
+    return this.type.colour;
   }
 
   getSymbol(): string {
@@ -52,7 +52,7 @@ export default class Tile extends Thing {
   }
 
   getTextColour(): string {
-    return this.type.textColor;
+    return this.type.textColour;
   }
 
   getDescription(): string {
