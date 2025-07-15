@@ -136,7 +136,6 @@ export default function Inventory({
         style={{
           flex: '1 1 0',
           minHeight: 0,
-          overflowY: 'auto',
           display: 'grid',
           gridTemplateColumns: gridTemplateColumns,
           justifyContent: 'center',

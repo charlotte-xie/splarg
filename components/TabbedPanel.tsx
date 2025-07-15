@@ -53,7 +53,7 @@ export default function TabbedPanel({ tabs, defaultTab, className = "" }: Tabbed
               borderRadius: '6px 6px 0 0',
               marginBottom: '-2px',
               position: 'relative',
-              zIndex: activeTab === tab.id ? 1 : 0
+              zIndex: activeTab == tab.id ? 1 : 0
             }}
             title={tab.label}
           >
