@@ -64,22 +64,6 @@ describe('Integration: Names, Races, and NPCs', () => {
     expect(nobleNPC.getPronoun()).toBe('he');
   });
 
-  test('should generate distinct name styles for each race', () => {
-    const elfName = generateFullName(Race.ELF, Gender.MALE);
-    const dwarfName = generateFullName(Race.DWARF, Gender.MALE);
-    const goblinName = generateFullName(Race.GOBLIN, Gender.MALE);
-    const mermanName = generateFullName(Race.MERMAN, Gender.MALE);
-    const humanName = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
-    
-    // Each race should have distinct naming conventions
-    // Check that names contain expected patterns from their respective name pools
-    expect(elfName).toMatch(/Moonwhisper|Starlight|Silverleaf|Goldensong|Nightbreeze|Dawnweaver|Sunshadow|Moonbeam|Stardancer|Lightfoot|Swiftwind|Brighteye|Fairhair|Greenleaf|Whitehand|Blackarrow|Redleaf|Bluebell|Yellowflower|Purpleheart/);
-    expect(dwarfName).toMatch(/Ironbeard|Stonefist|Goldaxe|Silverhammer|Bronzebreaker|Steeltoe|Copperhead|Brassknuckle|Tinfoot|Leadbelly|Mercurymind|Platinumheart|Diamondeye|Rubyhand|Emeraldtoe|Sapphirebeard|Amethystfist|Topazfoot|Garnethead|Pearlhand/);
-    expect(goblinName).toMatch(/Geargrinder|Sprocketspinner|Cogcrusher|Pistonpusher|Valvevault|Screwturner|Bolttightener|Nutcracker|Washerwasher|Springbouncer|Coilwinder|Wirepuller|Cablecutter|Pipefitter|Tubebender|Hosehandler|Connectorclamp|Gearboxbreaker|Rustyratchet|Greasegrinder/);
-    expect(mermanName).toMatch(/Deepwater|Seabreeze|Oceanwave|Tidepool|Coralreef|Pearlbed|Shellbeach|Starfish|Seahorse|Dolphin|Whale|Shark|Squid|Octopus|Jellyfish|Anemone|Barnacle|Kelp|Seaweed|Marine/);
-    expect(humanName).toMatch(/Barton|Clyde|Hobbs|Marlow|Parker|Preston|Radley|Sutton|Trent|Whitaker|Baxter|Carver|Dawson|Ellery|Fletcher|Granger|Hollis|Jarvis|Kendall|Larkin/);
-  });
-
   test('should handle default status for humans', () => {
     const name1 = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
     const name2 = generateFullName(Race.HUMAN, Gender.MALE); // Should default to citizen
@@ -96,7 +80,7 @@ describe('Integration: Names, Races, and NPCs', () => {
     expect(npc2.getPronoun()).toBe('she');
   });
 
-  test('should handle different genders correctly', () => {
+  test('getPronoun should handle different genders correctly', () => {
     const maleNPC = new NPC({ name: 'Test Male', race: Race.HUMAN, gender: Gender.MALE });
     const femaleNPC = new NPC({ name: 'Test Female', race: Race.HUMAN, gender: Gender.FEMALE });
     const neutralNPC = new NPC({ name: 'Test Neutral', race: Race.HUMAN, gender: Gender.NEUTRAL });

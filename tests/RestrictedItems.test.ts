@@ -1,11 +1,10 @@
-import Game from '../classes/Game';
 import Item from '../classes/Item';
 import { ITEM_TYPES } from '../classes/ItemType';
 import Player from '../classes/Player';
 
 // Test helper to create a Player without default items
 function createTestPlayer(): Player {
-  const player = new Game().player;
+  const player = new Player();
   player.inventory = []; // Clear default items
   return player;
 }

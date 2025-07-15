@@ -1,6 +1,11 @@
 import Item from '../classes/Item';
 import { ItemType, WEAR_LAYERS, WEAR_TYPES } from '../classes/ItemType';
 
+// General tests it Item class
+
+/**
+ * ItemType default tests check that default values are correctly generated for ItemTypes
+ */
 describe('ItemType Defaults', () => {
   test('should make items stackable by default unless wearable', () => {
     // Basic item (no layer/locations) should be stackable
