@@ -6,7 +6,7 @@ export default abstract class Thing {
   }
 
   /**
-   * Get the base name name of the thing
+   * Get the usual name of the thing, e.g. "loaf of bread"
    */
   abstract getName(): string;
 

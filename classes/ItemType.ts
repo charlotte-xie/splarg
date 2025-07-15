@@ -1,4 +1,4 @@
-import { ALL_COLOURS } from './Colours';
+import { ALL_COLOURS, BASIC_COLOURS } from './Colours';
 import Game from './Game';
 import Item from './Item';
 import Player from './Player';
@@ -228,7 +228,8 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   bread: new ItemType({
     id: 'bread',
-    name: 'bread',
+    name: 'loaf of bread',
+    pluralName: 'loaves of bread',
     description: 'Fresh baked bread that restores 10 health points.',
     symbol: '🍞'
   }),
@@ -247,6 +248,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     adjective: 'long',
     description: 'A flowing long skirt made of soft fabric.',
     symbol: '👗',
+    colours: BASIC_COLOURS,
     layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.legs, WEAR_TYPES.hips]
   }),
@@ -264,6 +266,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'panties',
     adjective: 'plain',
     description: 'Plain, comfortable panties.',
+    colours: BASIC_COLOURS,
     symbol: '🩲',
     layer: WEAR_LAYERS.under,
     locations: [WEAR_TYPES.hips]

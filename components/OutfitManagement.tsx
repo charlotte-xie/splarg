@@ -160,11 +160,6 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
             placeholder="Outfit name..."
             value={outfitName}
             onChange={(e) => setOutfitName(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleSaveOutfit();
-              }
-            }}
             className="control-panel-input"
             style={{ minWidth: 100, flexGrow: 1 }}
           />

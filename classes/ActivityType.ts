@@ -62,15 +62,13 @@ ActivityType.registerType('pickup-items', {
     if (!activity.chosen) throw new Error("No choice made?")
     const item=game.getCurrentArea().takeFirstItem(activity.chosen,game.player.position,1);
     if (item) {
-      game.addMessage('You pick up '+item.getTheName());
+      game.addMessage('You pick up '+item.getAName());
       game.player.addItem(item);
       game.player.time+=100;
-      // game.removeActivity(activity.id);
-
+      // game.removeActivity(activity.id); not needed because onUpdate will remove it
     } else {
-      game.addMessage('You cannot pick up that, it is no longer there...');
+      game.addMessage('You cannot pick that up, it is no longer there...');
     }
-    
   },
   onUpdate: (game, activity) => {
     // remove after each step, since need to refresh options

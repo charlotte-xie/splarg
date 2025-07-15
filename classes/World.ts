@@ -1,5 +1,6 @@
 import Area, { AREA_TYPES, AreaID } from './Area';
 import type Game from './Game';
+import Item from './Item';
 import Mob from './Mob';
 import { Gender, generateFullName } from './Names';
 import NPC from './NPC';
@@ -48,6 +49,9 @@ export default class World {
     // Generate a name for the NPC
     const npcName = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
     const npc = new NPC({ name: npcName, race: Race.HUMAN, gender: Gender.MALE });
+
+    const item = new Item('bread');
+    grasslandsArea.getTile(4,4)?.addItem(item);
 
     // Find a suitable position for the NPC (away from player)
     let placed = false;

@@ -6,6 +6,7 @@ import { WEAR_TYPES } from './ItemType';
 import Mob from './Mob';
 import Player from './Player';
 import Tile from './Tile';
+import Utils from './Utils';
 import type { Position } from './World';
 import World from './World';
 
@@ -160,7 +161,7 @@ export default class Game {
     this.doActivityUpdates();
 
     this.advanceTime(step);
-    
+
     this.checkNewActivities();
     // we should be in a position to present player with next choices now
 
@@ -190,14 +191,15 @@ export default class Game {
         }
       }
     }
+
     if (items.length>0) {
       // Create pickup activity with options
       const activity=new Activity('pickup-items');
       this.addActivity(activity);
       const cantPickUp=this.player.isRestricted(WEAR_TYPES.hand);
       for (const item of items) {
-        const hoverText=cantPickUp ? "You cannot pick up this item" : `Pick up ${item.getAName()}`;
-        activity.options.set(item.getId(), { label: "Take " + item.getName(), hoverText,disabled:cantPickUp });
+        const hoverText=cantPickUp ? "You cannot pick up this item, your hands are restricted" : `Pick up ${item.getAName()}`;
+        activity.options.set(item.getId(), { label: Utils.capitalize(item.getName()), hoverText,disabled:cantPickUp });
       }
     }
   }

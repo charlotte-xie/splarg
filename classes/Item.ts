@@ -39,21 +39,6 @@ export default class Item extends Thing {
     return !!this.type.stackable;
   }
 
-  getName(): string {
-    let name = this.getBaseName();
-    const colour = this.props.colour;
-    if (colour) {
-      name = colour + " " + name;
-    }
-    if (this.type.adjective) {
-      name = this.type.adjective + " " + name;
-    }
-    return name;
-  }
-
-  getBaseName(): string {
-    return this.type.name;
-  }
 
   getDescription(): string {
     return this.type.description;
@@ -120,6 +105,22 @@ export default class Item extends Thing {
 
   hasMultiple(): boolean {
     return this.number > 1;
+  }
+
+  getName(): string {
+    let name :string = (this.number>1 && this.type.pluralName) ? this.type.pluralName : this.getBaseName();
+    const colour = this.props.colour;
+    if (colour) {
+      name = colour + " " + name;
+    }
+    if (this.type.adjective) {
+      name = this.type.adjective + " " + name;
+    }
+    return name;
+  }
+
+  getBaseName(): string {
+    return this.type.name;
   }
 
   getAName(): string {

@@ -86,6 +86,7 @@ export class Being extends Entity {
   }
 
   wearItem(item: Item): boolean {
+    this.time+=100;
     if (!item.isWearable()) {
       return false;
     }
@@ -145,6 +146,7 @@ export class Being extends Entity {
         });
       }
       this.addItem(item);
+      this.time+=100;
     }
     return item;
   }
