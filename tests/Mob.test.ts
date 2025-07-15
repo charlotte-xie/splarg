@@ -4,6 +4,7 @@ import Game from '../classes/Game';
 import Mob from '../classes/Mob';
 import { findPath } from '../classes/PathFind';
 import Player from '../classes/Player';
+import { Coord } from '../classes/World';
 
 describe('Mob', () => {
   test('should have an ID of -1 and klass of EntityClass.MOB when newly created', () => {

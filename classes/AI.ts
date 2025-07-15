@@ -15,6 +15,7 @@ import Mob from './Mob';
 import type { PathFindTarget } from './PathFind';
 import { findPath } from './PathFind';
 import { registerScript, runScript } from './Script';
+import { DIRECTIONS } from './Tile';
 
 // Pure data type for AI state
 export type AIState = {
@@ -65,11 +66,10 @@ registerScript('ai-wander', (g: Game, ...args: any[]) => {
   if (!entity) {
     throw new Error(`Active entity not found`);
   }
-  
-  const dx = Math.floor(Math.random() * 3) - 1;
-  const dy = Math.floor(Math.random() * 3) - 1;
+  // Pick a random direction (0..7)
+  const dirIdx = Math.floor(Math.random() * 8);
+  const [dx, dy] = DIRECTIONS[dirIdx];
   moveAction(g, entity, entity.position.x + dx, entity.position.y + dy);
-  
   return args; // Continue wandering
 });
 

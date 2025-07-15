@@ -2,6 +2,7 @@
 
 import type { EntityID } from './Entity';
 import type Game from './Game';
+import { DIRECTIONS } from './Tile';
 import type { Coord, Position } from './World';
 
 // PathFindTarget can be an EntityID, Position, or [x, y] array
@@ -64,12 +65,12 @@ export function resolveTarget(
   }
 }
 
-// Direction offsets for 8-directional movement (including diagonals)
-const directions = [
-  [-1, -1], [-1, 0], [-1, 1],
-  [0, -1],           [0, 1],
-  [1, -1],  [1, 0],  [1, 1]
-];
+// Use DIRECTIONS from Tile for 8-directional movement
+// const directions = [
+//   [-1, -1], [-1, 0], [-1, 1],
+//   [0, -1],           [0, 1],
+//   [1, -1],  [1, 0],  [1, 1]
+// ]; // REMOVE this if present
 
 // A* pathfinding function
 export function findPath(
@@ -146,7 +147,7 @@ export function findPath(
     closedSet.add(currentKey);
     
     // Check all neighbors
-    for (const [dx, dy] of directions) {
+    for (const [dx, dy] of DIRECTIONS) {
       const neighborX = current.x + dx;
       const neighborY = current.y + dy;
       const neighborKey = `${neighborX},${neighborY}`;

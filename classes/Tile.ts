@@ -3,6 +3,30 @@ import Thing from './Thing';
 import { TILE_TYPES, TileType } from './TileType';
 import Utils from './Utils';
 
+// Direction enum, clockwise from N (0..7)
+export enum Dir {
+  N = 0,
+  NE = 1,
+  E = 2,
+  SE = 3,
+  S = 4,
+  SW = 5,
+  W = 6,
+  NW = 7
+}
+
+// Array of deltas for each direction, index matches Dir enum
+export const DIRECTIONS: [number, number][] = [
+  [0, -1],   // N
+  [1, -1],   // NE
+  [1, 0],    // E
+  [1, 1],    // SE
+  [0, 1],    // S
+  [-1, 1],   // SW
+  [-1, 0],   // W
+  [-1, -1]   // NW
+];
+
 export default class Tile extends Thing {
   public type: TileType;
   public items: Item[]; // This stores the items on the tile. Items are full Item objects.
