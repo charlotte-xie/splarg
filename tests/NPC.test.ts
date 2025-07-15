@@ -36,7 +36,7 @@ describe('NPC', () => {
   test('should return correct article names', () => {
     const npc = new NPC('Aldric Smythe', Race.DWARF, 'female');
     expect(npc.getAName()).toBe('an Aldric Smythe');
-    expect(npc.getTheName()).toBe('the Aldric Smythe');
+    expect(npc.getTheName()).toBe('Aldric Smythe');
   });
 
   test('should return correct possessive names', () => {

@@ -17,6 +17,11 @@ export default class NPC extends Being {
     return this.name;
   }
 
+  getTheName(): string {
+    // For NPCs with proper names, return just the name without "the" prefix
+    return this.name;
+  }
+
   toJSON() {
     const base = super.toJSON();
     return {

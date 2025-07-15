@@ -1,6 +1,9 @@
 import Area, { AREA_TYPES, AreaID } from './Area';
 import type Game from './Game';
 import Mob from './Mob';
+import { generateFullName } from './Names';
+import NPC from './NPC';
+import { Race } from './Races';
 import Tile from './Tile';
 import { TILE_TYPES, TileType } from './TileType';
 
@@ -25,12 +28,46 @@ export default class World {
       // Normal mode: create all areas
       this.createArea('grasslands', AREA_TYPES.GRASSLANDS, game);
       game.addEntity(game.player, { areaId: 'grasslands', x: 3, y: 3 });
+      
+      // Add an NPC to the grasslands area
+      this.addNPCToGrasslands(game);
+      
       this.createArea('forest', AREA_TYPES.FOREST, game);
       this.createArea('desert', AREA_TYPES.DESERT, game);
       this.createArea('water', AREA_TYPES.WATER, game);
       this.createArea('cave', AREA_TYPES.CAVE, game);
       // Only grasslands is discovered/visited at start
       const grasslandsArea = this.areas.get('grasslands');
+    }
+  }
+
+  addNPCToGrasslands(game: Game): void {
+    const grasslandsArea = this.areas.get('grasslands');
+    if (!grasslandsArea) return;
+
+    // Generate a name for the NPC
+    const npcName = generateFullName(Race.HUMAN, 'male', 'citizen');
+    const npc = new NPC(npcName, Race.HUMAN, 'male');
+
+    // Find a suitable position for the NPC (away from player)
+    let placed = false;
+    for (let tries = 0; tries < 100 && !placed; tries++) {
+      const x = 1 + Math.floor(Math.random() * (grasslandsArea.type.width - 2));
+      const y = 1 + Math.floor(Math.random() * (grasslandsArea.type.height - 2));
+      
+      // Make sure NPC is not too close to player (at least 3 tiles away)
+      const playerDistance = Math.max(
+        Math.abs(x - game.player.position.x),
+        Math.abs(y - game.player.position.y)
+      );
+      
+      if (playerDistance >= 3) {
+        const blocker = grasslandsArea.getBlocker(x, y, game);
+        if (!blocker) {
+          game.addEntity(npc, { areaId: 'grasslands', x, y });
+          placed = true;
+        }
+      }
     }
   }
 
