@@ -1,9 +1,16 @@
 // Activity.ts
 
+import { ActivityType } from './ActivityType';
+
 export enum ContentType {
   speech = 'speech',
   story = 'story',
   stat = 'stat',
+}
+
+export enum ActivityState {
+  ACTIVE = 'active',
+  ENDED = 'ended'
 }
 
 export interface Content {
@@ -16,18 +23,29 @@ export interface Option {
   label: string;
   hoverText: string;
   disabled?: boolean;
-  compelled?: string | null; // when non-null the palyer is compelled to take this option (or another compelled option, if any)
+  compelled?: string | null; // when non-null the player is compelled to take this option (or another compelled option, if any)
 }
 
 export class Activity {
+  id: number;
   title: string;
   content: Content[];
   options: Map<string, Option>;
+  activityType: string;
+  state: ActivityState;
 
-  constructor(title: string, content: Content[] = [], options: Map<string, Option> = new Map()) {
-    this.title = title;
-    this.content = content;
-    this.options = options;
+  constructor(activityType: string) {
+    this.activityType = activityType;
+    this.id = -1;
+    this.content = [];
+    this.options = new Map();
+    this.state = ActivityState.ACTIVE;
+    // Look up ActivityType and set title if available
+    const typeObj = ActivityType.getType(activityType);
+    this.title = typeObj?.title || activityType;
+    if (typeObj?.onCreate) {
+      typeObj.onCreate(this);
+    }
   }
 
   toJSON() {
@@ -35,15 +53,18 @@ export class Activity {
       title: this.title,
       content: this.content,
       options: Array.from(this.options.entries()), // Serialize Map as array of [key, value]
+      activityType: this.activityType,
+      state: this.state,
     };
   }
 
   static fromJSON(json: any): Activity {
-    const { title, content, options } = json;
-    return new Activity(
-      title,
-      content,
-      new Map<string, Option>(options)
-    );
+    const { activityType, title, content, options, state } = json;
+    const activity = new Activity(activityType);
+    activity.title = title || activity.title;
+    activity.content = content || [];
+    activity.options = new Map<string, Option>(options);
+    activity.state = state || ActivityState.ACTIVE;
+    return activity;
   }
 } 

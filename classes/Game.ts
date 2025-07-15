@@ -1,3 +1,4 @@
+import { Activity } from './Activity';
 import Area from './Area';
 import Entity, { EntityClass } from './Entity';
 import Item from './Item';
@@ -59,6 +60,8 @@ export default class Game {
   public entityIdCounter: number;
   public activeEntityID: number; // ID of the currently active entity (0 = player)
   public compelled: string | null;
+  public activities: Map<number, Activity>;
+  public activityCounter: number;
 
   constructor() {
     this.status = 'ready';
@@ -88,6 +91,8 @@ export default class Game {
     this.events = [];
     this.listeners = new Map();
     this.messages = [];
+    this.activities = new Map();
+    this.activityCounter = 0;
   }
 
   initialise(mode?: string): Game {
@@ -291,7 +296,9 @@ export default class Game {
       messages: this.messages,
       entities: Array.from(this.entities.entries()).map(([id, entity]) => [id, entity.toJSON()]),
       entityIdCounter: this.entityIdCounter,
-      activeEntity: this.activeEntityID
+      activeEntity: this.activeEntityID,
+      activities: Array.from(this.activities.entries()).map(([id, activity]) => [id, activity.toJSON()]),
+      activityCounter: this.activityCounter
     };
   }
 
@@ -321,7 +328,14 @@ export default class Game {
       });
     }
     game.entityIdCounter = highestID+1;
-    
+    // Load activities
+    game.activities = new Map();
+    if (obj.activities) {
+      obj.activities.forEach(([id, activityObj]: [number, any]) => {
+        game.activities.set(id, Activity.fromJSON(activityObj));
+      });
+    }
+    game.activityCounter = obj.activityCounter || 0;
     return game;
   }
 
