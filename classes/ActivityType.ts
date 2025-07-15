@@ -53,10 +53,9 @@ ActivityType.registerType('pickup-items', {
   priority: 1,
   onCreate: (activity) => {
     // Example: set up activity content or options
-    activity.content.push({ type: ContentType.stat, value: 'Initialised', colour: 'green' });
+    activity.content.push({ type: ContentType.story, value: 'There are items here to pick up' });
   },
-  onEnd: (game) => {
-    // Example: log or clean up
-    console.log('Pickup-items activity ended');
+  onUpdate: (game, activity) => {
+    game.removeActivity(activity.id);
   }
 }); 

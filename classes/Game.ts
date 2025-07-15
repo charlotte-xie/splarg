@@ -1,4 +1,4 @@
-import { Activity } from './Activity';
+import { Activity, ActivityState } from './Activity';
 import Area from './Area';
 import Entity, { EntityClass } from './Entity';
 import Item from './Item';
@@ -154,8 +154,60 @@ export default class Game {
     const step=this.player.time-this.time;
     if (step<=0) return false;
 
+    this.doActivityUpdates();
+
     this.advanceTime(step);
+
+    this.activities.forEach((activity) => {
+      activity.doUpdate(this);
+    });
+
+    this.checkNewActivities();
+
     return true;
+  } 
+
+  doActivityUpdates(): void {
+    this.activities.forEach((activity) => {
+      this.getActivity(activity.id)?.doUpdate(this);
+    });
+  }
+
+  getActivity(id: number): Activity | undefined {
+    return this.activities.get(id);
+  }
+
+  checkNewActivities(): void {
+    const currentArea = this.getCurrentArea();
+    const items:Item[]=[];
+    for (let dx=-1;dx<=1;dx++) {
+      for (let dy=-1;dy<=1;dy++) {
+        const tile = currentArea.getTile(this._player.position.x+dx, this._player.position.y+dy);
+        if (tile) {
+          tile.items.forEach((item) => {
+            items.push(item);
+          });
+        }
+      }
+    }
+    if (items.length>0) {
+ 
+      const activity=new Activity('pickup-items');
+      this.addActivity(activity);
+    }
+  }
+
+  getPlayerActivities(): Activity[] {
+    return Array.from(this.activities.values()).filter((activity) => activity.state === ActivityState.ACTIVE);
+  }
+  
+  addActivity(activity: Activity): void {
+    activity.id=this.activityCounter++;
+    this.activities.set(activity.id, activity);
+  }
+
+  removeActivity(id: number): boolean {
+    return this.activities.delete(id);
   }
 
   /**
@@ -420,6 +472,7 @@ export default class Game {
   }
 
   dropItem(player: Player, item: Item, number?: number): boolean {
+    player.time+=100; // add time to drop item
     const inv = player.getInventory();
     const idx = inv.indexOf(item);
     if (idx === -1) {

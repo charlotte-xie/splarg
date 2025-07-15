@@ -1,6 +1,7 @@
 // Activity.ts
 
 import { ActivityType } from './ActivityType';
+import type Game from './Game';
 
 export enum ContentType {
   speech = 'speech',
@@ -13,10 +14,10 @@ export enum ActivityState {
   ENDED = 'ended'
 }
 
-export interface Content {
+export type Content = {
   type: ContentType;
   value: any;
-  colour: string;
+  colour?: string;
 }
 
 export interface Option {
@@ -66,5 +67,15 @@ export class Activity {
     activity.options = new Map<string, Option>(options);
     activity.state = state || ActivityState.ACTIVE;
     return activity;
+  }
+
+  public doUpdate(game: Game): void {
+    const activityType=ActivityType.getType(this.activityType);
+    if (!activityType) {
+      throw new Error(`Activity type ${this.activityType} not found`);
+    }
+    if (activityType.onUpdate) {
+      activityType.onUpdate(game, this);
+    }
   }
 } 
