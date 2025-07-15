@@ -5,7 +5,7 @@ import { Race, getRaceTraits } from '../classes/Races';
 describe('Integration: Names, Races, and NPCs', () => {
   test('should create NPCs with generated names for different races and genders', () => {
     const races = [Race.HUMAN, Race.ELF, Race.DWARF, Race.GOBLIN, Race.MERMAN];
-    const genders: Gender[] = ['male', 'female'];
+    const genders: Gender[] = [Gender.MALE, Gender.FEMALE];
 
     races.forEach(race => {
       genders.forEach(gender => {
@@ -14,10 +14,10 @@ describe('Integration: Names, Races, and NPCs', () => {
           const statuses = ['noble', 'citizen', 'peasant'];
           statuses.forEach(status => {
             const generatedName = generateFullName(race, gender, status);
-            const npc = new NPC(generatedName, race, gender);
+            const npc = new NPC({ name: generatedName, race: race, gender: gender });
             
-            expect(npc.name).toBe(generatedName);
-            expect(npc.race).toBe(race);
+            expect(npc.getName()).toBe(generatedName);
+            expect(npc.stats.race).toBe(race);
             expect(npc.gender).toBe(gender);
             expect(npc.getName()).toBe(generatedName);
             expect(npc.getPronoun()).toBe(gender === 'male' ? 'he' : 'she');
@@ -25,10 +25,10 @@ describe('Integration: Names, Races, and NPCs', () => {
         } else {
           // Other races don't need status
           const generatedName = generateFullName(race, gender);
-          const npc = new NPC(generatedName, race, gender);
+          const npc = new NPC({ name: generatedName, race: race, gender: gender });
           
-          expect(npc.name).toBe(generatedName);
-          expect(npc.race).toBe(race);
+          expect(npc.getName()).toBe(generatedName);
+          expect(npc.stats.race).toBe(race);
           expect(npc.gender).toBe(gender);
           expect(npc.getName()).toBe(generatedName);
           expect(npc.getPronoun()).toBe(gender === 'male' ? 'he' : 'she');
@@ -38,8 +38,8 @@ describe('Integration: Names, Races, and NPCs', () => {
   });
 
   test('should apply race traits to NPCs', () => {
-    const npc = new NPC('Test NPC', Race.DWARF, 'male');
-    const traits = getRaceTraits(npc.race);
+    const npc = new NPC({ name: 'Test NPC', race: Race.DWARF, gender: Gender.MALE });
+    const traits = getRaceTraits(npc.stats.race!);
     
     expect(traits.name).toBe('Dwarf');
     expect(traits.baseStats.strength).toBe(14);
@@ -50,26 +50,26 @@ describe('Integration: Names, Races, and NPCs', () => {
 
   test('should generate appropriate names for different human social classes', () => {
     // Noble names should be more elaborate
-    const nobleName = generateFullName(Race.HUMAN, 'male', 'noble');
-    const citizenName = generateFullName(Race.HUMAN, 'male', 'citizen');
-    const peasantName = generateFullName(Race.HUMAN, 'male', 'peasant');
+    const nobleName = generateFullName(Race.HUMAN, Gender.MALE, 'noble');
+    const citizenName = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
+    const peasantName = generateFullName(Race.HUMAN, Gender.MALE, 'peasant');
     
-    const nobleNPC = new NPC(nobleName, Race.HUMAN, 'male');
-    const citizenNPC = new NPC(citizenName, Race.HUMAN, 'male');
-    const peasantNPC = new NPC(peasantName, Race.HUMAN, 'male');
+    const nobleNPC = new NPC({ name: nobleName, race: Race.HUMAN, gender: Gender.MALE });
+    const citizenNPC = new NPC({ name: citizenName, race: Race.HUMAN, gender: Gender.MALE });
+    const peasantNPC = new NPC({ name: peasantName, race: Race.HUMAN, gender: Gender.MALE });
     
-    expect(nobleNPC.name).toBe(nobleName);
-    expect(citizenNPC.name).toBe(citizenName);
-    expect(peasantNPC.name).toBe(peasantName);
+    expect(nobleNPC.getName()).toBe(nobleName);
+    expect(citizenNPC.getName()).toBe(citizenName);
+    expect(peasantNPC.getName()).toBe(peasantName);
     expect(nobleNPC.getPronoun()).toBe('he');
   });
 
   test('should generate distinct name styles for each race', () => {
-    const elfName = generateFullName(Race.ELF, 'male');
-    const dwarfName = generateFullName(Race.DWARF, 'male');
-    const goblinName = generateFullName(Race.GOBLIN, 'male');
-    const mermanName = generateFullName(Race.MERMAN, 'male');
-    const humanName = generateFullName(Race.HUMAN, 'male', 'citizen');
+    const elfName = generateFullName(Race.ELF, Gender.MALE);
+    const dwarfName = generateFullName(Race.DWARF, Gender.MALE);
+    const goblinName = generateFullName(Race.GOBLIN, Gender.MALE);
+    const mermanName = generateFullName(Race.MERMAN, Gender.MALE);
+    const humanName = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
     
     // Each race should have distinct naming conventions
     // Check that names contain expected patterns from their respective name pools
@@ -81,28 +81,28 @@ describe('Integration: Names, Races, and NPCs', () => {
   });
 
   test('should handle default status for humans', () => {
-    const name1 = generateFullName(Race.HUMAN, 'male', 'citizen');
-    const name2 = generateFullName(Race.HUMAN, 'male'); // Should default to citizen
+    const name1 = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
+    const name2 = generateFullName(Race.HUMAN, Gender.MALE); // Should default to citizen
     
     expect(name1).toBeDefined();
     expect(name2).toBeDefined();
     
-    const npc1 = new NPC(name1, Race.HUMAN, 'male');
-    const npc2 = new NPC(name2, Race.HUMAN, 'male');
+    const npc1 = new NPC({ name: name1, race: Race.HUMAN, gender: Gender.MALE });
+    const npc2 = new NPC({ name: name2, race: Race.HUMAN, gender: Gender.FEMALE });
     
-    expect(npc1.name).toBe(name1);
-    expect(npc2.name).toBe(name2);
+    expect(npc1.getName()).toBe(name1);
+    expect(npc2.getName()).toBe(name2);
     expect(npc1.getPronoun()).toBe('he');
-    expect(npc2.getPronoun()).toBe('he');
+    expect(npc2.getPronoun()).toBe('she');
   });
 
   test('should handle different genders correctly', () => {
-    const maleNPC = new NPC('Test Male', Race.HUMAN, 'male');
-    const femaleNPC = new NPC('Test Female', Race.HUMAN, 'female');
-    const neutralNPC = new NPC('Test Neutral', Race.HUMAN, 'neutral');
+    const maleNPC = new NPC({ name: 'Test Male', race: Race.HUMAN, gender: Gender.MALE });
+    const femaleNPC = new NPC({ name: 'Test Female', race: Race.HUMAN, gender: Gender.FEMALE });
+    const neutralNPC = new NPC({ name: 'Test Neutral', race: Race.HUMAN, gender: Gender.NEUTRAL });
     
-    expect(maleNPC.getPronoun()).toBe('he');
-    expect(femaleNPC.getPronoun()).toBe('she');
-    expect(neutralNPC.getPronoun()).toBe('it');
+    expect(maleNPC.getPronoun()).toEqual('he');
+    expect(femaleNPC.getPronoun()).toEqual('she');
+    expect(neutralNPC.getPronoun()).toEqual('it');
   });
 }); 

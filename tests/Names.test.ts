@@ -4,7 +4,7 @@ import { Race } from '../classes/Races';
 describe('Names', () => {
   test('should generate first names for all races and genders', () => {
     const races = [Race.HUMAN, Race.ELF, Race.DWARF, Race.GOBLIN, Race.MERMAN];
-    const genders: Gender[] = ['male', 'female', 'neutral'];
+    const genders: Gender[] = [Gender.MALE, Gender.FEMALE, Gender.NEUTRAL];
 
     races.forEach(race => {
       genders.forEach(gender => {
@@ -49,7 +49,7 @@ describe('Names', () => {
 
   test('should generate full names for all combinations', () => {
     const races = [Race.HUMAN, Race.ELF, Race.DWARF, Race.GOBLIN, Race.MERMAN];
-    const genders: Gender[] = ['male', 'female', 'neutral'];
+    const genders: Gender[] = [Gender.MALE, Gender.FEMALE, Gender.NEUTRAL];
 
     races.forEach(race => {
       genders.forEach(gender => {
@@ -75,11 +75,11 @@ describe('Names', () => {
 
   test('should generate race-specific names', () => {
     // Test that different races generate different style names
-    const elfName = generateFullName(Race.ELF, 'male');
-    const dwarfName = generateFullName(Race.DWARF, 'male');
-    const goblinName = generateFullName(Race.GOBLIN, 'male');
-    const mermanName = generateFullName(Race.MERMAN, 'male');
-    const humanName = generateFullName(Race.HUMAN, 'male', 'citizen');
+    const elfName = generateFullName(Race.ELF, Gender.MALE);
+    const dwarfName = generateFullName(Race.DWARF, Gender.MALE);
+    const goblinName = generateFullName(Race.GOBLIN, Gender.MALE);
+    const mermanName = generateFullName(Race.MERMAN, Gender.MALE);
+    const humanName = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
 
     expect(elfName).toBeDefined();
     expect(dwarfName).toBeDefined();
@@ -96,7 +96,7 @@ describe('Names', () => {
   test('should generate different names on multiple calls', () => {
     const names = new Set();
     for (let i = 0; i < 50; i++) {
-      const name = generateFullName(Race.HUMAN, 'male', 'noble');
+      const name = generateFullName(Race.HUMAN, Gender.MALE, 'noble');
       names.add(name);
     }
     // Should have some variety (not all the same)
@@ -105,9 +105,9 @@ describe('Names', () => {
 
   test('should generate appropriate names for different human social classes', () => {
     // Noble names should be more elaborate
-    const nobleName = generateFullName(Race.HUMAN, 'male', 'noble');
-    const citizenName = generateFullName(Race.HUMAN, 'male', 'citizen');
-    const peasantName = generateFullName(Race.HUMAN, 'male', 'peasant');
+    const nobleName = generateFullName(Race.HUMAN, Gender.MALE, 'noble');
+    const citizenName = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
+    const peasantName = generateFullName(Race.HUMAN, Gender.MALE, 'peasant');
 
     expect(nobleName).toBeDefined();
     expect(citizenName).toBeDefined();
@@ -115,9 +115,9 @@ describe('Names', () => {
   });
 
   test('should handle all gender types', () => {
-    const maleName = generateFullName(Race.HUMAN, 'male', 'citizen');
-    const femaleName = generateFullName(Race.HUMAN, 'female', 'citizen');
-    const neutralName = generateFullName(Race.HUMAN, 'neutral', 'citizen');
+    const maleName = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
+    const femaleName = generateFullName(Race.HUMAN, Gender.FEMALE, 'citizen');
+    const neutralName = generateFullName(Race.HUMAN, Gender.NEUTRAL, 'citizen');
 
     expect(maleName).toBeDefined();
     expect(femaleName).toBeDefined();
@@ -125,8 +125,8 @@ describe('Names', () => {
   });
 
   test('should default to citizen status for humans when status not provided', () => {
-    const name1 = generateFullName(Race.HUMAN, 'male', 'citizen');
-    const name2 = generateFullName(Race.HUMAN, 'male');
+    const name1 = generateFullName(Race.HUMAN, Gender.MALE, 'citizen');
+    const name2 = generateFullName(Race.HUMAN, Gender.MALE);
     
     // Both should work, though they might generate different names
     expect(name1).toBeDefined();
@@ -141,10 +141,10 @@ describe('Names', () => {
     const mermanNames = new Set();
 
     for (let i = 0; i < 20; i++) {
-      elfNames.add(generateFullName(Race.ELF, 'male'));
-      dwarfNames.add(generateFullName(Race.DWARF, 'male'));
-      goblinNames.add(generateFullName(Race.GOBLIN, 'male'));
-      mermanNames.add(generateFullName(Race.MERMAN, 'male'));
+      elfNames.add(generateFullName(Race.ELF, Gender.MALE));
+      dwarfNames.add(generateFullName(Race.DWARF, Gender.MALE));
+      goblinNames.add(generateFullName(Race.GOBLIN, Gender.MALE));
+      mermanNames.add(generateFullName(Race.MERMAN, Gender.MALE));
     }
 
     // Each race should have its own distinct name pool

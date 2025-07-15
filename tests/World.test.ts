@@ -1,5 +1,6 @@
 import { EntityClass } from '../classes/Entity';
 import Game from '../classes/Game';
+import { Gender } from '../classes/Names';
 import NPC from '../classes/NPC';
 import { Race } from '../classes/Races';
 
@@ -21,9 +22,9 @@ describe('World', () => {
       if (entity && entity.klass === EntityClass.NPC) {
         npcFound = true;
         const npc = entity as NPC;
-        expect(npc.name).toBeDefined();
-        expect(npc.race).toBe(Race.HUMAN);
-        expect(npc.gender).toBe('male');
+        expect(npc.stats.name).toBeDefined();
+        expect(npc.stats.race).toBe(Race.HUMAN);
+        expect(npc.stats.gender).toBe(Gender.MALE);
         expect(npc.getPronoun()).toBe('he');
         break;
       }

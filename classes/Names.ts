@@ -3,7 +3,11 @@
 
 import { Race } from './Races';
 
-export type Gender = 'male' | 'female' | 'neutral';
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+  NEUTRAL = 'neutral'
+}
 
 // Human names by social class
 const humanMaleFirstNames: Record<string, string[]> = {
@@ -75,7 +79,7 @@ const elfFemaleFirstNames = [
 ];
 
 const elfNeutralFirstNames = [
-  'Arien', 'Earendil', 'Feanor', 'Gandalf', 'Iluvatar', 'Manwe', 'Nienna', 'Orome', 'Ulmo', 'Vaire'
+  'Arien', 'Earendil', 'Feanor', 'Manwe', 'Nienna', 'Orome', 'Ulmo', 'Vaire'
 ];
 
 const elfSurnames = [
@@ -187,8 +191,8 @@ function randomFrom<T>(arr: T[]): T {
 function getFirstNamePool(race: Race, gender: Gender, status?: string): string[] {
   let nameMap: string[] | Record<string, string[]>;
   
-  if (gender === 'male') nameMap = raceMaleFirstNames[race];
-  else if (gender === 'female') nameMap = raceFemaleFirstNames[race];
+  if (gender === Gender.MALE) nameMap = raceMaleFirstNames[race];
+  else if (gender === Gender.FEMALE) nameMap = raceFemaleFirstNames[race];
   else nameMap = raceNeutralFirstNames[race];
 
   if (Array.isArray(nameMap)) {

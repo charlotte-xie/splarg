@@ -1,38 +1,30 @@
-import { Being } from './Being';
+import { Being, BeingStats } from './Being';
 import { EntityClass } from './Entity';
-import { Gender } from './Names';
-import { Race } from './Races';
 
 export default class NPC extends Being {
-  public name: string;
-  public race: Race;
-
-  constructor(name: string, race: Race = Race.HUMAN, gender: Gender = 'neutral') {
-    super(EntityClass.NPC, gender);
-    this.name = name;
-    this.race = race;
+  constructor(initial: Partial<BeingStats> = {}) {
+    super(EntityClass.NPC);
+    this.stats = { ...this.stats, ...initial };
   }
 
   getName(): string {
-    return this.name;
+    return this.stats.name || 'Unnamed NPC';
   }
 
   getTheName(): string {
     // For NPCs with proper names, return just the name without "the" prefix
-    return this.name;
+    return this.getName();
   }
 
   toJSON() {
     const base = super.toJSON();
     return {
-      ...base,
-      name: this.name,
-      race: this.race
+      ...base
     };
   }
 
   static fromJSON(obj: any): NPC {
-    const npc = new NPC(obj.name, obj.race || Race.HUMAN, obj.gender || 'neutral');
+    const npc = new NPC(obj.stats || {});
     const base = Being.fromJSON(obj);
     Object.assign(npc, base);
     return npc;

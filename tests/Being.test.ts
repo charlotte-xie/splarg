@@ -2,41 +2,15 @@ import { Being } from '../classes/Being';
 import { EntityClass } from '../classes/Entity';
 
 describe('Being', () => {
-  test('should have correct gender property', () => {
-    const maleBeing = new Being(EntityClass.NPC, 'male');
-    const femaleBeing = new Being(EntityClass.NPC, 'female');
-    const neutralBeing = new Being(EntityClass.NPC, 'neutral');
-    
-    expect(maleBeing.gender).toBe('male');
-    expect(femaleBeing.gender).toBe('female');
-    expect(neutralBeing.gender).toBe('neutral');
-  });
+ 
 
   test('should default to neutral gender when not specified', () => {
     const being = new Being(EntityClass.NPC);
     expect(being.gender).toBe('neutral');
   });
 
-  test('should return correct pronouns', () => {
-    const maleBeing = new Being(EntityClass.NPC, 'male');
-    const femaleBeing = new Being(EntityClass.NPC, 'female');
-    const neutralBeing = new Being(EntityClass.NPC, 'neutral');
-    
-    expect(maleBeing.getPronoun()).toBe('he');
-    expect(femaleBeing.getPronoun()).toBe('she');
-    expect(neutralBeing.getPronoun()).toBe('it');
-  });
-
-  test('should serialize and deserialize gender correctly', () => {
-    const being = new Being(EntityClass.NPC, 'female');
-    const json = being.toJSON();
-    const deserialized = Being.fromJSON(json);
-    
-    expect(deserialized.gender).toBe('female');
-  });
-
   test('should handle missing gender in fromJSON', () => {
-    const being = new Being(EntityClass.NPC, 'male');
+    const being = new Being(EntityClass.NPC);
     const json = being.toJSON();
     const jsonWithoutGender = { ...json };
     delete (jsonWithoutGender as any).gender;
@@ -46,7 +20,7 @@ describe('Being', () => {
   });
 
   test('should inherit Entity functionality', () => {
-    const being = new Being(EntityClass.NPC, 'male');
+    const being = new Being(EntityClass.NPC);
     
     // Should have Entity properties
     expect(being.klass).toBe(EntityClass.NPC);

@@ -1,14 +1,13 @@
 import { Being, BeingStats } from './Being';
 import { EntityClass } from './Entity';
 import Item from './Item';
-import { Gender } from './Names';
 
 // --- Player class ---
 export default class Player extends Being {
   public outfits: Map<string, string[]>; // "OutfitName" -> [list of item ids]
 
-  constructor(gender: Gender = 'neutral') {
-    super(EntityClass.PLAYER, gender);
+  constructor() {
+    super(EntityClass.PLAYER);
     this.outfits = new Map();
     this.id=0;
   }
@@ -23,7 +22,7 @@ export default class Player extends Being {
       strength: 10,
       defense: 5,
       speed: 8,
-      gold: 0
+      gold: 0,
     };
   }
 
@@ -86,7 +85,7 @@ export default class Player extends Being {
   }
 
   static fromJSON(obj: any): Player {
-    const player = Object.assign(new Player(obj.gender || 'neutral'), super.fromJSON(obj));
+    const player = Object.assign(new Player(), super.fromJSON(obj));
     player.outfits = new Map(obj.outfits || []);
     return player;
   }

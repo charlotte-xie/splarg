@@ -5,8 +5,8 @@ import Utils from './Utils';
 
 export default class Tile extends Thing {
   public type: TileType;
-  public items: Item[];
-  public entities: number[];
+  public items: Item[]; // This stores the items on the tile. Items are full Item objects.
+  public entities: number[]; // This stores the entities on the tile. Entities are just their IDs, the actual entities are stores in Game
 
   constructor(type: TileType) {
     super();

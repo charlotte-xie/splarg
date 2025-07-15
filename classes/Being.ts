@@ -1,6 +1,7 @@
 import Entity, { EntityClass } from './Entity';
 import Item from './Item';
 import { Gender } from './Names';
+import { Race } from './Races';
 
 export interface BeingStats {
   health?: number;
@@ -9,6 +10,9 @@ export interface BeingStats {
   strength?: number;
   defense?: number;
   speed?: number;
+  gender?: Gender;
+  name?: string;
+  race?: Race;
   [key: string]: any;
 }
 
@@ -16,14 +20,12 @@ export class Being extends Entity {
   public stats: BeingStats;
   public inventory: Item[];
   public wornItems: Map<string, Item>;
-  public gender: Gender;
 
-  constructor(klass: EntityClass, gender: Gender = 'neutral') {
+  constructor(klass: EntityClass) {
     super(klass);
     this.stats = {};
     this.inventory = [];
     this.wornItems = new Map();
-    this.gender = gender;
   }
 
   getPronoun(): string {
@@ -36,6 +38,11 @@ export class Being extends Entity {
       default:
         return 'it';
     }
+  }
+
+  // Gets the gender of a Being. Possible values are Gender.MALE, Gender.FEMALE, Gender.NEUTRAL
+  public get gender(): Gender {
+    return this.stats.gender || Gender.NEUTRAL;
   }
 
   updateStats(newStats: Partial<BeingStats>): void {
@@ -168,13 +175,12 @@ export class Being extends Entity {
       stats: this.stats,
       inventory: this.inventory.map(item => item.toJSON()),
       wornItems: Array.from(this.wornItems.entries()).map(([k, v]) => [k, v.toJSON()]),
-      gender: this.gender
     };
   }
 
   static fromJSON(obj: any): Being {
     const base=super.fromJSON(obj);
-    const being = Object.assign(new Being(base.klass, obj.gender || 'neutral'), base);
+    const being = Object.assign(new Being(base.klass), base);
     being.stats = obj.stats;
     being.inventory = (obj.inventory || []).map((itemObj: any) => Item.fromJSON(itemObj));
     being.wornItems = new Map((obj.wornItems || []).map(([k, v]: [string, any]) => [k, Item.fromJSON(v)]));

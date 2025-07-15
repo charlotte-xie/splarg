@@ -1,4 +1,5 @@
 import Game from '../classes/Game';
+import { Gender } from '../classes/Names';
 import NPC from '../classes/NPC';
 import { Race } from '../classes/Races';
 
@@ -25,8 +26,8 @@ describe('NPC in Game', () => {
           if (entity && entity.klass === 'NPC') {
             npcFound = true;
             expect(entity).toBeInstanceOf(NPC);
-            expect((entity as NPC).name).toBeDefined();
-            expect((entity as NPC).race).toBe(Race.HUMAN);
+            expect((entity as NPC).getName()).toBeDefined();
+            expect((entity as NPC).stats.race).toBe(Race.HUMAN);
             break;
           }
         }
@@ -72,7 +73,7 @@ describe('NPC in Game', () => {
   test('should show correct "Blocked by" message for NPC with proper name', () => {
     // Create a test NPC with a known name and place it directly next to the player
     const npcName = 'Harold Barton';
-    const npc = new NPC(npcName, Race.HUMAN, 'male');
+    const npc = new NPC({ name: npcName, race: Race.HUMAN, gender: Gender.MALE });
     
     // Place player at a known grass position (avoiding water area)
     game.addEntity(game.player, { areaId: 'grasslands', x: 1, y: 1 });
