@@ -29,14 +29,11 @@ describe('NPC', () => {
     expect(neutralNPC.getPronoun()).toBe('it');
   });
 
-  test('should return name in getName method', () => {
+  test('should return correct names', () => {
     const npc = new NPC({ name: 'Aldric Smythe', race: Race.ELF, gender: Gender.MALE });
+    // Note we have a proper name, so we don't need to add an article
     expect(npc.getName()).toBe('Aldric Smythe');
-  });
-
-  test('should return correct article names', () => {
-    const npc = new NPC({ name: 'Aldric Smythe', race: Race.DWARF, gender: Gender.FEMALE });
-    expect(npc.getAName()).toBe('an Aldric Smythe');
+    expect(npc.getAName()).toBe('Aldric Smythe');
     expect(npc.getTheName()).toBe('Aldric Smythe');
   });
 
@@ -60,7 +57,7 @@ describe('NPC', () => {
     expect(deserialized.klass).toBe(EntityClass.NPC);
   });
 
-  test('should handle missing race and gender in fromJSON', () => {
+  test('should handle missing fields in fromJSON', () => {
     const npc = new NPC({ name: 'Aldric Smythe', race: Race.ELF, gender: Gender.MALE });
     const json = npc.toJSON();
     const jsonWithoutRaceAndGender = { ...json };

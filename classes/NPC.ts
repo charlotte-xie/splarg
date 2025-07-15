@@ -11,6 +11,11 @@ export default class NPC extends Being {
     return this.stats.name || 'Unnamed NPC';
   }
 
+  getAName(): string {
+    // For NPCs with proper names, return just the name
+    return this.getName();
+  }
+
   getTheName(): string {
     // For NPCs with proper names, return just the name without "the" prefix
     return this.getName();
