@@ -92,6 +92,7 @@ export default function Outfit({
   // Create action buttons for the selected worn item
   const getActionButtons = (item: Item | null) => {
     if (!item) return [];
+    const forbidden = game.compelled || undefined;
     return [
       {
         label: 'Remove',
@@ -118,7 +119,8 @@ export default function Outfit({
               onPlayerUpdate(player);
             }
           }
-        }
+        },
+        forbidden
       }
     ];
   };

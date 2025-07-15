@@ -7,6 +7,7 @@ interface ActionButton {
   variant: 'primary' | 'secondary' | 'success' | 'danger';
   onClick: () => void;
   disabled?: boolean;
+  forbidden?: string;
 }
 
 interface ItemDetailsProps {
@@ -57,6 +58,7 @@ export default function ItemDetails({ item, actionButtons }: ItemDetailsProps) {
             key={index}
             onClick={button.onClick}
             disabled={button.disabled}
+            forbidden={button.forbidden}
           >
             {button.label}
           </Button>

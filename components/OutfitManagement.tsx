@@ -166,6 +166,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
               }
             }}
             className="control-panel-input"
+            style={{ minWidth: 100, flexGrow: 1 }}
           />
           <Button
             onClick={handleSaveOutfit}
@@ -182,7 +183,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
               value={selectedOutfit}
               onChange={(e) => setSelectedOutfit(e.target.value)}
               className="control-panel-input"
-              style={{ flex: 1, minWidth: 0 }}
+              style={{ flex: 1, minWidth: 100, flexGrow: 1 }}
             >
               <option value="">Select outfit...</option>
               {player.getOutfitNames().map(outfitName => (
@@ -194,12 +195,14 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
             <Button
               onClick={handleWearOutfit}
               disabled={!selectedOutfit}
+              forbidden={game.compelled || undefined}
             >
               Wear
             </Button>
             <Button
               onClick={handleAddOutfit}
               disabled={!selectedOutfit}
+              forbidden={game.compelled || undefined}
             >
               Add
             </Button>
@@ -215,6 +218,7 @@ export default function OutfitManagement({ game, onPlayerUpdate }: OutfitManagem
         {/* Remove All Button */}
         <Button
           onClick={handleRemoveAll}
+          forbidden={game.compelled || undefined}
         >
           Remove All
         </Button>

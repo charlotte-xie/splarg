@@ -42,14 +42,15 @@ export default function ActivityBlock({ activity, game, onGameUpdate, style }: A
       </div>
       <div className="activity-options" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {Array.from(activity.options.entries()).map(([key, option]: [string, Option]) => {
-          const isDisabled = !!option.disabled || (game.compelled && option.compelled === null);
+          const isDisabled = !!option.disabled || (!!game.compelled && option.compelled === null);
           const hoverText = isDisabled && game.compelled && option.compelled === null 
             ? game.compelled || undefined
             : option.hoverText || undefined;
+          const forbidden = (!isDisabled && !option.compelled && game.compelled) ? game.compelled : undefined;
           
           return (
             <span key={key} style={{ width: 'fit-content' }}>
-              <Button onClick={() => {}} size="medium" disabled={isDisabled} title={hoverText}>
+              <Button onClick={() => {}} size="medium" disabled={isDisabled} title={hoverText} forbidden={forbidden}>
                 {option.label}
               </Button>
             </span>

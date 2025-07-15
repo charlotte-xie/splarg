@@ -83,6 +83,11 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
     alert(JSON.stringify(playerJSON, null, 2));
   };
 
+  const handleToggleCompelled = () => {
+    game.compelled = game.compelled ? null : 'Compelled action';
+    onGameUpdate(game);
+  };
+
   return (
     <div className="control-panel" style={{height:"100%", flex: "1"}}>
       <h4>
@@ -142,6 +147,11 @@ export default function DebugPanel({ game, onGameUpdate }: DebugPanelProps) {
           onClick={handleShowPlayerJSON}
         >
           Show Player JSON
+        </Button>
+        <Button
+          onClick={handleToggleCompelled}
+        >
+          Toggle Compelled
         </Button>
       </div>
 

@@ -70,16 +70,20 @@ export default function Inventory({
   // Create action buttons for the selected item
   const getActionButtons = (item: Item | null) => {
     if (!item) return [];
+    const forbiddenRaw = game.compelled;
+    const forbidden = forbiddenRaw || undefined;
     const buttons: Array<{
       label: string;
       variant: 'primary' | 'secondary' | 'success' | 'danger';
       onClick: () => void;
       disabled?: boolean;
+      forbidden?: string;
     }> = [
       {
         label: 'Use',
         variant: 'primary',
-        onClick: handleUseItem
+        onClick: handleUseItem,
+        forbidden
       }
     ];
 
@@ -87,7 +91,8 @@ export default function Inventory({
       buttons.push({
         label: 'Wear',
         variant: 'success',
-        onClick: handleWearItem
+        onClick: handleWearItem,
+        forbidden
       });
     }
 
@@ -95,17 +100,20 @@ export default function Inventory({
       buttons.push({
         label: 'Drop 1',
         variant: 'danger',
+        forbidden,
         onClick: handleDropOne
       });
       buttons.push({
         label: 'Drop All',
         variant: 'danger',
+        forbidden,
         onClick: handleDropItem
       });
     } else {
       buttons.push({
         label: 'Drop',
         variant: 'danger',
+        forbidden,
         onClick: handleDropItem
       });
     }
