@@ -49,6 +49,13 @@ export default class Tile extends Thing {
     return `the ${this.type.name}`;
   }
 
+  getPossessiveName(entity: import('./Entity').default): string {
+    if (entity.isPlayer()) {
+      return `your ${this.type.name}`;
+    }
+    return `${entity.getName()}'s ${this.type.name}`;
+  }
+
   addItem(item: Item): void {
     if (item.canStack()) {
       const existing = this.items.find(

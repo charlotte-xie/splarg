@@ -122,6 +122,15 @@ export default class Item extends Thing {
     return `the ${this.getName()}`;
   }
 
+  getPossessiveName(entity: import('./Entity').default): string {
+    const owner = entity.isPlayer() ? 'your' : `${entity.getName()}'s`;
+    if (this.number > 1) {
+      const pluralName = this.type.pluralName || `${this.getName()}s`;
+      return `${owner} ${this.number} ${pluralName}`;
+    }
+    return `${owner} ${this.getName()}`;
+  }
+
   toJSON() {
     return {
       ...super.toJSON(),

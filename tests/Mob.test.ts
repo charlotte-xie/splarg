@@ -3,6 +3,7 @@ import { EntityClass } from '../classes/Entity';
 import Game from '../classes/Game';
 import Mob from '../classes/Mob';
 import { findPath } from '../classes/PathFind';
+import Player from '../classes/Player';
 
 describe('Mob', () => {
   test('should have an ID of -1 and klass of EntityClass.MOB when newly created', () => {
@@ -307,5 +308,13 @@ describe('Mob Name Methods', () => {
   test('should return correct definite article name', () => {
     const mob = new Mob();
     expect(mob.getTheName()).toBe('the Mob');
+  });
+
+  test('should return correct possessive name', () => {
+    const mob = new Mob();
+    const player = new Player();
+    
+    expect(mob.getPossessiveName(player)).toBe("your Mob");
+    expect(mob.getPossessiveName(mob)).toBe("Mob's Mob");
   });
 }); 

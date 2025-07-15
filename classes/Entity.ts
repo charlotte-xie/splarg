@@ -102,4 +102,11 @@ export default class Entity extends Thing {
   getTheName(): string {
     return `the ${this.klass}`;
   }
+
+  getPossessiveName(entity: Entity): string {
+    if (entity.isPlayer()) {
+      return `your ${this.klass}`;
+    }
+    return `${entity.getName()}'s ${this.klass}`;
+  }
 } 

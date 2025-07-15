@@ -154,4 +154,22 @@ describe('Item Name Methods', () => {
     expect(die.getAName()).toBe('5 dice'); // Custom plural
     expect(sword.getAName()).toBe('3 iron swords'); // Default plural (adds 's')
   });
+
+  test('should return correct possessive names', () => {
+    const sword = new Item('ironSword', 1);
+    const swords = new Item('ironSword', 3);
+    const die = new Item('die', 2);
+    
+    // Create a mock player entity
+    const player = new (require('../classes/Player').default)();
+    const mob = new (require('../classes/Mob').default)();
+    
+    expect(sword.getPossessiveName(player)).toBe('your iron sword');
+    expect(swords.getPossessiveName(player)).toBe('your 3 iron swords');
+    expect(die.getPossessiveName(player)).toBe('your 2 dice');
+    
+    expect(sword.getPossessiveName(mob)).toBe("Mob's iron sword");
+    expect(swords.getPossessiveName(mob)).toBe("Mob's 3 iron swords");
+    expect(die.getPossessiveName(mob)).toBe("Mob's 2 dice");
+  });
 }); 

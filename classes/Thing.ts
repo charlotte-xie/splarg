@@ -20,6 +20,11 @@ export default abstract class Thing {
    */
   abstract getTheName(): string;
 
+  /**
+   * Get the possessive name of the thing, e.g. your sword
+   */
+  abstract getPossessiveName(entity: import('./Entity').default): string;
+
   toJSON() {
     // Base implementation resturns an empty map. Subclasses should call this and add their own properties.
     return {};

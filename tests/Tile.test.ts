@@ -1,3 +1,5 @@
+import Mob from '../classes/Mob';
+import Player from '../classes/Player';
 import Tile from '../classes/Tile';
 import { TILE_TYPES } from '../classes/TileType';
 
@@ -26,5 +28,17 @@ describe('Tile Name Methods', () => {
     
     expect(grassTile.getTheName()).toBe('the Grass');
     expect(stoneTile.getTheName()).toBe('the Stone');
+  });
+
+  test('should return correct possessive names', () => {
+    const grassTile = new Tile(TILE_TYPES.grass);
+    const stoneTile = new Tile(TILE_TYPES.stone);
+    const player = new Player();
+    const mob = new Mob();
+    
+    expect(grassTile.getPossessiveName(player)).toBe("your Grass");
+    expect(stoneTile.getPossessiveName(player)).toBe("your Stone");
+    expect(grassTile.getPossessiveName(mob)).toBe("Mob's Grass");
+    expect(stoneTile.getPossessiveName(mob)).toBe("Mob's Stone");
   });
 }); 
