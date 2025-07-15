@@ -53,7 +53,7 @@ export default function ActivityBlock({ activity, game, onGameUpdate, style }: A
               <Button onClick={() => {
                 activity.doChoice(game, activity, key);
                 onGameUpdate(game);
-              }} size="medium" disabled={isDisabled} title={hoverText} forbidden={forbidden}>
+              }} size="medium" disabled={!!isDisabled} title={hoverText} forbidden={forbidden}>
                 {option.label}
               </Button>
             </span>
