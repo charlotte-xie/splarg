@@ -56,8 +56,9 @@ export class ItemType {
   public allowsAccess: boolean;
   public pluralName?: string;
   public colours?: string[];
+  public adjective?: string;
 
-  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false, allowsAccess = true, pluralName, colours }: {
+  constructor({ id, name, description, symbol, stackable, wearable, layer, locations, restricted = false, allowsAccess = true, pluralName, colours, adjective }: {
     id: string;
     name: string;
     description: string;
@@ -70,6 +71,7 @@ export class ItemType {
     allowsAccess?: boolean;
     pluralName?: string;
     colours?: string[];
+    adjective?: string;
   }) {
     this.id = id;
     this.name = name;
@@ -85,6 +87,7 @@ export class ItemType {
     this.allowsAccess = allowsAccess;
     this.pluralName = pluralName;
     this.colours = colours;
+    this.adjective = adjective;
   }
 
   // Add a use method for item-specific logic
@@ -193,7 +196,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   scarf: new ItemType({
     id: 'scarf',
-    name: 'Wool Scarf',
+    name: 'wool scarf',
     description: 'A warm wool scarf with steampunk patterns.',
     symbol: '🧣',
     layer: WEAR_LAYERS.outer,
@@ -212,6 +215,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'blindfold',
     description: 'A dark cloth blindfold that completely blocks vision.',
     symbol: '🕶️',
+    colours: ['black', 'white', 'red', 'black'], // colour repreated = more frequent
     layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.eyes],
     restricted: true
@@ -239,7 +243,8 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   longSkirt: new ItemType({
     id: 'longSkirt',
-    name: 'long skirt',
+    name: 'skirt',
+    adjective: 'long',
     description: 'A flowing long skirt made of soft fabric.',
     symbol: '👗',
     layer: WEAR_LAYERS.inner,
@@ -256,7 +261,8 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   }),
   plainPanties: new ItemType({
     id: 'plainPanties',
-    name: 'plain panties',
+    name: 'panties',
+    adjective: 'plain',
     description: 'Plain, comfortable panties.',
     symbol: '🩲',
     layer: WEAR_LAYERS.under,

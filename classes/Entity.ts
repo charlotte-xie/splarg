@@ -94,6 +94,14 @@ export default class Entity extends Thing {
   }
 
   getName(): string {
+    return this.getBaseName();
+  }
+  
+  /**
+   * Get the base name of the entity, before any modifiers / adjectives etc
+   * @returns The base name of the entity
+   */
+  getBaseName(): string {
     return this.klass;
   }
 

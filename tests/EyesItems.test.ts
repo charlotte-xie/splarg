@@ -156,7 +156,7 @@ describe('Eyes Location Items', () => {
     test('should have correct properties for blindfold', () => {
       const blindfold = new Item(ITEM_TYPES.blindfold);
       
-      expect(blindfold.getName()).toBe('blindfold');
+      expect(blindfold.getBaseName()).toBe('blindfold');
       expect(blindfold.getDescription()).toBe('A dark cloth blindfold that completely blocks vision.');
       expect(blindfold.getSymbol()).toBe('🕶️');
       expect(blindfold.isWearable()).toBe(true);

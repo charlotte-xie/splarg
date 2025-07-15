@@ -40,12 +40,19 @@ export default class Item extends Thing {
   }
 
   getName(): string {
-    var name= this.type.name;
-    const colour=this.props.colour;
-    if (colour)   {
-      name= colour + " " + name;
+    let name = this.getBaseName();
+    const colour = this.props.colour;
+    if (colour) {
+      name = colour + " " + name;
+    }
+    if (this.type.adjective) {
+      name = this.type.adjective + " " + name;
     }
     return name;
+  }
+
+  getBaseName(): string {
+    return this.type.name;
   }
 
   getDescription(): string {

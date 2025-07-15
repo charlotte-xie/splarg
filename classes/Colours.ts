@@ -35,4 +35,8 @@ export const COLOUR_VALUES: Record<string, string> = {
   wheat: "#F5DEB3"
 };
 
+// Basic clothes for standard clothes etc.
+export const BASIC_COLOURS = ['red', 'white', 'black', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'brown', 'gray', 'magenta', 'cyan', 'lime', 'teal', 'indigo', 'violet', 'navy', 'olive', 'tan', 'turquoise'];
+
+// All colours
 export const ALL_COLOURS = Object.keys(COLOUR_VALUES); 

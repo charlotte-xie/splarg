@@ -7,7 +7,7 @@ export default class NPC extends Being {
     this.stats = { ...this.stats, ...initial };
   }
 
-  getName(): string {
+  getBaseName(): string {
     return this.stats.name || 'Unnamed NPC';
   }
 
