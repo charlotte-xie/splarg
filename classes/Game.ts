@@ -181,25 +181,27 @@ export default class Game {
   checkNewActivities(): void {
     const currentArea = this.getCurrentArea();
     const items:Item[]=[];
-    for (let dx=-1;dx<=1;dx++) {
-      for (let dy=-1;dy<=1;dy++) {
-        const tile = currentArea.getTile(this._player.position.x+dx, this._player.position.y+dy);
-        if (tile) {
-          tile.items.forEach((item) => {
-            items.push(item);
-          });
+      if (!this.player.isRestricted(WEAR_TYPES.eyes)) {
+      for (let dx=-1;dx<=1;dx++) {
+        for (let dy=-1;dy<=1;dy++) {
+          const tile = currentArea.getTile(this._player.position.x+dx, this._player.position.y+dy);
+          if (tile) {
+            tile.items.forEach((item) => {
+              items.push(item);
+            });
+          }
         }
       }
-    }
 
-    if (items.length>0) {
-      // Create pickup activity with options
-      const activity=new Activity('pickup-items');
-      this.addActivity(activity);
-      const cantPickUp=this.player.isRestricted(WEAR_TYPES.hand);
-      for (const item of items) {
-        const hoverText=cantPickUp ? "You cannot pick up this item, your hands are restricted" : `Pick up ${item.getAName()}`;
-        activity.options.set(item.getId(), { label: Utils.capitalize(item.getName()), hoverText,disabled:cantPickUp });
+      if (items.length>0) {
+        // Create pickup activity with options
+        const activity=new Activity('pickup-items');
+        this.addActivity(activity);
+        const cantPickUp=this.player.isRestricted(WEAR_TYPES.hand);
+        for (const item of items) {
+          const hoverText=cantPickUp ? "You cannot pick up this item, your hands are restricted" : `Pick up ${item.getAName()}`;
+          activity.options.set(item.getId(), { label: Utils.capitalize(item.getName()), hoverText,disabled:cantPickUp });
+        }
       }
     }
   }
