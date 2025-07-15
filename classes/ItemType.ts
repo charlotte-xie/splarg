@@ -1,3 +1,4 @@
+import { ALL_COLOURS } from './Colours';
 import Game from './Game';
 import Item from './Item';
 import Player from './Player';
@@ -18,6 +19,8 @@ export const WEAR_TYPES = {
   feet: 'feet'
 
 } as const;
+
+// (COLOUR_VALUES and ALL_COLOURS are now imported from Colours.ts)
 
 // Wear layers
 export const WEAR_LAYERS = {
@@ -175,6 +178,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'steampunk vest',
     description: 'A fitted vest with brass buttons and leather trim.',
     symbol: '🎽',
+    colours: ALL_COLOURS,
     allowsAccess: false,
     layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.chest, WEAR_TYPES.belly]
@@ -308,7 +312,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
   highHeels: new ItemType({
     id: 'highHeels',
     name: 'high heels',
-    description: 'A pair of stylish high-heeled sandals.',
+    description: 'A pair of stylish high-heeled shoes.',
     symbol: '👠',
     layer: WEAR_LAYERS.inner,
     locations: [WEAR_TYPES.feet],
@@ -319,6 +323,7 @@ export const ITEM_TYPES: Record<string, ItemType> = {
     name: 'cowboy hat',
     description: 'A rugged cowboy hat with a wide brim and a leather band.',
     symbol: '🤠',
+    colours: ['brown', 'black', 'white', 'gray'],
     layer: WEAR_LAYERS.outer,
     locations: [WEAR_TYPES.head],
     allowsAccess: true
