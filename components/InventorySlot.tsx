@@ -31,50 +31,24 @@ export default function InventorySlot({
   return (
     <Tooltip
       content={item && (
-        <div
-          style={{
-            backgroundColor: '#1a202c',
-            color: '#e2e8f0',
-            padding: '8px 12px',
-            borderRadius: '6px',
-            fontSize: '12px',
-            whiteSpace: 'nowrap',
-            transition: 'opacity 0.2s ease',
-            border: '1px solid #4a5568',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
-            minWidth: '150px',
-            maxWidth: '200px',
-            textAlign: 'left',
-          }}
-          className="slot-tooltip"
-        >
-          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+        <div className="slot-tooltip">
+          <div className="slot-tooltip-content">
             {item.getName()}
             {item.hasMultiple() && ` (${item.getQuantity()})`}
           </div>
-          <div style={{ fontSize: '11px', color: '#a0aec0', whiteSpace: 'normal' }}>
+          <div className="slot-tooltip-description">
             {item.getDescription()}
           </div>
         </div>
       )}
     >
       <div
-        className={`inventory-slot ${className}`}
+        className={`inventory-slot${selected ? ' selected' : ''} ${className}`}
         onClick={handleClick}
         style={{
-          width: size,
-          height: size,
-          border: selected ? '2px solid #d69e2e' : '1px solid #4a5568',
-          borderRadius: '4px',
-          backgroundColor: item ? '#1a202c' : '#2d3748',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
           cursor: onClick ? 'pointer' : 'default',
-          transition: 'all 0.2s ease',
-          fontSize: size * 0.4,
-          color: '#e2e8f0',
+          border: selected ? '2px solid #d69e2e' : undefined,
+          backgroundColor: item ? (selected ? '#1a202c' : '#1a202c') : undefined,
           ...style
         }}
       >

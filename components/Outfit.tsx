@@ -32,7 +32,7 @@ export default function Outfit({
     WEAR_TYPES.head,
     WEAR_TYPES.chest,
     WEAR_TYPES.belly,
-    WEAR_TYPES.hips,
+    WEAR_TYPES.legs,
     WEAR_TYPES.feet,
     WEAR_TYPES.hand
   ];

@@ -505,3 +505,51 @@ h5 {
   flex-direction: column;
   overflow: auto;
 }
+
+/* Tooltip for inventory slot */
+.slot-tooltip {
+  background-color: #1a202c;
+  color: #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+  border: 1px solid #4a5568;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  min-width: 150px;
+  max-width: 200px;
+  text-align: left;
+}
+
+.slot-tooltip-content {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.slot-tooltip-description {
+  font-size: 11px;
+  color: #a0aec0;
+  white-space: normal;
+}
+
+.inventory-slot {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  background-color: #2d3748;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s ease;
+  font-size: 19.2px; /* 48 * 0.4 */
+  color: #e2e8f0;
+  box-sizing: border-box;
+}
+
+.inventory-slot.selected {
+  border: 2px solid #d69e2e;
+  background-color: #1a202c;
+}
