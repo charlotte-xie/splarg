@@ -21,7 +21,7 @@ export default abstract class Thing {
   abstract getTheName(): string;
 
   /**
-   * Get the possessive name of the thing, e.g. your sword
+   * Get the possessive name of the thing, e.g. "your sword" or "Aldric Smythe's trenchcoat"
    */
   abstract getPossessiveName(entity: import('./Entity').default): string;
 

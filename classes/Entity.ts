@@ -107,6 +107,6 @@ export default class Entity extends Thing {
     if (entity.isPlayer()) {
       return `your ${this.getName()}`;
     }
-    return `${entity.getName()}'s ${this.getName()}`;
+    return `${entity.getTheName()}'s ${this.getName()}`;
   }
 } 

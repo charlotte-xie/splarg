@@ -315,6 +315,6 @@ describe('Mob Name Methods', () => {
     const player = new Player();
     
     expect(mob.getPossessiveName(player)).toBe("your Mob");
-    expect(mob.getPossessiveName(mob)).toBe("Mob's Mob");
+    expect(mob.getPossessiveName(mob)).toBe("the Mob's Mob");
   });
 }); 
