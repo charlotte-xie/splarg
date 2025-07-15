@@ -42,18 +42,6 @@ type GameMessage = {
 
 /**
  * Game model class
- *
- * Properties:
- * - status: 'ready' | 'playing' | 'gameOver' | 'menu'
- * - player: Player instance
- * - world: World instance
- * - settings: { soundEnabled, musicEnabled, difficulty, autoSave }
- * - progress: { totalPlayTime, areasDiscovered, enemiesDefeated, itemsCollected, questsCompleted }
- * - score: number
- * - time: number
- * - lastSaveTime: number
- *
- * Methods: startGame, resetGame, saveGame, loadGame, movePlayer, changeArea, updatePlayerStats, addScore, triggerEvent, etc.
  */
 export default class Game {
   public status: GameStatus;
@@ -224,7 +212,9 @@ export default class Game {
 
   updatePlayer(player: Player): void {
     // Ensure player has ID 0
-    player.id=0;
+    if (player.id !== 0) {
+      throw new Error('Player ID must be 0');
+    }
     this._player = player;
     this.addEntity(this._player);
     this.triggerEvent({ 

@@ -11,6 +11,11 @@ export enum EntityClass {
   MOB = 'Mob'
 }
 
+/**
+ * An Entity is any active object in the game, e.g. the Player or a Mob
+ * Entities are indexed in Game.entities, with references to them stored in Tiles.
+ * Once allocated, entity IDs are stable identifiers.
+ */
 export default class Entity extends Thing {
   protected _position: Position;
   protected _id: number | null = null;
@@ -41,6 +46,9 @@ export default class Entity extends Thing {
   }
 
   set id(value: number) {
+    if (this.id !== -1) {
+      throw new Error('Entity ID already set');
+    }
     this._id = value;
   }
 
@@ -84,8 +92,6 @@ export default class Entity extends Thing {
     entity._time = obj.time ?? 0;
     return entity;
   }
-
-
 
   getName(): string {
     return this.klass;

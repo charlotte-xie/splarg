@@ -2,9 +2,9 @@
 
 // Plan scripts follow a pattern of returning:
 // - the continuation script if still active - can be regarded as a "true" result
-// - [] if the script succeeded
-// - false if the script failed with no point retrying (abandoned)
-// - null if the script failed but might work later
+// - SUCCESS = [] if the script succeeded
+// - FAILURE = false if the script failed with no point retrying (abandoned)
+// - CANCEL = null if the script failed but might work later
 //
 // Goal scripts are used to generate a plan
 // - A concrete ai-script if a plan is created
