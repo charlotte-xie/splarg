@@ -2,6 +2,7 @@ import { Activity, ActivityState } from './Activity';
 import Area from './Area';
 import Entity, { EntityClass } from './Entity';
 import Item from './Item';
+import { WEAR_TYPES } from './ItemType';
 import Mob from './Mob';
 import Player from './Player';
 import Tile from './Tile';
@@ -151,18 +152,17 @@ export default class Game {
 
 
   timeUpdate() : boolean {
+    // time update is called after something has happened (typically a player action)
+  
     const step=this.player.time-this.time;
     if (step<=0) return false;
 
     this.doActivityUpdates();
 
     this.advanceTime(step);
-
-    this.activities.forEach((activity) => {
-      activity.doUpdate(this);
-    });
-
+    
     this.checkNewActivities();
+    // we should be in a position to present player with next choices now
 
     return true;
   } 
@@ -191,9 +191,14 @@ export default class Game {
       }
     }
     if (items.length>0) {
- 
+      // Create pickup activity with options
       const activity=new Activity('pickup-items');
       this.addActivity(activity);
+      const cantPickUp=this.player.isRestricted(WEAR_TYPES.hand);
+      for (const item of items) {
+        const hoverText=cantPickUp ? "You cannot pick up this item" : `Pick up ${item.getAName()}`;
+        activity.options.set(item.getId(), { label: "Take " + item.getName(), hoverText,disabled:cantPickUp });
+      }
     }
   }
 

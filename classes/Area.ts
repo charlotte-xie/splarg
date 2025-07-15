@@ -1,3 +1,4 @@
+import Item from './Item';
 import Tile from './Tile';
 
 export type AreaID=string;
@@ -195,5 +196,25 @@ export default class Area {
         game.activeEntityID = 0;
       }
     }
+  }
+
+  /**
+   * Find and remove the first item with the specified ID within the given radius of center (x, y).
+   * Returns the item if found and removed, otherwise null.
+   */
+  takeFirstItem(itemId: string, center: {x: number, y: number}, radius: number): Item | null {
+    const { x: cx, y: cy } = center;
+    for (let dy = -radius; dy <= radius; dy++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        const x = cx + dx;
+        const y = cy + dy;
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height) continue;
+        const tile = this.getTile(x, y);
+        if (!tile) continue;
+        const item = tile.takeFirstItem(itemId);
+        if (item) return item;
+      }
+    }
+    return null;
   }
 } 

@@ -50,7 +50,10 @@ export default function ActivityBlock({ activity, game, onGameUpdate, style }: A
           
           return (
             <span key={key} style={{ width: 'fit-content' }}>
-              <Button onClick={() => {}} size="medium" disabled={isDisabled} title={hoverText} forbidden={forbidden}>
+              <Button onClick={() => {
+                activity.doChoice(game, activity, key);
+                onGameUpdate(game);
+              }} size="medium" disabled={isDisabled} title={hoverText} forbidden={forbidden}>
                 {option.label}
               </Button>
             </span>

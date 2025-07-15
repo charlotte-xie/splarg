@@ -34,6 +34,7 @@ export class Activity {
   options: Map<string, Option>;
   activityType: string;
   state: ActivityState;
+  chosen?: string ;
 
   constructor(activityType: string) {
     this.activityType = activityType;
@@ -56,17 +57,32 @@ export class Activity {
       options: Array.from(this.options.entries()), // Serialize Map as array of [key, value]
       activityType: this.activityType,
       state: this.state,
+      chosen: this.chosen,
     };
   }
 
   static fromJSON(json: any): Activity {
-    const { activityType, title, content, options, state } = json;
+    const { activityType, title, content, options, state, chosen } = json;
     const activity = new Activity(activityType);
     activity.title = title || activity.title;
     activity.content = content || [];
     activity.options = new Map<string, Option>(options);
     activity.state = state || ActivityState.ACTIVE;
+    activity.chosen = chosen ?? null;
     return activity;
+  }
+
+  public doChoice(game: Game, activity: Activity, choice: string): void {
+    this.chosen = choice;
+    const activityType=ActivityType.getType(this.activityType);
+    if (!activityType) {
+      throw new Error(`Activity type ${this.activityType} not found`);
+    }
+    if (activityType.onChoice) {
+      activityType.onChoice(game, this);
+    } else {
+      game.addMessage(`You cannot do that... some strange error has occurred ` + activity.toJSON());
+    }
   }
 
   public doUpdate(game: Game): void {

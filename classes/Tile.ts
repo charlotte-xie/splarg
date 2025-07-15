@@ -93,6 +93,16 @@ export default class Tile extends Thing {
     this.items.push(item);
   }
 
+  takeFirstItem(itemId: string): Item | null {
+    if (!this.items || this.items.length === 0) return null;
+    const idx = this.items.findIndex(item => item.getId() == itemId);
+    if (idx !== -1) {
+      const [item] = this.items.splice(idx, 1);
+      return item;
+    }
+    return null;
+  }
+
   toJSON() {
     const hasItems = this.items && this.items.length > 0;
     const hasEntities = this.entities && this.entities.length > 0;
