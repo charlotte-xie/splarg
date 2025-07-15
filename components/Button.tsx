@@ -21,13 +21,13 @@ export default function Button({
 }: ButtonProps) {
   const isForbidden = !!forbidden;
   return (
-    <span style={{ position: 'relative', display: 'inline-block', width: '100%', height: '100%' }}>
+    <span style={{ position: 'relative', display: 'inline-block'}}>
       <button
         className={`game-button game-button--${size} ${className}`}
         onClick={onClick}
         disabled={disabled || isForbidden}
         title={isForbidden ? forbidden : title}
-        style={{ position: 'relative', width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%' }}
       >
         {children}
       </button>
