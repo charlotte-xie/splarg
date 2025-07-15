@@ -20,32 +20,40 @@ export default class Utils {
   }
 
   static capitalize(str: string): string {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  static vowelExceptions: string[] = ['un', 'us'];
+  static silentPrefixes: string[] = ['hou','hei'];
+  
   /**
    * Check if a word starts with a vowel sound (for determining "a" vs "an")
-   * @param word - The word to check
+   * @param word - The word to check. Should be lowercase.
    * @returns True if the word starts with a vowel sound
    */
   static startsWithVowelSound(word: string): boolean {
-    if (!word || word.length === 0) return false;
-    
+    if (!word) throw new Error("No name provided");
     const firstChar = word.charAt(0).toLowerCase();
-    const vowels = ['a', 'e', 'i', 'o', 'u'];
-    
-    // Check for common exceptions where 'u' sounds like 'y'
-    const uExceptions = ['university', 'uniform', 'unique', 'united', 'useful', 'usual'];
-    if (firstChar === 'u' && uExceptions.some(exception => word.toLowerCase().startsWith(exception))) {
-      return false;
+    switch (firstChar) {
+      case 'a':
+      case 'e':
+      case 'i':
+      case 'o':
+        return true;
+      case 'u':
+        // Check for common exceptions where 'u' sounds like 'y'
+        if (Utils.vowelExceptions.some(exception => word.startsWith(exception))) {
+          return false;
+        }
+        return true;
+      case 'h':
+        // Check for 'h' words that are silent (like 'hour', 'honest')
+        if (Utils.silentPrefixes.some(exception => word.startsWith(exception))) {
+          return true;
+        }
+        return false;
+      default:
+        return false;
     }
-    
-    // Check for 'h' words that are silent (like 'hour', 'honest')
-    const silentHWords = ['hour', 'honest', 'honor', 'heir'];
-    if (firstChar === 'h' && silentHWords.some(exception => word.toLowerCase().startsWith(exception))) {
-      return true;
-    }
-    
-    return vowels.includes(firstChar);
   }
 } 

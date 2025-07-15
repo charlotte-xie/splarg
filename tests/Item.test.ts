@@ -143,13 +143,13 @@ describe('Item Name Methods', () => {
   test('should handle vowel sound exceptions', () => {
     const university = new ItemType({
       id: 'university',
-      name: 'University',
+      name: 'university',
       description: 'A university',
       symbol: '🏛️'
     });
     const item = new Item(university, 1);
     
-    expect(item.getAName()).toBe('a University'); // 'u' sounds like 'y'
+    expect(item.getAName()).toBe('a university'); // 'u' sounds like 'y'
   });
 
   test('should handle custom plural names', () => {
