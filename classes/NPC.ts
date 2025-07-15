@@ -1,13 +1,14 @@
 import { Being } from './Being';
 import { EntityClass } from './Entity';
+import { Gender } from './Names';
 import { Race } from './Races';
 
 export default class NPC extends Being {
   public name: string;
   public race: Race;
 
-  constructor(name: string, race: Race = Race.HUMAN) {
-    super(EntityClass.NPC);
+  constructor(name: string, race: Race = Race.HUMAN, gender: Gender = 'neutral') {
+    super(EntityClass.NPC, gender);
     this.name = name;
     this.race = race;
   }
@@ -26,7 +27,7 @@ export default class NPC extends Being {
   }
 
   static fromJSON(obj: any): NPC {
-    const npc = new NPC(obj.name, obj.race || Race.HUMAN);
+    const npc = new NPC(obj.name, obj.race || Race.HUMAN, obj.gender || 'neutral');
     const base = Being.fromJSON(obj);
     Object.assign(npc, base);
     return npc;
