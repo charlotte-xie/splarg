@@ -57,7 +57,7 @@ export const TILE_TYPES: Record<string, TileType> = {
   sand: new TileType({
     id: 'sand',
     name: 'Sand',
-    color: '#d97706',
+    color: '#d9b716',
     symbol: '🏖️',
     textColor: '#000000',
     walkable: true,
@@ -66,7 +66,7 @@ export const TILE_TYPES: Record<string, TileType> = {
   forest: new TileType({
     id: 'forest',
     name: 'Forest',
-    color: '#166534',
+    color: '#166524',
     symbol: '🌲',
     textColor: '#ffffff',
     walkable: true,
